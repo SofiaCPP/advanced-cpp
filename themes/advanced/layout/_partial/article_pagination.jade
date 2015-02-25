@@ -1,0 +1,15 @@
+.row-fluid
+  .col-md-12
+    hr
+    ul.pagination
+      li(class = page.prev? '' : 'disabled')
+        a(href=config.root + (page.prev? page.prev.path : '#'),
+                title=__("prev") + ' articles')
+          | &larr; 
+          = __("prev")
+      li(class = page.next? '' : 'disabled')
+        a(href=config.root + (page.next? page.next.path : '#'),
+                title=__("next") + ' articles')
+          = __("next")
+          |  &rarr;
+

@@ -1,0 +1,22 @@
+extends base
+
+prepend window_title
+  
+  | Archive&mdash;
+
+block content
+  ul.article-list
+    - page.posts.each(function(article){
+
+      li
+        article
+          h3
+            a(href=config.root + article.path)= article.title
+          div.meta
+            include _partial/article_meta
+
+            +date(article.date)
+
+            +category(article.categories)
+
+    - })

@@ -1,0 +1,18 @@
+extends base
+
+include _partial/article_meta
+
+block content
+  - page.posts.each(function(article){
+    article
+      h2
+        a(href=config.root + article.path)= article.title
+      .row
+        .col-md-2
+          +date(article.date)
+        .col-md-10
+          +category(article.categories)
+  - })
+
+  include _partial/article_list_pagination
+
