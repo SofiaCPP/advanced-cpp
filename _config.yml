@@ -15,8 +15,8 @@ menu:
     News: categories/news/
     About: about/
 
-url: http://sofiacpp.github.io/advanced_cpp
-root: /advanced_cpp
+url: http://sofiacpp.github.io/advanced-cpp
+root: /advanced-cpp
 permalink: :year/:month/:day/:title/
 tag_dir: tags
 archive_dir: archives
@@ -101,6 +101,6 @@ markdown:
 ## Docs: http://hexo.io/docs/deployment.html
 deploy:
     type: github
-    repo: 
+    repo: git@github.com:SofiaCPP/advanced-cpp.git
     branch: gh-pages
 
