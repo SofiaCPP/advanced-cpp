@@ -1,0 +1,206 @@
+layout: slides
+title: Overview of C++
+path: /slides/01_overview
+date: 2015-02-27 01:29:34
+tags: slides
+---
+section
+    h1 Overview of C++
+
+section
+    ul
+        li C++ is multiparadigm, systems programming language.
+        li The main purpose is to be a high-level language, without
+        | sacrificing any performance
+        li This means that in C++ you don't pay for features that you don't
+        | use.
+
+section
+    h2 Multiparadigm
+    ul
+        li Structured
+        li Object Orientated
+        li Functional
+        li Data Orientated
+
+section
+    p.fragment.fade-in And multithreaded
+    p.fragment.fade-in And compile-time
+
+section
+    h1 C++ renaisance?
+
+section
+    h2 Free lunch
+    ul
+        li Processors are getting faster and faster
+
+    aside.notes.
+
+        A program is slow - in half a year computers will be so mach faster
+        that the program is going to be ok.
+
+section
+    h2 The Free lunch is over
+    p
+        a(href='http://www.gotw.ca/publications/concurrency-ddj.htm')
+            | An article by Herb Sutter in 2005
+    p Sequential execution is reaching the physical limits.
+
+section
+    h3 Viva la multicore revolution
+    ul
+        li Processors have multiple cores
+        li Every single core executes multiple instructions simultaniously
+
+section
+    h3 Here comes the electricity bill
+    p Processors are hitting new barriers
+        ul
+            li power consumption
+            li heat generation
+
+    aside.notes.
+
+        If Facebook servers are optimized 0.1%, for three months the
+        salaries for the entire engineers department are secured for ten
+        years ahead. Facebook has pretty interesting relationship with C++.
+        Facebook was initially written in PHP. After PHP couldn't scale
+        enough Facebook started compiling PHP to C++ and compiling the PHP
+        in a single 1.2GB CGI program. Now Facebook are using the HipHopVM -
+        virtual machine for PHP with JIT.
+
+section
+    h2 Mobile
+    ul
+        li Processors are slower
+        li Power is pretty limited
+        li Users are in a hury
+
+    aside.notes.
+
+        Modern smartphones already have multiple cores, but using them
+        drains the battery very fast.
+
+section
+    h2 Portability
+    p C and C++ are one of the most portable languages
+    ul
+        li there are compilers for every platform
+        li the 3 most popular compilers cover all desktop platforms, iOS,
+            | Android, PlayStation 4, XBox
+
+    aside.notes.
+
+        This may sound strange. As long as you are using standard C++ you
+        have covered more platforms than with any other language. For
+        example if you have a library that handles the platform specific
+        window creation, drawing and reading input like SDL2.0, you get
+        all PC platforms, iOS and Android.
+
+section
+    section
+        h2 Brief history of C++
+        p.fragment.fade-in 1979 - Bjarne Stroustrup started developing "C
+            | with Classes" in Bell Labs
+        p.fragment.fade-in 1983 - C++ is born. cfront works by translating
+            | C++ to C and compiling
+
+    section
+        h2 C++ revisions
+        ul
+            li C++ '98
+            li C++ '03
+            li C++ '11
+            li C++ '14
+            li C++ '17
+
+        aside.notes.
+
+            *C++* is not the same language any more. The new standard has
+            changed significantly the language.
+
+    section
+        h2 What was new in C++ 03 TR1
+        ul
+            li shared_ptr
+            li regex
+            li random
+            li quite a lot of math functions
+            li ...
+
+        aside.notes.
+
+            How many people have heard of it? How many have used any
+            feature of it? It wasn't impemented by Visual Studio, making
+            it pretty useless. GCC just took the headers out of boost, but
+            kept using an old version.
+
+    section
+        h2 What is new in C++ 11
+        ul
+            li Multi-thread machine model
+            li lambda functions
+            li C++ 03 TR1 is part of the language
+
+    section
+        h2 What probably will be new in C++ 14
+        ul
+            li boost::filesystem
+            li cpp_netlib - HTTP client and server
+                ul
+                    li sockets - TCP, UDP
+                    li asyncronous IO
+                    li HTTP
+
+        aside.notes.
+
+            49 years after the invention of hierarchial filesystems and 31
+            years after the creation of C++, Standard C++ still doesn't
+            know anything about directories. So instead of branging about
+            this, we should be ashamed. If cpp_netlib gets in the standard
+            it is going to be pretty huge - C++ will finally understand
+            that computers are not single machines living in vacuum.
+
+    section
+        h2 What might be new in C++ 17
+        ul
+            li Visual Studio are pushing async keyword
+
+    section
+        h2 What is new in the C++ community
+
+        ul
+            li compilers are developing faster
+            li 2 already implement the C++ 11 language
+            li companies are supporting C++
+            li Going Native, C++Next
+
+        aside.notes.
+
+            What is more interesting is that the whole C++ community has
+            changed. There is much wider support from the software
+            industry. Two of the three major compilers already implement
+            the standard. The third one is on its way.  Boost is
+            developing faster - boost.context and boost coroutine have
+            come true after 3 or 4 years, boost.log has been in
+            development even longer (although it is far from perfect in my
+            opinion)
+
+section
+    h2 Compilers
+    ul
+        li Microsoft Visual Studio
+        li GCC
+        li clang
+
+    aside.notes.
+
+        Both GCC and clang are claiming to implement the C++11 standard.
+        There something missing from their respective standard libraries,
+        but this is getting better. Microsoft Visual Studio is working on
+        getting standards complient.
+
+section
+    h2 Resources
+
