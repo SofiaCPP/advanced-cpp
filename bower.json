@@ -1,0 +1,24 @@
+{
+  "name": "advanced-cpp",
+  "version": "0.0.0",
+  "description": "\"Advanced C++ course lecture slides\"",
+  "main": "index.html",
+  "keywords": [
+    "\"C++\""
+  ],
+  "authors": [
+    "\"Dimitar Trendafilov\""
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "reveal.js": "~2.6.2"
+  }
+}

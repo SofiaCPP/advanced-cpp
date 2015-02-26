@@ -2,8 +2,10 @@
   "name": "advanced_cxx_fmi",
   "version": "2.8.3",
   "devDependencies": {
+    "hexo": "^2.8.3",
     "hexo-renderer-jade": "*",
     "hexo-renderer-less": "*",
-    "hexo-renderer-marked": "*"
+    "hexo-renderer-marked": "*",
+    "marked": "^0.3.3"
   }
 }

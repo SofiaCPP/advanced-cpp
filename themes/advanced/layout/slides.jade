@@ -1,0 +1,38 @@
+mixin style(css)
+    link(rel = "stylesheet", href = config.root + 'bower_components/' + css,
+            id != attributes.id)
+
+mixin snippet(file, sections)
+    .snippet(data-file = file, data-sections != sections)
+        :markdown
+                 // loading ...
+
+mixin slides(title)
+    doctype html
+    html(lang = 'en')
+        head
+            meta(charset = 'utf-8')
+            meta(name = 'description' content = 'A course about C++')
+            meta(name = 'author' content = 'SofiaCPP')
+            meta(name = 'apple-mobile-web-app-capable' content = 'yes')
+            meta(name = 'apple-mobile-web-app-status-bar-style'
+                    content = 'black-translucent')
+            meta(name = 'viewport' content = 'width=device-width, ' +
+                    'initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+            +style('reveal.js/css/reveal.min.css')
+            link(rel = 'stylesheet' href = config.root + 'css/advanced_cxx.css')
+            link(rel = 'stylesheet' href = config.root + 'css/tomorrow.css')
+            title= title
+        body
+            .reveal
+                .slides
+                    block
+
+            script(src = config.root + 'bower_components/reveal.js/lib/js/head.min.js')
+            script(src = config.root + 'bower_components/reveal.js/js/reveal.min.js')
+            script(src = config.root + 'bower_components/reveal.js/plugin/highlight/highlight.js')
+            script(src = config.root + 'bower_components/jquery/dist/jquery.min.js')
+            script(src = config.root + 'slides.js')
+
++slides(page.title)
+    != page.content
