@@ -1,6 +1,7 @@
 meta(charset='utf-8')
 meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
-meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1')
+meta(name='viewport',
+        content='width=device-width, initial-scale=1, maximum-scale=1')
 
 if config.author
     meta(name='author', content=config.author)
@@ -13,11 +14,12 @@ title
         = config.title
 link(href=config.root + 'favicon.png', rel='icon')
 
-link(rel='alternate', href=theme.rss ? theme.rss : config.root + 'atom.xml', title='config.title', type='application/atom.xml')
+link(rel='alternate', href=theme.rss ? theme.rss : url_for('atom.xml'),
+        title='config.title', type='application/atom.xml')
 
-link(href=config.root + 'bower_components/bootstrap/dist/css/bootstrap.min.css',
-    rel='stylesheet')
-link(href=config.root + 'bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
-    rel='stylesheet')
+link(href=url_for('bower_components/bootstrap/dist/css/bootstrap.min.css'),
+        rel='stylesheet')
+link(href=url_for('bower_components/bootstrap/dist/css/bootstrap-theme.min.css'),
+        rel='stylesheet')
 style.
     body { padding-top: 50px; }
