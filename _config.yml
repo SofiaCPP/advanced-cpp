@@ -13,6 +13,7 @@ language: English
 # Menu
 menu:
     News: categories/news/
+    Slides: categories/slides/
     About: about/
 
 url: http://sofiacpp.github.io/advanced-cpp
@@ -33,8 +34,8 @@ new_post_name: :title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
 external_link: true # Open external links in new tab
-filename_case: 0
-render_drafts: false
+filename_case: 1
+render_drafts: true
 post_asset_folder: false
 relative_link: false
 highlight:
@@ -46,6 +47,7 @@ highlight:
 default_category: uncategorized
 category_map:
     News: news
+    Slides: slides
 tag_map:
 
 # Archives
