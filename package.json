@@ -1,11 +1,12 @@
 {
   "name": "advanced_cxx_fmi",
   "version": "2.8.3",
+  "repository": "https://github.com/SofiaCPP/advanced-cpp",
   "devDependencies": {
     "hexo": "^2.8.3",
-    "hexo-renderer-jade": "*",
     "hexo-renderer-less": "*",
     "hexo-renderer-marked": "*",
+    "jade": "~1.4.2",
     "marked": "^0.3.3"
   }
 }
