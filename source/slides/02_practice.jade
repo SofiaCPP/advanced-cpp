@@ -1,0 +1,298 @@
+layout: slides
+title: The practice of C++
+path: /slides/02_practice.html
+date: 2015-03-03 23:37:34
+tags: slides
+categories: slides
+---
+section
+    :markdown
+        # The practice of `C++`
+
+section
+    :markdown
+        ## Contents
+
+        1. Source code
+        2. Building
+        3. Static Analysis
+        4. Runtime Analysis
+        5. Tests
+
+section
+    section
+        :markdown
+            ## Source Code
+
+    section
+        :markdown
+            ## Coding Style
+
+            * [Google](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html)
+            * [JSF-AV](http://www.stroustrup.com/JSF-AV-rules.pdf)
+            * http://meetingcpp.com/index.php/talkview/items/24.html
+
+    section
+        :markdown
+
+            * Choose one coding style and stick to it
+            * Whenever necessary change it.
+
+    section
+        :markdown
+            ## IDEs or text editors
+
+            
+
+    section
+        :markdown
+            ### Platform specific
+
+            * Visual Studio
+            * xcode
+            * kdevelop
+
+    section
+        :markdown
+            ### Cross-platform
+
+            * qtcreator
+            * Eclipse with CDT
+    section
+        :markdown
+            ### New players
+
+            * [CLion](https://www.jetbrains.com/clion/)
+
+    section
+        :markdown
+            ## Basic Text settings
+
+    section
+        :markdown
+            # CONSISTENCY
+
+    section
+            Not that easy when working on multiple projects / codebases with
+            different styles
+
+    section
+        ul
+            li [Editor Config](http://editorconfig.org/)
+            
+    section
+        :markdown
+            ### CodeMaid
+
+            [CodeMaid](http://codemaid.net) is an open-source extension
+            that allows code cleanup and reorganizing.
+
+    section
+        :markdown
+            ### clang-format
+
+            * portable, stand-alone tool
+            * plugins for Vim, Emacs, Visual Studio, Git
+            * uses ```clang+++``` AST to reformat the code
+            * allows to specify different formatting rules for different files
+
+section
+    section
+        :markdown
+            ## Building
+
+    section
+        :markdown
+            * C++ doesn't have build system
+
+    section
+        :markdown
+            ### built-in in the IDE
+
+            * Visual Studio project files
+            * Xcode project files
+            * qtcreator - qmake
+
+    section
+        :markdown
+            ### standalone - low level
+
+            * make - in all the ports and flavours
+            * [ninja](http://martine.github.io/ninja/)
+
+    section
+        :markdown
+            ### stanalone - high level
+
+            * cmake - can generate everything
+            * gyp 
+            * premake5 - Visual Studio, make, xcode soon
+            * [genie](https://github.com/bkaradzic/genie)
+           
+    section
+        :markdown
+            ### Distributed
+
+            * [fips](http://floooh.github.io/fips/index.html)
+            * [fastbuild](http://www.fastbuild.org/docs/home.html)
+            * Incredibuild
+
+section
+    section
+        :markdown
+
+            ## Libraries
+
+    section
+        :markdown
+            ### Program configuration
+
+            * boost::program_options
+            * [gflags](https://code.google.com/p/gflags/)
+            * ['cxxopts'](https://github.com/jarro2783/cxxopts)
+            * boost::property_tree
+            * [docopt](https://github.com/docopt/docopt.cpp)
+
+    section
+        :markdown
+            ### Logging
+
+            * [`boost::log`](https://github.com/boostorg/log)
+            * google log
+
+    section
+        :markdown
+            ### Data Persistance
+
+            * dropbox json11
+            * `boost::serialization`
+
+    section
+        :markdown
+            ### Testing
+
+            * googletest and googlemock
+            * `boost::test` and turtle
+            * [catch](https://github.com/philsquared/Catch)
+            * [liblittletest](https://github.com/etr/liblittletest)
+
+    section
+        :markdown
+            ### Microbenchmarking
+
+            * [benchmark](https://github.com/google/benchmark)
+            * [Celero](https://github.com/DigitalInBlue/Celero)
+
+    section
+        :markdown
+            ### Graphics
+
+            * DirectX / OpenGL 
+            * SFML
+            * SDL
+            * cairo / Skia
+
+    section
+        :markdown
+            ### GUI
+
+            * Qt
+            * WxWidgets
+            * GTK
+            * Win32
+            * IUP
+            * fltk
+ 
+    section
+        :markdown
+            ### Text
+
+            * `boost::spirit`
+            * `boost::karma`
+            * ctemplate
+
+    section
+        :markdown
+            ### Image processing
+
+            * lodepng
+
+    section
+        :markdown
+            ### Scripting
+
+            * Lua, luajit
+            * duktape, v8
+            * python - `boost::python`, cython
+
+    section
+        :markdown
+            ### Networking
+
+            * `boost::asio` - tcp and udp
+            * curl
+            * cpp-netlib
+            * C++ REST (https://casablanca.codeplex.com/)
+            * mongoose
+
+section
+    section
+        :markdown
+            ## Static code analysis
+
+            Tries to run *all* possible code paths in the program in order
+            to locate errors.
+
+    section
+        :markdown
+            ### False positives
+
+            It may find so many "errors" that is impossible to check all of
+            them.
+
+    section
+        :cxx
+            void generate(int* output); // third party
+
+            std::unique_ptr<int[]> p(new int[1024]);
+
+            generate(p.get()); // reading uninitialized memory
+            std::cout << p[24]; // reading uninitialized memory
+
+    section
+        :markdown
+            ### Visual Studio
+
+            * Starting *VS2013* in all versions
+
+    section
+        :markdown
+            ### PVS-Studio
+
+            * commercial tool
+            * [Interesting blog](http://www.viva64.com/en/b/) with
+              analysis of C++ projects
+
+    section
+        :markdown
+            ### clang++ --analyze
+
+            Runs *clang* in static analyzer mode
+
+            * scan-build
+
+    section
+        :markdown
+            ### Runtime analysis
+
+            * valgrind
+            * address sanitizer
+    
+    section
+        :markdown
+
+            ### Debuggers
+
+            * Visual Studio / xcode
+            * `ddd`
+
