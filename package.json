@@ -4,9 +4,9 @@
   "repository": "https://github.com/SofiaCPP/advanced-cpp",
   "devDependencies": {
     "hexo": "^2.8.3",
-    "hexo-renderer-less": "*",
-    "hexo-renderer-marked": "*",
-    "jade": "~1.4.2",
+    "hexo-renderer-less": "0.1.2",
+    "hexo-renderer-marked": "0.1.0",
+    "jade": "~1.0.2",
     "marked": "^0.3.3"
   }
 }
