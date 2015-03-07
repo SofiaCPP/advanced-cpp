@@ -29,7 +29,37 @@ tags: slides
 
 * `section` element denotes a single slide
 * `:cxx` filter allows in-line inclusion of C++ sample
+* `+snippet` mixing allows inclusion of a snippet from a file. To include the
+  *lifetime* snippet from *03_resources/lifetime.cxx* in the current slide use:
 
+    ```jade
+    +snippet('03_resources/lifetime.cxx', 'lifetime')
+    ```
+
+    And the *lifetime* snippet is defined like:
+
+    ```c++
+    //@{ lifetime
+    void print(const void* instance, const char* type, const char* msg)
+    {
+        std::cout << type << ":\t" << instance << ":\t"
+            << msg << std::endl;
+    }
+
+    struct Lifetime
+    {
+        Lifetime()
+        {
+            print(this, "Lifetime", "lives");
+        }
+
+        ~Lifetime()
+        {
+            print(this, "Lifetime", "dies");
+        }
+    };
+    //@} lifetime
+    ```
 
 ## Hexo Quick Start
 
