@@ -15,6 +15,7 @@ function cxx(block) {
 }
 
 jade.filters.cxx = cxx;
+jade.filters.code = cxx;
 
 var front = /(?:.*?)---(.*)/m;
 

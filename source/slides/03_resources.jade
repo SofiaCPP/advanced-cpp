@@ -9,21 +9,67 @@ section
     h1 Resource Management in C++
 
 section
-    h2 Resources are finite
-    ul
-        li Memory
-        li Files
-        li Sockets
-        li Threads
-        li ...
+    section
+        h2 Resources
 
-    aside.notes.
+    section
+        h3 Resources are finite
 
-        Memory is the most often used and miss-used resource in a computer.  GC
-        languages focus on taking memory management out of the hands of the
-        programmer. But they leave everything else, and, IMHO, they make it
-        harder. Open files in a process or OS are limited. So are sockets.
-        Sockets can't be more than 65536 for a given IP address.
+    section
+        h3 What is a resource?
+        ul
+            li Memory
+            li Files
+            li Sockets
+            li Threads
+            li ...
+
+        aside.notes.
+
+            Memory is the most often used and miss-used resource in a computer.
+            GC languages focus on taking memory management out of the hands of
+            the programmer. But they leave everything else, and, IMHO, they make
+            it harder. Open files in a process or OS are limited. Sockets can't
+            be more than 65536 for a given IP address.
+
+    section
+        :markdown
+            ### Garbage collection
+
+            Garbage collection works only for memory. It does **not** work for
+            other resources because it is generally not deterministic.
+    section
+        :markdown
+            All GC languages have (some got at a later point) language
+            constructs to allow deterministic resource management.
+
+    section
+        h4 Python
+        :code
+            with open('file.txt') as file:
+                for line in file:
+                    pass
+
+    section
+        h4 C#
+        :code
+            // `IDisposable` interface
+
+            using (Font font1 = new Font("Arial", 10.0f))
+            {
+                byte charset = font1.GdiCharSet;
+            }
+
+    section
+        h4 Go
+        :code
+            func Contents(filename string) (string, error) {
+                f, err := os.Open(filename)
+                if err != nil {
+                    return "", err
+                }
+                defer f.Close()  // f.Close will run when we're finished.
+
 
 section
     h2 Lifetime of an object
