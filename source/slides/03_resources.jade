@@ -192,6 +192,51 @@ section
             exception: it all goes wrong
 
 section
+    | Resource management is difficult not only in presense of exceptions
+
+section
+    :cxx
+        bool HasEmbededNull(const char* file)
+        {
+            std::ifstream input(file, std::ios::binary);
+            while (input) {
+                if (input.get() == '\0') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+section
+    :cxx
+        bool HasEmbededNull(const char* file)
+        {
+            auto input = std::fopen(file, "rb");
+            while (input && !feof(input)) {
+                if (fgetc(input) == '\0') {
+                    return true;
+                }
+            }
+            fclose(input);
+            return false;
+        }
+
+section
+    :cxx
+        bool HasEmbededNull(const char* file)
+        {
+            auto input = std::fopen(file, "rb");
+            while (input && !feof(input)) {
+                if (fgetc(input) == '\0') {
+                    fclose(input); // !!!!!!!!!!!
+                    return true;
+                }
+            }
+            fclose(input);
+            return false;
+        }
+
+section
     h2 So the moral is?
     p.fragment.fade-in.
         ALWAYS manage resouces following RAII!
