@@ -10,6 +10,14 @@ function renderSlide(tokens, idx) {
     }
 }
 
+function renderNotes(tokens, idx) {
+    if (tokens[idx].nesting === 1) {
+        return '<aside class="notes">';
+    } else {
+        return '</aside>';
+    }
+}
+
 var snippet = /^snippet\s+([^\s]+)\s*(.*)$/;
 
 function renderSnippet(tokens, idx) {
@@ -25,7 +33,9 @@ function renderSnippet(tokens, idx) {
     }
 }
 
-var md = mdit().use(mdit_container, 'slide', { render: renderSlide, marker: '=' })
+var md = mdit().use(mdit_container, 'topic', { render: renderSlide, marker: '=' })
+               .use(mdit_container, 'slide', { render: renderSlide, marker: '+' })
+               .use(mdit_container, 'notes', { render: renderNotes, marker: '$' })
                .use(mdit_container, 'snippet', { render: renderSnippet });
 
 function renderSlides(block) {
