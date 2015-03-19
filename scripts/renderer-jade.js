@@ -25,8 +25,8 @@ function renderSnippet(tokens, idx) {
         var m = tokens[idx].info.trim().match(snippet),
             file = m[1],
             sections = m[2];
-        return '<div class="snippet" data-file="' + file + '" data-sections="' +
-                sections +
+        return '<div class="snippet" data-file="/advanced-cpp/slides/' + file +
+                '" data-sections="' + sections +
                 '"><code><pre>// loading ... </pre></code>';
     } else {
         return '</div>';
