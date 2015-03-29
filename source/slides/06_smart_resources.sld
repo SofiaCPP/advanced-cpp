@@ -27,10 +27,32 @@ Ownership is best expressed with `std::unique_ptr`.
 ### Heap-allocated object
     
 +++
++++ slide
 
+    class Logger {
+        private:
+            std::unique_ptr<ILogTarget> _Target;
+    };
+
++++
 +++ slide
 
 ### Heap-allocated array
+
++++
++++ slide
+
+    int hash(const char* name) {
+        std::ifstream input(name, std::ios::binary);
+        const auto size = 4096;
+        std::unique_ptr<char[]> buffer(new char[size]);
+        int h = 42;
+        while (input) {
+            input.read(buffer.get(), size);
+            h = h + buffer[42] % 42;
+        }
+        return h;
+    }
     
 +++
 +++ slide
@@ -40,10 +62,22 @@ Ownership is best expressed with `std::unique_ptr`.
 +++
 +++ slide
 
+#### How to own a `FILE*`
+
+It is the same as every other resource:
+
+* obtain - `fopen`
+* return - `fclose`
+
++++
++++ slide
+
 ### Custom deleter
 
 +++
++++ slide
 
++++
 +++ slide
 
 ### Directly deleter

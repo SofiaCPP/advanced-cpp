@@ -38,7 +38,7 @@ public:
         }
     }
 
-    //FileLogTarget(FileLogTarget&&) = default;
+    FileLogTarget(FileLogTarget&&) = default;
 
 private:
     FilePtr _file;
