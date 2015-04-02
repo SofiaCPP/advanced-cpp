@@ -398,6 +398,7 @@ Be sure that the *quit* button will not be clicked after `app` is destroyed.
 
 +++
 ===
+
 === topic
 
 +++ slide
@@ -410,17 +411,83 @@ Be sure that the *quit* button will not be clicked after `app` is destroyed.
 `std::function` is a generic function object.
 
 +++
++++ slide
+
+## Functions in C++
+
+Let me count the ways ...
+
++++
++++ slide
+
+### Free functions
+
+::: snippet 10_functional/functions.cxx free
+:::
+
++++
++++ slide
+
+### Functors
+
+::: snippet 10_functional/functions.cxx functor
+:::
+
++++
++++ slide
+
+### Methods
+
+::: snippet 10_functional/functions.cxx method
+:::
+
++++
++++ slide
+
+### Pointer to functions
+
+::: snippet 10_functional/functions.cxx pointer
+:::
+
++++
++++ slide
+
+### `std::function`
+
+::: snippet 10_functional/functions.cxx function
+:::
+
++++
++++ slide
+
+### `std::function` with types
+
+::: snippet 10_functional/functions.cxx function-ud
+:::
+
++++
++++ slide
+
+### `std::function std::bind`
+
+::: snippet 10_functional/functions.cxx bind
+:::
+
++++
 ===
+
 === topic
 +++ slide
 # Functions and tuples
 +++
 ===
+
 === topic
 +++ slide
 # Functions in `C++11`
 +++
 ===
+
 === topic
 +++ slide
 # Functions in `C++14`
