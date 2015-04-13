@@ -1,6 +1,8 @@
 var jade = require('jade'),
     mdit = require('markdown-it'),
-    mdit_container = require('markdown-it-container');
+    mdit_container = require('markdown-it-container'),
+    fs = require('fs'),
+    hljs = require('highlight.js')
 
 function renderSlide(tokens, idx) {
     if (tokens[idx].nesting === 1) {
@@ -18,16 +20,70 @@ function renderNotes(tokens, idx) {
     }
 }
 
+var lt = /</g,
+    gt = />/g,
+    amp = /&/g,
+    quot = /"/g;
+
+function cxx(block) {
+    var escaped = block
+        .replace(amp, '&amp;')
+        .replace(lt, '&lt;')
+        .replace(gt, '&gt;')
+        .replace(quot, '&quot;');
+    return '<pre class="mstretch"><code>' + escaped + '</code></pre>';
+}
+
+var files = {};
+function load(file) {
+    var content = files[file];
+    if (content === undefined) {
+        content = files[file] = fs.readFileSync('source/slides/' + file,
+                { encoding: 'utf8' });
+    }
+    return content;
+}
+
+var startsWithSpace = /^\s/,
+    indent = /\n[ \t]/g;
+
+function minIndent(section) {
+    while (section.match(startsWithSpace)) {
+        section = section.replace(startsWithSpace, '');
+        section = section.replace(indent, '\n');
+    }
+    return section;
+}
+
+function getSections(code, sections) {
+    if (sections !== undefined) {
+        var snippets = [];
+        sections.split(' ').forEach(function (section) {
+            var res = '\\s*\\/\\/@{ ' + section + '\n(\\s*(?:.|\n)*?)'
+                    + '\\s*\\/\\/@} ' + section,
+                re = new RegExp(res, 'gm');
+            code.replace(re, function (m, snippet) {
+                snippets.push(minIndent(snippet));
+                return '';
+            });
+        });
+        code = snippets.join('\n// ...\n');
+    }
+
+    return hljs.highlightAuto(code).value;
+}
+
 var snippet = /^snippet\s+([^\s]+)\s*(.*)$/;
 
 function renderSnippet(tokens, idx) {
     if (tokens[idx].nesting === 1) {
         var m = tokens[idx].info.trim().match(snippet),
             file = m[1],
-            sections = m[2];
+            sections = m[2],
+            code = getSections(load(file), sections);
         return '<div class="snippet" data-file="/advanced-cpp/slides/' + file +
                 '" data-sections="' + sections +
-                '"><code><pre>// loading ... </pre></code>';
+                '"><pre><code>' + code + '</code></pre>';
     } else {
         return '</div>';
     }
@@ -41,20 +97,6 @@ var md = mdit().use(mdit_container, 'topic', { render: renderSlide, marker: '=' 
 function renderSlides(block) {
     var r = md.render(block);
     return r;
-}
-
-var lt = /</g,
-    gt = />/g,
-    amp = /&/g,
-    quot = /"/g;
-
-function cxx(block) {
-    var escaped = block
-        .replace(amp, '&amp;')
-        .replace(lt, '&lt;')
-        .replace(gt, '&gt;')
-        .replace(quot, '&quot;');
-    return '<pre class="mstretch"><code>' + escaped + '</pre></code>';
 }
 
 jade.filters.cxx = cxx;

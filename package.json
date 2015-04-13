@@ -6,6 +6,7 @@
     "hexo": "^2.8.3",
     "hexo-renderer-less": "0.1.2",
     "hexo-renderer-marked": "0.1.0",
+    "highlight.js": "^8.5.0",
     "jade": "~1.0.2",
     "markdown-it": "^4.0.1",
     "markdown-it-container": "^1.0.0",
