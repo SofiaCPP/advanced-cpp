@@ -486,10 +486,69 @@ Let me count the ways ...
 +++ slide
 # Functions in `C++11`
 +++
+
++++ slide
+    template <typename T>
+    T plus(T lhs, T rhs) {
+        return lhs + rhs;
+    }
++++
++++ slide
+
+    auto s = plus(2, 2);
+
++++
++++ slide
+
+    Person p1;
+    Person p2;
+    auto s = plus(p1, p2)
++++
++++ slide
+    struct Person
+    {
+        Household operator+(const Person&);
+    }
++++
++++ slide
+    ??? plus(Person lhs, Person rhs) {
+        return lhs + rhs;
+    }
++++
++++ slide
+
+    auto plus(Person lhs, Person rhs) -> decltype(lhs + rhs)
+    {
+        return lhs + rhs;
+    }
+
++++
 ===
 
 === topic
 +++ slide
 # Functions in `C++14`
++++
+
++++ slide
+    ??? plus(Person lhs, Person rhs)
+    {
+        return lhs + rhs;
+    }
++++
++++ slide
+
+    auto plus(Person lhs, Person rhs)
+    {
+        return lhs + rhs;
+    }
+
++++
++++ slide
+
+* all returns must have the same type
+  * single return
+
+
 +++
 ===
