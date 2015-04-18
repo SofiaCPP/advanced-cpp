@@ -1,0 +1,366 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="author" content="SofiaC++"><meta name="description"><title>Functional C++&mdash;Advanced C++</title><link href="/advanced-cpp/favicon.png" rel="icon"><link rel="alternate" href="/advanced-cpp/atom.xml" title="config.title" type="application/atom.xml"><link href="/advanced-cpp/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"><link href="/advanced-cpp/bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet"><link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css" rel="stylesheet"><style>body { padding-top: 50px; }</style></head><body><div class="container"><nav role="navigation" class="navbar navbar-inverse navbar-fixed-top"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Advanced C++</a></div><div id="navbar" class="navbar-collapse collapse"><ul class="nav navbar-nav"><li><a href="/advanced-cpp/categories/news/">News</a></li><li><a href="/advanced-cpp/categories/slides/">Slides</a></li><li><a href="/advanced-cpp/about/">About</a></li></ul></div></div></nav><div class="page-header"><h1><a href="/advanced-cpp/">Advanced C++</a></h1><p id="site-slogan">Site for the Advanced C++ course at FMI</p></div><div class="row"><div class="col-sm-9"><section id="content"><article class="post"><h2>Functional C++</h2><div class="meta">03 Apr 2015</div><a href="/advanced-cpp/slides/10_functional.html" class="btn btn-large btn-primary">Slide Show</a><section><h1>Functional <code>C++</code></h1>
+</section><section><p>section</p>
+<h2>Contents</h2>
+<ul>
+<li><code>C++</code> 98</li>
+<li><em>lambda</em> functions</li>
+<li><code>std::function</code></li>
+<li><em>signals</em> and <em>slots</em></li>
+</ul>
+</section><section><h2><code>C</code>-style</h2>
+<pre><code>void qsort(void* pointer, size_t count, size_t size,
+    int (*comparator) (const void*, const void*));
+</code></pre>
+</section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/qsort.cxx" data-sections="comparator sort"><pre><code><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">greater</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* lhs, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* rhs)</span> </span>{
+	<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span>* l = <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span>*&gt;(lhs);
+	<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span>* r = <span class="hljs-keyword">static_cast</span>&lt;<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span>*&gt;(rhs);
+	<span class="hljs-keyword">return</span> *r - *l;
+}
+<span class="hljs-comment">// ...</span>
+<span class="hljs-built_in">std</span>::qsort(numbers, <span class="hljs-number">5</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">int</span>), &amp;greater);</code></pre></div></section><section><ul>
+<li>does not work for <em>non-POD</em></li>
+<li>needs a new function</li>
+<li><code>C++'98</code> does not allow defining functions inside functions</li>
+<li>the functions does not allow to store state, unless it is global</li>
+<li>the function has to always be called indirectly through pointer
+<ul>
+<li>and will get called O(N<em>log</em>N) times for sorting <em>N</em> numbers</li>
+</ul>
+</li>
+</ul>
+</section><section><h2><code>C++</code>'98 style</h2>
+<pre><code>void sort(T begin, T end, C comparator);
+</code></pre>
+</section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/sort98.cxx" data-sections="comparator sort"><pre><code></code></pre></div></section><section><ul>
+<li>works for everything that has <code>operator &lt;</code></li>
+<li>needs a new function or functor</li>
+<li>you can store state</li>
+<li>the function can be inlined and optimized</li>
+</ul>
+</section><section><pre><code>template &lt;typename T, typename P&gt;
+T partition(T begin, T end, P unary_predicate);
+
+// partitions a range so that all X for which predicate(X) is true
+// precede all Y for which predicate(Y) is false
+</code></pre>
+</section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/partition.cxx" data-sections="less-than"><pre><code><span class="hljs-keyword">template</span> &lt;typename T&gt;
+struct less_than_t
+{
+    explicit less_than_t(T value)
+        : _value(value)
+    {}
+
+    <span class="hljs-type">bool</span> operator()(T x) <span class="hljs-keyword">const</span> {
+        <span class="hljs-keyword">return</span> x &lt; _value;
+    }
+
+    T _value;
+};
+
+<span class="hljs-keyword">template</span> &lt;typename T&gt;
+
+less_than_t&lt;T&gt; less_than(T x)
+{
+    <span class="hljs-keyword">return</span> less_than_t&lt;T&gt;(x);
+}</code></pre></div></section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/partition.cxx" data-sections="partition"><pre><code><span class="hljs-rule"><span class="hljs-attribute">std</span>:<span class="hljs-value">:<span class="hljs-function">partition</span>(numbers, numbers + size, <span class="hljs-function">less_than</span>(<span class="hljs-number">5</span>))</span></span>;</code></pre></div></section><section><ul>
+<li>it is quite a lot of code</li>
+<li><code>struct</code> can be defined inside a function
+<ul>
+<li>but such <code>struct</code>s can not be used for instantiating templates
+<ul>
+<li>the standard and <code>g++</code> say so</li>
+<li>Visual Studio does not</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section><section><h2><code>C++</code>11 style</h2>
+</section><section><h1>lambda</h1>
+</section><section><h1>lambda</h1>
+<p>Anonymous functions that can be defined inside functions and can access
+variables defined outside the anonymous functions.</p>
+</section><section><h3><em>lambda</em> expressions</h3>
+<pre><code>[capture](parameters) -&gt; return_type { function_body }
+</code></pre>
+</section><section><pre><code>std::vector&lt;int&gt; v;
+std::partition(v.begin(), v.end(), [](int x) {
+    return x % 2 == 0;
+});
+std::for_each(v.begin(), v.end(), [&amp;](int x) {
+    std::cout &lt;&lt; x &lt;&lt; std::endl;
+});
+</code></pre>
+</section><section><h3><em>lambda</em> captures</h3>
+<ul>
+<li><code>[]</code> - no variables are captured</li>
+<li><code>[x]</code> - x is captured by value</li>
+<li><code>[&amp;x]</code> - any external variable is implicitly captured by ref</li>
+<li><code>[&amp;]</code> - any external variable is implicitly captured by ref</li>
+<li><code>[=]</code> - any external variable is implicitly captured by value</li>
+<li><code>[x, &amp;y]</code> - x is captured by value, y - by reference</li>
+</ul>
+</section><section><h3>Captures</h3>
+<ul>
+<li>pointers to <em>lambda</em> functions without captured variables are the same as
+pointer to non-member functions</li>
+<li><code>this</code> can be captured only by value and only inside methods</li>
+</ul>
+</section><section><h2>Implementation of <em>lambda</em> functions</h2>
+<p>Most compilers generate a <code>struct</code> with a special name and <code>operator()</code></p>
+<ul>
+<li>no captures - might generate a non-member function</li>
+<li>captures - the captured variables are members of the <code>struct</code></li>
+</ul>
+</section><section><section><h2>The future for lambda functions</h2>
+</section><section><h3>Generic lambdas</h3>
+<pre><code>auto dbl = [](auto x) { return x + x; };
+
+std::vector&lt;int&gt; vi;
+std::transform(vi.begin(), vi.end(), vi.begin(), dbl);
+
+std::vector&lt;std::string&gt; vs;
+std::transform(vs.begin(), vs.end(), vs.begin(), dbl);
+</code></pre>
+</section><section><h3>Initializers</h3>
+<pre><code>std::vector&lt;int&gt; vi;
+std::tranform(vi.begin(), vi.end(), vi.begin(),
+[value = 42](auto x) {
+    return x + value;
+});
+</code></pre>
+</section><section><h3>Capture by <em>move</em></h3>
+<pre><code>auto ptr = std::make_unique&lt;int&gt;(42);
+std::vector&lt;int&gt; vi;
+std::tranform(vi.begin(), vi.end(), vi.begin(),
+    [ptr = std::move(ptr)](auto x) {
+        return x + *ptr;
+});
+</code></pre>
+</section></section><section><section><h2>Functions as first class citizen</h2>
+</section><section><pre><code>std::vector&lt;int&gt; lengths;
+std::vector&lt;string&gt; strings;
+
+lengths.resize(strings.size());
+std::transform(strings.begin(), strings.end(), lengths.begin(),
+    // ???
+);
+</code></pre>
+</section><section><pre><code>std::transform(strings.begin(), strings.end(), lengths.begin(),
+    std::string::length // ???
+);
+// No
+</code></pre>
+</section><section><h3>Functions in <code>C++</code></h3>
+<ul>
+<li>
+<p><em>free</em> functions</p>
+</li>
+<li>
+<p><em>methods</em></p>
+<p>free_function(a, 42);</p>
+<p>object.method(42);</p>
+</li>
+</ul>
+</section><section><pre><code>size_t get_length(const std::string&amp; s) {
+    return s.length();
+}
+
+std::transform(strings.begin(), strings.end(), lengths.begin(),
+    get_length;
+);
+</code></pre>
+</section><section><h3><code>C++</code>98</h3>
+<pre><code>std::transform(strings.begin(), strings.end(), lengths.begin(),
+    std::mem_fun_ref(&amp;std::string::length);
+);
+</code></pre>
+</section><section><h3><code>std::mem_fun</code></h3>
+<ul>
+<li>works only for methods without arguments or a single argument</li>
+<li>the object has to be supplied via a pointer</li>
+<li><code>std::mem_fun_ref</code> works with a reference</li>
+<li><strong>DEPRECATED</strong></li>
+</ul>
+</section><section><h3>Currying</h3>
+</section><section><h3><code>std::bind1st</code> and <code>std::bind2nd</code></h3>
+<p>Bind the first (second) argument of a function to a fixed value and return a
+function with one argument less.</p>
+<p><strong>DEPRECATED</strong></p>
+</section><section><pre><code>std::vector&lt;std::string&gt; v;
+std::transform(v.begin(), v.end(), v.begin(),
+    std::bind1st(std::plus&lt;std::string&gt;(), &quot;;&quot;));
+// &quot;x&quot; -&gt; &quot;;x&quot;
+
+std::transform(v.begin(), v.end(), v.begin(),
+    std::bind2st(std::plus&lt;std::string&gt;(), &quot;;&quot;));
+// &quot;x&quot; -&gt; &quot;x;&quot;
+</code></pre>
+</section><section><h3><code>C++</code>11</h3>
+</section><section><h3><code>std::mem_fn</code></h3>
+<p>Generalized version of <code>std::mem_fun</code>.</p>
+<ul>
+<li>handles arbitrary number of arguments</li>
+<li>the object can be passed by reference, plain or smart pointer.</li>
+</ul>
+</section><section><pre><code>typedef std::vector&lt;std::shared_ptr&lt;Players&gt;&gt; Players;
+void Transform(Players&amp; players, const Transform&amp; t)
+{
+    std::for_each(players.begin(), players.end(),
+                  std::mem_fn(&amp;Player::TransformWith));
+}
+</code></pre>
+</section></section><section><section><h1><code>std::bind</code></h1>
+</section><section><h1><code>std::bind</code></h1>
+<ul>
+<li>binding any argument of a function to a fixed value</li>
+<li>reordering of arguments</li>
+</ul>
+</section><section><h1><code>std::bind</code></h1>
+<ul>
+<li>former <code>boost::bind</code> - <code>boost</code> version is still <em>boosted</em> with extra features</li>
+</ul>
+</section><section><pre><code>template &lt;typename Callback&gt;
+std::shared_ptr&lt;Button&gt; make_button(Callback callback);
+
+struct Application {
+    void Quit();
+};
+
+Application app;
+auto quit = make_button(std::bind(&amp;Application::Quit, &amp;app));
+</code></pre>
+</section><section><p>Be sure that the <em>quit</em> button will not be clicked after <code>app</code> is destroyed.</p>
+</section><section><pre><code>std::shared_ptr&lt;Application&gt; app;
+auto quit = make_button(std::bind(&amp;Application::Quit, app));
+</code></pre>
+</section><section><h2>Arguments</h2>
+<pre><code>auto autosave = make_checkbox(std::bind(&amp;Application::Autosave, app,
+                                        std::placeholders::_1));
+</code></pre>
+</section><section><p><code>C#</code> delegates in C++.</p>
+</section><section><pre><code>void Function(std::string s, int n, Person p) {
+    std::cout &lt;&lt; p.name() &lt;&lt; &quot;: &quot; &lt;&lt; s;
+    while (n-- &gt; 0)
+        std::cout &lt;&lt; '!';
+    std::cout &lt;&lt; std::endl;
+}
+
+Person p(&quot;Yoda&quot;);
+auto mega_fun = std::bind(&amp;Function, _2, _1, &amp;p);
+
+mega_fun(3, &quot;The Answer is 42&quot;);
+// Yoda: The answer is 42!!!
+</code></pre>
+</section></section><section><section><h1><code>std::function</code></h1>
+</section><section><p><code>std::function</code> is a generic function object.</p>
+</section><section><h2>Functions in C++</h2>
+<p>Let me count the ways ...</p>
+</section><section><h3>Free functions</h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="free"><pre><code><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">free_function</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>{ <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"free function: "</span> &lt;&lt; x &lt;&lt; <span class="hljs-built_in">std</span>::endl; }
+<span class="hljs-comment">// ...</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">free_with_ud</span><span class="hljs-params">(<span class="hljs-keyword">const</span> UserDefined&amp; ud, <span class="hljs-keyword">int</span> x)</span>
+</span>{
+    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"free with ud "</span> &lt;&lt; &amp;ud &lt;&lt; <span class="hljs-string">": "</span> &lt;&lt; x &lt;&lt; <span class="hljs-built_in">std</span>::endl;
+}
+<span class="hljs-comment">// ...</span>
+free_function(<span class="hljs-number">42</span>);</code></pre></div></section><section><h3>Functors</h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="functor"><pre><code><span class="hljs-keyword">struct</span> Functor
+{
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> <span class="hljs-keyword">const</span>
+    </span>{
+        <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"functor "</span> &lt;&lt; <span class="hljs-keyword">this</span> &lt;&lt; <span class="hljs-string">": "</span> &lt;&lt; x &lt;&lt; <span class="hljs-built_in">std</span>::endl;
+    }
+};
+<span class="hljs-comment">// ...</span>
+Functor functor;
+functor(<span class="hljs-number">42</span>);</code></pre></div></section><section><h3>Methods</h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="method"><pre><code>struct <span class="hljs-type">UserDefined</span>
+{
+    <span class="hljs-type">void</span> <span class="hljs-keyword">method</span>(<span class="hljs-type">int</span> x) <span class="hljs-keyword">const</span>
+    {
+        std::cout &lt;&lt; <span class="hljs-string">"method "</span> &lt;&lt; this &lt;&lt; <span class="hljs-string">": "</span> &lt;&lt; x &lt;&lt; std::endl;
+    }
+
+    <span class="hljs-keyword">static</span> <span class="hljs-type">void</span> static_method(<span class="hljs-type">int</span> x)
+    {
+        std::cout &lt;&lt; <span class="hljs-string">"some as free, but with access to internals"</span> &lt;&lt; std::endl;
+    }
+};
+// ...
+<span class="hljs-type">UserDefined</span> ud;
+ud.<span class="hljs-keyword">method</span>(<span class="hljs-number">42</span>);</code></pre></div></section><section><h3>Pointer to functions</h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="pointer"><pre><code>typedef <span class="hljs-type">void</span> (*<span class="hljs-type">FreeFunctionPtr</span>)(<span class="hljs-type">int</span>);
+<span class="hljs-type">FreeFunctionPtr</span> ffp = &amp;free_function;
+ffp(<span class="hljs-number">42</span>);
+
+typedef <span class="hljs-type">void</span> (<span class="hljs-type">UserDefined</span>::*<span class="hljs-type">MethodPtr</span>)(<span class="hljs-type">int</span>) <span class="hljs-keyword">const</span>;
+
+<span class="hljs-type">MethodPtr</span> mp = &amp;<span class="hljs-type">UserDefined</span>::<span class="hljs-keyword">method</span>;
+(ud.*mp)(<span class="hljs-number">42</span>);
+<span class="hljs-type">UserDefined</span>* udp = &amp;ud;
+(udp-&gt;*mp)(<span class="hljs-number">42</span>);</code></pre></div></section><section><h3><code>std::function</code></h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="function"><pre><code>std::<span class="hljs-function"><span class="hljs-keyword">function</span></span>&lt;void(<span class="hljs-built_in">int</span>)&gt; <span class="hljs-keyword">generic</span> = free_function;
+<span class="hljs-keyword">generic</span>(<span class="hljs-number">24</span>);
+
+<span class="hljs-keyword">generic</span> = functor;
+<span class="hljs-keyword">generic</span>(<span class="hljs-number">2</span>);</code></pre></div></section><section><h3><code>std::function</code> with types</h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="function-ud"><pre><code>std::<span class="hljs-function"><span class="hljs-keyword">function</span>&lt;<span class="hljs-title">void</span><span class="hljs-params">(<span class="hljs-keyword">const</span> UserDefined&amp;, int)</span>&gt; <span class="hljs-title">ud_function</span> =
+    &amp;<span class="hljs-title">UserDefined</span>:</span>:<span class="hljs-function"><span class="hljs-keyword">method</span>;</span>
+
+ud_function(ud, <span class="hljs-number">42</span>);
+
+ud_function = &amp;free_with_ud;
+ud_function(ud, <span class="hljs-number">42</span>);</code></pre></div></section><section><h3><code>std::function std::bind</code></h3>
+<div class="snippet" data-file="/advanced-cpp/slides/10_functional/functions.cxx" data-sections="bind"><pre><code><span class="hljs-keyword">generic</span> = std::<span class="hljs-keyword">bind</span>(&amp;<span class="hljs-type">UserDefined</span>::<span class="hljs-keyword">method</span>, ud, _1);
+<span class="hljs-keyword">generic</span>(<span class="hljs-number">4</span>);
+
+<span class="hljs-keyword">generic</span> = std::<span class="hljs-keyword">bind</span>(&amp;<span class="hljs-type">UserDefined</span>::<span class="hljs-keyword">method</span>, std::<span class="hljs-keyword">ref</span>(ud), _1);
+<span class="hljs-keyword">generic</span>(<span class="hljs-number">8</span>);</code></pre></div></section></section><section><section><h1>Functions and tuples</h1>
+</section></section><section><section><h1>Functions in <code>C++11</code></h1>
+</section><section><pre><code>template &lt;typename T&gt;
+T plus(T lhs, T rhs) {
+    return lhs + rhs;
+}
+</code></pre>
+</section><section><pre><code>auto s = plus(2, 2);
+</code></pre>
+</section><section><pre><code>Person p1;
+Person p2;
+auto s = plus(p1, p2)
+</code></pre>
+</section><section><pre><code>struct Person
+{
+    Household operator+(const Person&amp;);
+}
+</code></pre>
+</section><section><pre><code>??? plus(Person lhs, Person rhs) {
+    return lhs + rhs;
+}
+</code></pre>
+</section><section><pre><code>auto plus(Person lhs, Person rhs) -&gt; decltype(lhs + rhs)
+{
+    return lhs + rhs;
+}
+</code></pre>
+</section></section><section><section><h1>Functions in <code>C++14</code></h1>
+</section><section><pre><code>??? plus(Person lhs, Person rhs)
+{
+    return lhs + rhs;
+}
+</code></pre>
+</section><section><pre><code>auto plus(Person lhs, Person rhs)
+{
+    return lhs + rhs;
+}
+</code></pre>
+</section><section><ul>
+<li>all returns must have the same type
+<ul>
+<li>single return</li>
+</ul>
+</li>
+</ul>
+</section></section></article><div class="row-fluid"><div class="col-md-12"><hr><ul class="pagination"><li><a href="/advanced-cpp/2015/04/14/locking-problem/" title="Previous articles">&larr; Previous</a></li><li><a href="/advanced-cpp/2015/03/27/error-handling/" title="Next articles">Next &rarr;</a></li></ul></div></div></section></div><div class="col-sm-3"><nav role="navigation" class="navbar navbar-default"><div class="navbar-header"><div class="navbar-brand">Recent Posts</div></div><div class="clearfix"></div><ul class="nav navbar-stacked"><li><a href="/advanced-cpp/2015/04/14/locking-problem/">Locking problem</a></li><li><a href="/advanced-cpp/2015/04/03/functional/">Functional C++</a></li><li><a href="/advanced-cpp/2015/03/27/error-handling/">Error Handling</a></li><li><a href="/advanced-cpp/2015/03/20/namespaces/">Namespaces</a></li><li><a href="/advanced-cpp/2015/03/20/libraries/">Libraries</a></li><li><a href="/advanced-cpp/2015/03/15/smart-pointers/">Smart Pointers</a></li><li><a href="/advanced-cpp/2015/03/06/practice/">The practice of C++</a></li><li><a href="/advanced-cpp/2015/03/06/overview/">Overview of C++</a></li></ul></nav></div></div><footer id="page-footer"><footer><div class="row-fluid"><div class="col-md-12"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" width="88px" height="31px" src="/advanced-cpp/images/cc-by-sa.png"></a><br><span>Advanced C++</span> by<span> SofiaC++</span> is licensed under a&nbsp;<a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International
+License
+</a></div></div></footer><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/bower_components/bootstrap/dist/js/bootstrap.min.js"></script></footer></div></body></html>

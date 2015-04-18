@@ -1,0 +1,7 @@
+[
+	{
+		"directory": "/home/dimitar/projects/advanced_cxx/slides/17_practice",
+		"command": "/usr/bin/clang++ -std=c++11 -c uninitialized.o uninitialized.cxx",
+		"file": "uninitialized.cxx"
+	}
+]

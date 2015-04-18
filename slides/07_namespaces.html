@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Namespaces</title></head><body><div class="reveal"><div class="slides"><section><section><h2 id="Namespaces">Namespaces</h2>
+<p>Namespace is a group of functions, classes, constants and
+variables.</p>
+</section><section><h3 id="Namespaces-1">Namespaces</h3>
+<ul>
+<li>Allow us to group related functions / classes</li>
+<li>Prevent name clashes between different parts of code</li>
+<li>Allow us to hide implementation details </li>
+</ul>
+</section><section><p>Namespaces are open, i.e. you can define different members of
+the namespace in different files.</p>
+</section><section><pre class="mstretch"><code>namespace ui
+{
+    class Button;
+}
+</code></pre></section><section><h3 id="using_namespace"><code>using namespace</code></h3>
+<p><code>using namespace std</code> brings all the names from the
+<code>std</code> namespaces in the the current scope - namespace,
+function, block.</p>
+</section><section><h3 id="using_namespace-1"><code>using namespace</code></h3>
+<p>It is a really practice to use <code>using namespace</code> at
+anything but function or block level in headers.</p>
+<p>You never know where this header is going to be included.</p>
+</section><section><h3 id="using_namespace-1"><code>using namespace</code></h3>
+<p>It is a good practice to avoid <code>using namespace</code> at
+anything but function or block level.</p>
+<p>Otherwise the names may clash in a <em>unity</em> build</p>
+</section><section><h3 id="unity_build"><em>unity</em> build</h3>
+<p>Building the whole program/library from a single (or reduced
+number of) translation units. It is implemented as
+<code>#include</code>-ing multiple C++ source files in a single C++
+file and compiling it instead of the original files.</p>
+</section><section><h3 id="unity_build-1"><em>unity</em> build</h3>
+<ul>
+<li>speeds up build by reducing<ul>
+<li>template instantiation duplicates</li>
+<li>functions that need to be linked</li>
+</ul>
+</li>
+<li>allows the compiler to inline more functions (because their
+definitions are visible)</li>
+</ul>
+</section><section><h3 id="Anonymous_namespaces"><em>Anonymous</em> namespaces</h3>
+<ul>
+<li><code>namespace</code> without a name</li>
+<li>allow private definitions for translation unit<ul>
+<li>definitions in anonymous namespaces are global for the
+translation unit</li>
+<li>they can not be accessed by any other translation unit</li>
+</ul>
+</li>
+</ul>
+</section><section><pre class="mstretch"><code>namespace {
+    int aswer();
+}
+
+</code></pre></section></section><section><section><h2 id="Argument_Dependent_Lookup_(ADL)">Argument Dependent Lookup (ADL)</h2>
+<ul>
+<li>a.k.a Koenig Lookup</li>
+</ul>
+</section><section><h3 id="ADL">ADL</h3>
+<p>What is the interface of a type T?</p>
+</section><section><ul><li class="fragment fade-in">public methods of T</li><li class="fragment fade-in">any function that takes T as an argument</li></ul></section><section><h3 id="Unqualified_call">Unqualified call</h3>
+<p>Calling a function without explicitly specifying the namespace
+of the function.</p>
+<p>The compiler searches matching function declarations for an
+unqualified call in the current namespace and in the
+associated namespaces of each argument type for the call</p>
+</section><section><pre class="mstretch"><code>namespace math {
+    class Polynom {
+    };
+    
+    std::ostream&amp; operator&lt;&lt; (std::ostream&amp; output,
+        const Polynom&amp; p)
+    {
+        // ...
+    }
+    
+    void swap(Polynom&amp; l, Polynom&amp; r);
+}
+
+int main() {
+    Polynom p;
+    // finds the operator &lt;&lt; in math
+    std::cout &lt;&lt; p &lt;&lt; std::endl;
+}
+</code></pre></section><section><h3 id="use_function_trick"><code>use function</code> trick</h3>
+<ul>
+<li>bring a set of definitions from a namespace to the current
+scope</li>
+<li>use an unqualified call for the function</li>
+</ul>
+</section><section><pre class="mstretch"><code>template &lt;typename T, typename A, typename I&gt;
+void fast_erase(std::vector&lt;T, A&gt;&amp; v, I iterator)
+{
+    // bring all std swap overloads
+    using std::swap;
+    
+    // ADL finds math::swap(Polynom&amp;, Polynom&amp;)
+    swap(*iterator, v.back());
+    
+    v.pop_back();
+}
+
+std::vector&lt;Polynom&gt; v;
+
+fast_erase(v, v.begin());
+</code></pre></section><section><h2 id="Associated_namespaces">Associated namespaces</h2>
+<ul>
+<li>primitive types have no associated namespaces</li>
+<li>the associated namespace of user defined type T are:<ul>
+<li>the namespace where T is defined</li>
+<li>the namespaces of T base classes</li>
+</ul>
+</li>
+</ul>
+</section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

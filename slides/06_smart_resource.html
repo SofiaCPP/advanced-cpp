@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Smart Resource</title></head><body><div class="reveal"><div class="slides"><section><h1>&quot;Smart&quot; Resource Menagement</h1>
+</section><section><h2>Contents</h2>
+<ol>
+<li>Ownership</li>
+<li>Sharing</li>
+</ol>
+</section><section><section><h2>Ownership</h2>
+</section><section><p>Ownership is best expressed with <code>std::unique_ptr</code>.</p>
+</section><section><h3>Heap-allocated object</h3>
+</section><section><pre><code>class Logger {
+    private:
+        std::unique_ptr&lt;ILogTarget&gt; _Target;
+};
+</code></pre>
+</section><section><h3>Heap-allocated array</h3>
+</section><section><pre><code>int hash(const char* name) {
+    std::ifstream input(name, std::ios::binary);
+    const auto size = 4096;
+    std::unique_ptr&lt;char[]&gt; buffer(new char[size]);
+    int h = 42;
+    while (input) {
+        input.read(buffer.get(), size);
+        h = h + buffer[42] % 42;
+    }
+    return h;
+}
+</code></pre>
+</section><section><h3>C-style resource</h3>
+</section><section><h4>How to own a <code>FILE*</code></h4>
+<p>It is the same as every other resource:</p>
+<ul>
+<li>obtain - <code>fopen</code></li>
+<li>return - <code>fclose</code></li>
+</ul>
+</section><section><h3>Custom deleter</h3>
+</section><section></section><section><h3>Directly deleter</h3>
+</section><section><pre><code>template &lt;typename T&gt;
+using UniqueReleasePtr&lt;T&gt; = std::unique_ptr&lt;T, ReleaseDeleter&gt;;
+
+template &lt;typename T&gt;
+using UniqueDestroyPtr&lt;T&gt; = std::unique_ptr&lt;T, DestroyDeleter&gt;;
+</code></pre>
+</section><section><pre><code>namespace std
+{
+template &lt;&gt;
+struct default_delete&lt;ID3DDevice&gt;
+{
+    void operator()(ID3DDevice* ptr) const
+    {
+        ptr-&gt;Release();
+    }
+}
+}
+</code></pre>
+</section><section></section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>The practice of C++</title></head><body><div class="reveal"><div class="slides"><section><h1 id="The_practice_of_C++">The practice of <code>C++</code></h1>
+</section><section><h2 id="Contents">Contents</h2>
+<ol>
+<li>Source code</li>
+<li>Building</li>
+<li>Static Analysis</li>
+<li>Runtime Analysis</li>
+<li>Tests</li>
+</ol>
+</section><section><section><h2 id="Source_Code">Source Code</h2>
+</section><section><h2 id="Coding_Style">Coding Style</h2>
+<ul>
+<li><a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.html" target="_blank" rel="external">Google</a></li>
+<li><a href="http://www.stroustrup.com/JSF-AV-rules.pdf" target="_blank" rel="external">JSF-AV</a></li>
+<li><a href="http://meetingcpp.com/index.php/talkview/items/24.html" target="_blank" rel="external">http://meetingcpp.com/index.php/talkview/items/24.html</a></li>
+</ul>
+</section><section><ul>
+<li>Choose one coding style and stick to it</li>
+<li>Whenever necessary change it.</li>
+</ul>
+</section><section><h2 id="IDEs_or_text_editors">IDEs or text editors</h2>
+</section><section><h3 id="Platform_specific">Platform specific</h3>
+<ul>
+<li>Visual Studio</li>
+<li>xcode</li>
+<li>kdevelop</li>
+</ul>
+</section><section><h3 id="Cross-platform">Cross-platform</h3>
+<ul>
+<li>qtcreator</li>
+<li>Eclipse with CDT</li>
+</ul>
+</section><section><h3 id="New_players">New players</h3>
+<ul>
+<li><a href="https://www.jetbrains.com/clion/" target="_blank" rel="external">CLion</a></li>
+</ul>
+</section><section><h2 id="Basic_Text_settings">Basic Text settings</h2>
+</section><section><h1 id="CONSISTENCY">CONSISTENCY</h1>
+</section><section><not>that easy when working on multiple projects / codebases with</not><different>styles</different></section><section><ul><li>[Editor Config](http://editorconfig.org/)</li></ul></section><section><h3 id="CodeMaid">CodeMaid</h3>
+<p><a href="http://codemaid.net" target="_blank" rel="external">CodeMaid</a> is an open-source extension
+that allows code cleanup and reorganizing.</p>
+</section><section><h3 id="clang-format">clang-format</h3>
+<ul>
+<li>portable, stand-alone tool</li>
+<li>plugins for Vim, Emacs, Visual Studio, Git</li>
+<li>uses <code>clang+++</code> AST to reformat the code</li>
+<li>allows to specify different formatting rules for different files</li>
+</ul>
+</section></section><section><section><h2 id="Building">Building</h2>
+</section><section><ul>
+<li>C++ doesn&#39;t have build system</li>
+</ul>
+</section><section><h3 id="built-in_in_the_IDE">built-in in the IDE</h3>
+<ul>
+<li>Visual Studio project files</li>
+<li>Xcode project files</li>
+<li>qtcreator - qmake</li>
+</ul>
+</section><section><h3 id="standalone_-_low_level">standalone - low level</h3>
+<ul>
+<li>make - in all the ports and flavours</li>
+<li><a href="http://martine.github.io/ninja/" target="_blank" rel="external">ninja</a></li>
+</ul>
+</section><section><h3 id="stanalone_-_high_level">stanalone - high level</h3>
+<ul>
+<li>cmake - can generate everything</li>
+<li>gyp </li>
+<li>premake5 - Visual Studio, make, xcode soon</li>
+<li><a href="https://github.com/bkaradzic/genie" target="_blank" rel="external">genie</a></li>
+</ul>
+</section><section><h3 id="Distributed">Distributed</h3>
+<ul>
+<li><a href="http://floooh.github.io/fips/index.html" target="_blank" rel="external">fips</a></li>
+<li><a href="http://www.fastbuild.org/docs/home.html" target="_blank" rel="external">fastbuild</a></li>
+<li>Incredibuild</li>
+</ul>
+</section></section><section><section><h2 id="Libraries">Libraries</h2>
+</section><section><h3 id="Program_configuration">Program configuration</h3>
+<ul>
+<li>boost::program_options</li>
+<li><a href="https://code.google.com/p/gflags/" target="_blank" rel="external">gflags</a></li>
+<li><a href="https://github.com/jarro2783/cxxopts" target="_blank" rel="external">&#39;cxxopts&#39;</a></li>
+<li>boost::property_tree</li>
+<li><a href="https://github.com/docopt/docopt.cpp" target="_blank" rel="external">docopt</a></li>
+</ul>
+</section><section><h3 id="Logging">Logging</h3>
+<ul>
+<li><a href="https://github.com/boostorg/log" target="_blank" rel="external"><code>boost::log</code></a></li>
+<li>google log</li>
+</ul>
+</section><section><h3 id="Data_Persistance">Data Persistance</h3>
+<ul>
+<li>dropbox json11</li>
+<li><code>boost::serialization</code></li>
+</ul>
+</section><section><h3 id="Testing">Testing</h3>
+<ul>
+<li>googletest and googlemock</li>
+<li><code>boost::test</code> and turtle</li>
+<li><a href="https://github.com/philsquared/Catch" target="_blank" rel="external">catch</a></li>
+<li><a href="https://github.com/etr/liblittletest" target="_blank" rel="external">liblittletest</a></li>
+</ul>
+</section><section><h3 id="Microbenchmarking">Microbenchmarking</h3>
+<ul>
+<li><a href="https://github.com/google/benchmark" target="_blank" rel="external">benchmark</a></li>
+<li><a href="https://github.com/DigitalInBlue/Celero" target="_blank" rel="external">Celero</a></li>
+</ul>
+</section><section><h3 id="Graphics">Graphics</h3>
+<ul>
+<li>DirectX / OpenGL </li>
+<li>SFML</li>
+<li>SDL</li>
+<li>cairo / Skia</li>
+</ul>
+</section><section><h3 id="GUI">GUI</h3>
+<ul>
+<li>Qt</li>
+<li>WxWidgets</li>
+<li>GTK</li>
+<li>Win32</li>
+<li>IUP</li>
+<li>fltk</li>
+</ul>
+</section><section><h3 id="Text">Text</h3>
+<ul>
+<li><code>boost::spirit</code></li>
+<li><code>boost::karma</code></li>
+<li>ctemplate</li>
+</ul>
+</section><section><h3 id="Image_processing">Image processing</h3>
+<ul>
+<li>lodepng</li>
+</ul>
+</section><section><h3 id="Scripting">Scripting</h3>
+<ul>
+<li>Lua, luajit</li>
+<li>duktape, v8</li>
+<li>python - <code>boost::python</code>, cython</li>
+</ul>
+</section><section><h3 id="Networking">Networking</h3>
+<ul>
+<li><code>boost::asio</code> - tcp and udp</li>
+<li>curl</li>
+<li>cpp-netlib</li>
+<li>C++ REST (<a href="https://casablanca.codeplex.com/" target="_blank" rel="external">https://casablanca.codeplex.com/</a>)</li>
+<li>mongoose</li>
+</ul>
+</section></section><section><section><h2 id="Static_code_analysis">Static code analysis</h2>
+<p>Tries to run <em>all</em> possible code paths in the program in order
+to locate errors.</p>
+</section><section><h3 id="False_positives">False positives</h3>
+<p>It may find so many &quot;errors&quot; that is impossible to check all of
+them.</p>
+</section><section><pre class="mstretch"><code>void generate(int* output); // third party
+
+std::unique_ptr&lt;int[]&gt; p(new int[1024]);
+
+generate(p.get()); // reading uninitialized memory
+std::cout &lt;&lt; p[24]; // reading uninitialized memory
+</code></pre></section><section><h3 id="Visual_Studio">Visual Studio</h3>
+<ul>
+<li>Starting <em>VS2013</em> in all versions</li>
+</ul>
+</section><section><h3 id="PVS-Studio">PVS-Studio</h3>
+<ul>
+<li>commercial tool</li>
+<li><a href="http://www.viva64.com/en/b/" target="_blank" rel="external">Interesting blog</a> with
+analysis of C++ projects</li>
+</ul>
+</section><section><h3 id="clang++_-analyze">clang++ --analyze</h3>
+<p>Runs <em>clang</em> in static analyzer mode</p>
+<ul>
+<li>scan-build</li>
+</ul>
+</section><section><h3 id="Runtime_analysis">Runtime analysis</h3>
+<ul>
+<li>valgrind</li>
+<li>address sanitizer</li>
+</ul>
+</section><section><h3 id="Debuggers">Debuggers</h3>
+<ul>
+<li>Visual Studio / xcode</li>
+<li><code>ddd</code></li>
+</ul>
+</section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

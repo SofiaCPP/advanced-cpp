@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Overview of C++</title></head><body><div class="reveal"><div class="slides"><section><h1>Overview of C++</h1></section><section><ul><li>C++ is multiparadigm, systems programming language.</li><li>The main purpose is to be a high-level language, without</li>sacrificing any performance<li>This means that in C++ you don't pay for features that you don't</li>use.</ul></section><section><h2>Multiparadigm</h2><ul><li>Structured</li><li>Object Orientated</li><li>Functional</li><li>Data Orientated</li></ul></section><section><p class="fragment fade-in">And multithreaded</p><p class="fragment fade-in">And compile-time</p></section><section><h1>C++ renaisance?</h1></section><section><h2>Free lunch</h2><ul><li>Processors are getting faster and faster</li></ul><aside class="notes">A program is slow - in half a year computers will be so mach faster
+that the program is going to be ok.
+</aside></section><section><h2>The Free lunch is over</h2><p><a href="http://www.gotw.ca/publications/concurrency-ddj.htm" target="_blank" rel="external">An article by Herb Sutter in 2005</a></p><p>Sequential execution is reaching the physical limits.</p></section><section><h3>Viva la multicore revolution</h3><ul><li>Processors have multiple cores</li><li>Every single core executes multiple instructions simultaniously</li></ul></section><section><h3>Here comes the electricity bill</h3><p>Processors are hitting new barriers<ul><li>power consumption</li><li>heat generation</li></ul></p><aside class="notes">If Facebook servers are optimized 0.1%, for three months the
+salaries for the entire engineers department are secured for ten
+years ahead. Facebook has pretty interesting relationship with C++.
+Facebook was initially written in PHP. After PHP couldn't scale
+enough Facebook started compiling PHP to C++ and compiling the PHP
+in a single 1.2GB CGI program. Now Facebook are using the HipHopVM -
+virtual machine for PHP with JIT.
+</aside></section><section><h2>Mobile</h2><ul><li>Processors are slower</li><li>Power is pretty limited</li><li>Users are in a hury</li></ul><aside class="notes">Modern smartphones already have multiple cores, but using them
+drains the battery very fast.
+</aside></section><section><h2>Portability</h2><p>C and C++ are one of the most portable languages</p><ul><li>there are compilers for every platform</li><li>the 3 most popular compilers cover all desktop platforms, iOS,
+Android, PlayStation 4, XBox</li></ul><aside class="notes">This may sound strange. As long as you are using standard C++ you
+have covered more platforms than with any other language. For
+example if you have a library that handles the platform specific
+window creation, drawing and reading input like SDL2.0, you get
+all PC platforms, iOS and Android.
+</aside></section><section><section><h2>Brief history of C++</h2><p class="fragment fade-in">1979 - Bjarne Stroustrup started developing "C
+with Classes" in Bell Labs</p><p class="fragment fade-in">1983 - C++ is born. cfront works by translating
+C++ to C and compiling</p></section><section><h2>C++ revisions</h2><ul><li>C++ '98</li><li>C++ '03</li><li>C++ '11</li><li>C++ '14</li><li>C++ '17</li></ul><aside class="notes">*C++* is not the same language any more. The new standard has
+changed significantly the language.
+</aside></section><section><h2>What was new in C++ 03 TR1</h2><ul><li>shared_ptr</li><li>regex</li><li>random</li><li>quite a lot of math functions</li><li>...</li></ul><aside class="notes">How many people have heard of it? How many have used any
+feature of it? It wasn't impemented by Visual Studio, making
+it pretty useless. GCC just took the headers out of boost, but
+kept using an old version.
+</aside></section><section><h2>What is new in C++ 11</h2><ul><li>Multi-thread machine model</li><li>lambda functions</li><li>C++ 03 TR1 is part of the language</li></ul></section><section><h2>What probably will be new in C++ 14</h2><ul><li>boost::filesystem</li><li>cpp_netlib - HTTP client and server<ul><li>sockets - TCP, UDP</li><li>asyncronous IO</li><li>HTTP</li></ul></li></ul><aside class="notes">49 years after the invention of hierarchial filesystems and 31
+years after the creation of C++, Standard C++ still doesn't
+know anything about directories. So instead of branging about
+this, we should be ashamed. If cpp_netlib gets in the standard
+it is going to be pretty huge - C++ will finally understand
+that computers are not single machines living in vacuum.
+</aside></section><section><h2>What might be new in C++ 17</h2><ul><li>Visual Studio are pushing async keyword</li></ul></section><section><h2>What is new in the C++ community</h2><ul><li>compilers are developing faster</li><li>2 already implement the C++ 11 language</li><li>companies are supporting C++</li><li>Going Native, C++Next</li></ul><aside class="notes">What is more interesting is that the whole C++ community has
+changed. There is much wider support from the software
+industry. Two of the three major compilers already implement
+the standard. The third one is on its way.  Boost is
+developing faster - boost.context and boost coroutine have
+come true after 3 or 4 years, boost.log has been in
+development even longer (although it is far from perfect in my
+opinion)
+</aside></section></section><section><h2>Compilers</h2><ul><li>Microsoft Visual Studio</li><li>GCC</li><li>clang</li></ul><aside class="notes">Both GCC and clang are claiming to implement the C++11 standard.
+There something missing from their respective standard libraries,
+but this is getting better. Microsoft Visual Studio is working on
+getting standards complient.
+</aside></section><section><h2>Resources</h2></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>
