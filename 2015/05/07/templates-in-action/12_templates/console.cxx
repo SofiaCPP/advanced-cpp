@@ -9,80 +9,6 @@
 
 using namespace std::placeholders;
 
-        template <int N, typename T>
-        struct nth_type
-        {
-        };
-
-        template <typename T, typename... R>
-        struct nth_type<0, void (T, R...)>
-        {
-            typedef T type;
-        };
-
-
-        template <int N>
-        struct nth_type<N, void ()>
-        {
-        };
-
-        template <int N, typename T, typename... R>
-        struct nth_type<N, void (T, R...)>
-        {
-            typedef typename nth_type<N - 1, void (R...)>::type type;
-        };
-
-        template <int N, typename Function>
-        struct ArgType;
-
-        template <int N, typename R, typename... T>
-        struct ArgType<N, std::function<R (T...)>>
-        {
-            typedef typename nth_type<N, void (T...)>::type arg;
-            typedef typename
-                std::remove_cv<typename std::remove_reference<arg>::type>::type type;
-        };
-
-        template <int N>
-        struct helper;
-
-        //@{ helper-0
-        template <>
-        struct helper<0>
-        {
-            template <typename Function, typename... T>
-            static std::string stub(const Function& f,
-                    const std::vector<std::string>& args,
-                    T&&... pack)
-            {
-                using boost::lexical_cast;
-                using std::string;
-                return lexical_cast<string>(f(std::forward<T>(pack)...));
-            }
-        };
-        //@} helper-0
-
-
-        //@{ helper-n
-        template <int N>
-        struct helper
-        {
-            template <typename Function, typename... T>
-            static std::string stub(const Function& f,
-                    const std::vector<std::string>& args,
-                    T&&... pack)
-            {
-                using boost::lexical_cast;
-                using std::string;
-
-                typedef typename ArgType<N - 1, Function>::type Arg;
-                return helper<N-1>::stub(f, args,
-                        std::forward<Arg>(lexical_cast<Arg>(args[N])),
-                        std::forward<T>(pack)...);
-            }
-        };
-        //@} helper-n
-
 
 class Console
 {
@@ -92,6 +18,7 @@ class Console
         {
         }
 
+        //@{ execute
         std::string Execute(const std::string& line)
         {
             auto& parsed = Split(line);
@@ -103,12 +30,15 @@ class Console
 
             return "no such command: " + parsed[0];
         }
+        //@} execute
 
+        //@{ add-command
         template <typename R, typename... T>
         void AddCommand(std::string name, std::function<R (T...)> function)
         {
             m_Commands.insert(std::make_pair(name, wrap(function)));
         }
+        //@} add-command
 
     private:
         typedef std::function<std::string (const std::vector<std::string>&)>
@@ -133,19 +63,50 @@ class Console
             return m_Line;
         }
 
-        //@{ wrap
-        template <typename R, typename... T>
-        static Command wrap(std::function<R (T...)> f)
+        //@{ wrap0
+        template <typename R>
+        static Command wrap(std::function<R ()> f)
         {
-            return [f](const std::vector<std::string>& args) -> std::string {
-                if (args.size() < 1 + sizeof...(T))
-                {
-                    return "not enough arguments";
-                }
-                return helper<sizeof...(T)>::stub(f, args);
+            return [f](const std::vector<std::string>&) {
+                return boost::lexical_cast<std::string>(f());
             };
         };
-        //@} wrap
+        //@} wrap0
+
+        //@{ wrap1
+        template <typename R, typename T>
+        static Command wrap(std::function<R (T)> f)
+        {
+            using boost::lexical_cast;
+
+            return [f](const std::vector<std::string>& args) {
+                typedef typename std::remove_cv<typename
+                    std::remove_reference<T>::type>::type Arg0;
+
+                auto argument0 = lexical_cast<Arg0>(args[1]);
+                return lexical_cast<std::string>(f(argument0));
+            };
+        };
+        //@} wrap1
+
+        //@{ wrap2
+        template <typename R, typename T0, typename T1>
+        static Command wrap(std::function<R (T0, T1)> f)
+        {
+            using boost::lexical_cast;
+
+            return [f](const std::vector<std::string>& args) {
+                typedef typename std::remove_cv<typename
+                    std::remove_reference<T0>::type>::type Arg0;
+                typedef typename std::remove_cv<typename
+                    std::remove_reference<T1>::type>::type Arg1;
+
+                auto argument0 = lexical_cast<Arg0>(args[1]);
+                auto argument1 = lexical_cast<Arg1>(args[2]);
+                return lexical_cast<std::string>(f(argument0, argument1));
+            };
+        };
+        //@} wrap2
 
         boost::regex m_Split;
         std::vector<std::string> m_Line;

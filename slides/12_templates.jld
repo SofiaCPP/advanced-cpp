@@ -14,7 +14,7 @@ section
         5. Type Erasure
         6. Static Polymorphism
         7. Expression templates
-        8. Metaprogramming
+        8. Compile-time computation
 
 section
     section
@@ -671,7 +671,7 @@ section
 
 section
     section
-        h1 Metaprogramming
+        h1 Compile-time computation
     section
         a(href='http://cpptruths.blogspot.com/2011/07/want-speed-use-constexpr-meta.html')
             | http://cpptruths.blogspot.com/2011/07/want-speed-use-constexpr-meta.html
