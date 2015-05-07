@@ -1,0 +1,604 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="author" content="SofiaC++"><meta name="description"><title>Templates&mdash;Advanced C++</title><link href="/advanced-cpp/favicon.png" rel="icon"><link rel="alternate" href="/advanced-cpp/atom.xml" title="config.title" type="application/atom.xml"><link href="/advanced-cpp/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"><link href="/advanced-cpp/bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet"><link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/default.min.css" rel="stylesheet"><style>body { padding-top: 50px; }</style></head><body><div class="container"><nav role="navigation" class="navbar navbar-inverse navbar-fixed-top"><div class="container"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#navbar" class="navbar-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="/" class="navbar-brand">Advanced C++</a></div><div id="navbar" class="navbar-collapse collapse"><ul class="nav navbar-nav"><li><a href="/advanced-cpp/categories/news/">News</a></li><li><a href="/advanced-cpp/categories/slides/">Slides</a></li><li><a href="/advanced-cpp/about/">About</a></li></ul></div></div></nav><div class="page-header"><h1><a href="/advanced-cpp/">Advanced C++</a></h1><p id="site-slogan">Site for the Advanced C++ course at FMI</p></div><div class="row"><div class="col-sm-9"><section id="content"><article class="post"><h2>Templates</h2><div class="meta">02 May 2015</div><p><a href="/advanced-cpp/slides/templates.pdf">The original PDF slides.</a></p><hr><section><p>Templates and Generic Programming</p>
+</section><section><p>Table of Contents</p>
+</section><section><section><p>Въведение в C++ шаблони</p>
+</section><section><p>The Good</p>
+<p>Едно от най-мощните изразителни средства на C++</p>
+<p>– Шаблоните в C++ са turing-complete (т.е. са пълен език за програмиране)
+– metaprogramming - изчисления по време на компилация и “ смятане” с типове
+– expression templates и други Domain Specific Languages вмъкнати в C++
+– n-торки
+– type traits</p>
+</section><section><p>The Ugly</p>
+<ul>
+<li>
+<p>Една от последно вмъкнатите в C++98 възможности на
+езика
+– По-лоша поддръжка от страна на компилаторите и по-големи
+разлики между тях</p>
+<ul>
+<li>keyword “extern”</li>
+</ul>
+<p>– Липса на ортогоналност поради технически или исторически
+причини</p>
+<ul>
+<li>параметри по подразбиране за шаблонни функции</li>
+<li>floating-point стойности за шаблонни аргументи</li>
+</ul>
+<p>– Много синтактични особености</p>
+</li>
+</ul>
+</section><section><h2>Шаблонни функции</h2>
+</section><section><p>template &lt;&quot;тип параметър1&quot; &quot;име на параметър1&quot;{, &quot;тип параметър2&quot;
+&quot;име на параметър2&quot;}&gt;</p>
+<p>&lt;тип на резултата&gt;</p>
+<p>f(&lt;формални аргументи на функцията&gt;);</p>
+</section><section><p>Шаблонни параметри</p>
+<p>&quot;тип параметър&quot; - типът на параметъра
+– typename, class - този параметър означава име на тип
+- typename и class са едно и също в този контекст, но typename е за
+предпочитане
+- тук не можете да използвате struct вместо class
+– име на тип - този параметър ще бъде стойност от посочения тип
+- тук не можете да използвате произволен тип
+– декларация на друг шаблон !</p>
+</section><section><pre><code>template &lt;typename T&gt;
+inline const T&amp; max(const T&amp; x, const T&amp; y) {
+    return (x &lt; y)? y : x;
+}
+
+int main() {
+    // using ::max to avoid std::max
+    std::cout &lt;&lt; ::max(24, 42) &lt;&lt; std::endl;
+    std::cout &lt;&lt; ::max&lt;double&gt;(9.8, 3.14) &lt;&lt; std::endl;
+    // явно задаване на T
+    std::cout &lt;&lt;
+        ::max(std::string(&quot;path&quot;),
+              std::string(&quot;pathology&quot;));
+    return 0;
+}
+</code></pre>
+</section><section><p>Инстанцииране</p>
+<p>• Шаблонната функция <code>max</code> не се компилира до една функция, която да работи с
+всички типове аргументи, а за всеки тип аргументи се създава отделна функция
+<code>max</code>.
+• Това създаване се нарича инстанцииране (instantiation)
+• Инстанциирането е автоматично, но може да бъде и явно.
+• Ако се опитаме да инстанциираме шаблонна функция за тип аргументи, който не
+изпълнява всички изисквания на шаблона ( в случая на max - operator&lt; ), ще се
+получи грешка при компилация</p>
+</section><section><p>Компилиране на шаблони</p>
+<p>Шаблоните се компилират на два етапа:</p>
+<ol>
+<li>
+<p>Преди инстанцииране - компилатора прави само проверка на синтаксиса -
+например за липсващи &quot;;&quot;</p>
+</li>
+<li>
+<p>По време на инстанцииране - компилатора компилира кода на шаблона и прави
+проверка за валидността на всички използвани функции, методи и оператори</p>
+</li>
+</ol>
+</section><section><ul>
+<li>За да бъде инстанцииран един шаблон, компилаторът трябва да вижда неговата
+дефиниция.</li>
+<li>Това налага повечето шаблони да бъдат дефинирани в header файлове, които се
+включват в ползващите шаблона файлове</li>
+</ul>
+</section><section><p>Recap</p>
+<ul>
+<li>Шаблонните функции дефинират фамилия от функции за различните шаблонни
+аргументи.</li>
+<li>Когато подавате шаблонни аргументи, шаблонната функция се инстанцира за тези
+типове.</li>
+<li>Можете явно да задавате шаблонни аргументи.</li>
+</ul>
+</section><section><h2>Шаблонни класове</h2>
+</section><section><pre><code>template &lt;&quot;тип параметър1&quot; &quot;име на параметър1&quot;{, &quot;тип параметър2&quot;
+&quot;име на параметър2&quot;}&gt;
+[class|struct] A;
+</code></pre>
+</section><section><pre><code>template &lt;typename T&gt;
+class Stack {
+  public:
+    void push(const T&amp;);
+    void pop();
+    T top() const;
+    bool empty() const;
+  private:
+    std::vector&lt;T&gt; _s;
+} ;
+</code></pre>
+</section><section><pre><code>template &lt;typename T&gt;
+void Stack&lt;T&gt;::push(const T&amp; x)
+{
+    _s.push_back(x);
+}
+</code></pre>
+</section><section><pre><code>int main() {
+    Stack&lt;int&gt; stackInts;
+    // предизвиква инстанцииране на Stack&lt;int&gt;, но не на всички функции
+    Stack&lt;string&gt; stackStrings;
+    // Stack&lt;int&gt; и Stack&lt;string&gt; са два напълно различни типа !
+
+    stackInts.push(42);
+
+    // ...
+    return 0;
+}
+</code></pre>
+</section><section><pre><code>void f(Stack &amp;s);
+// грешка, Stack е име на шаблон, а не тип
+
+
+void f(Stack&lt;int&gt;&amp; s);
+
+// ok, Stack&lt;int&gt; е име на тип
+
+template &lt;typename T&gt;
+void f(Stack&lt;T&gt;&amp; s);
+
+// ok, f е шаблонна функция, Stack&lt;T&gt; ще бъде име на тип при инстанциирането й
+</code></pre>
+</section><section><pre><code>template &lt;typename T,
+         typename Cont = std::vector&lt;T&gt; &gt;
+
+class Stack {
+  public:
+
+    // ...
+
+  private:
+    Cont _s;
+} ;
+
+int main() {
+    Stack&lt;int&gt; stackIntsVector;
+    Stack&lt;int, deque&lt;int&gt; &gt; stackIntsDeque;
+}
+</code></pre>
+</section><section><p>Инстанциране на шаблонни класове</p>
+<ul>
+<li>
+<p>Шаблоните се проверяват за синтактични грешки, а останалите проверки се правят
+при инстанциирането</p>
+</li>
+<li>
+<p>Инстанциират се само методите, който се използват!</p>
+<p>– Някоя семантична грешка може да мине незабелязана от компилатора
+– За да се инстанциират всички методи на шаблона използвайте явно
+инстанцииране (explicit instantiation)</p>
+</li>
+</ul>
+</section><section><pre><code>template &lt;typename T&gt;
+bool Stack&lt;T&gt;::empty() const { return _s == 0; }
+// vector&lt;T&gt; няма operator==(int);
+
+int main() {
+    Stack&lt;int&gt; s;
+    s.push(42);
+    return 0;
+}
+
+// Не използваме никъде Stack&lt;int&gt;::empty!
+// Кода се компилира и изпълнява чудесно
+</code></pre>
+</section><section><p>Бележки</p>
+<ul>
+<li>Инстанциират се само тези методи на шаблона, които се използват!</li>
+<li>Можете да дефинирате стойност по подразбиране за параметри на шаблона, те
+могат да използват предходните параметри.</li>
+</ul>
+</section></section><section><section><h2>Не-типови шаблонни параметри</h2>
+</section><section><p>Шаблонните параметри освен типове могат да и обикновени стойности, но от типове
+отговарящи на определени условия.</p>
+</section><section><pre><code>template &lt;typename T, unsigned Size&gt;
+class Array {
+  public:
+    // ...
+    T&amp; operator[] (size_t i) { return _a[i]; }
+    Т&amp; at(size_t i) {
+        if (i &gt; Size)
+            throw std::out_of_range(&quot;i tоо large&quot;);
+        return _a[i];
+    }
+  private:
+    T[Size] _a;
+} ;
+</code></pre>
+</section><section><pre><code>template &lt;typename T, T Value&gt;
+T increase(const T&amp; x) { return x + Value; }
+// съвсем не достатъчно generic
+</code></pre>
+</section><section><pre><code>int main() {
+    cout &lt;&lt; increase&lt;int, 10&gt;(32) &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+</section><section><p>Условия за не-типовите шаблонни параметри</p>
+<ul>
+<li>
+<p>Могат да бъдат константни интегрални стойности (включително enum) или
+указатели към обекти с външно свързване</p>
+<p>– интегрална стойност - проста, неделима стойност
+– указател към обект с външно свързване - указател към глобален за цялата
+програма</p>
+</li>
+<li>
+<p>Не могат да бъдат floating-point числа и обекти от непримитивен тип</p>
+<p>– floating-point не се разрешава по исторически причини, в
+бъдеще може да се допусне</p>
+</li>
+</ul>
+</section><section><pre><code>template &lt;const char* s&gt;
+class MyClass;
+
+MyClass&lt;&quot;Hello&quot;&gt; e;
+// грешка, &quot;Hello&quot; е string literal
+
+const char* s = &quot;hello&quot;;
+
+MyClass&lt;s&gt; e2;
+// грешка, s е указател към обект с internal linkage
+
+extern const char[] s2 = &quot;hello&quot;;
+
+MyClass&lt;s2&gt; o; // ok
+</code></pre>
+</section></section><section><section><h1>Шаблоните в детайли</h1>
+</section><section><h2>Инстанцииране на шаблони</h2>
+</section><section><h3>Компилиране на шаблони</h3>
+</section><section><ul>
+<li>
+<p>Шаблоните се компилират на два етапа:</p>
+<ol>
+<li>
+<p>Преди инстанцииране - компилатора прави само проверка на синтаксиса -
+например за липсващи &quot;;&quot;</p>
+</li>
+<li>
+<p>По време на инстанцииране - компилатора компилира кода на шаблона и прави
+проверка за валидността на всички използвани функции, методи и оператори</p>
+</li>
+</ol>
+</li>
+</ul>
+</section><section><ul>
+<li>
+<p>За да бъде инстанцииран един шаблон, компилаторът трябва да вижда неговата
+дефиниция.</p>
+</li>
+<li>
+<p>Това налага повечето шаблони да бъдат дефинирани в header файлове, които се
+включват в ползващите шаблона файлове</p>
+</li>
+</ul>
+</section><section><p>Инстанцииране на шаблони</p>
+<ul>
+<li>
+<p>Не явно - автоматично при използване на шаблонна функция или клас</p>
+</li>
+<li>
+<p>Явно (explicit instantiation)</p>
+<p>– предизвиква инстанциирането на всички методи на класа
+– <code>template int f&lt;double, double&gt;(double, double);</code>
+– <code>template class MyStack&lt;int&gt;;</code></p>
+</li>
+</ul>
+</section><section><pre><code>template &lt;typename T&gt; class C; // forward
+
+C&lt;int&gt;* p; // ok
+
+template &lt;typename T&gt;
+class C {
+  public:
+    void f(); // декларация на C::f()
+} ; // дефиниция на C
+</code></pre>
+</section><section><p>Мързеливо инстанцииране</p>
+</section><section><p>Каква част от един шаблонен клас се инстанциира при неявно инстанцииране?</p>
+<ul>
+<li>Колкото се може по-малко
+– декларациите на всички членове на класа и на членовете на съдържащи се
+анонимни union
+– дефинициите на virtual член функции биха могли да бъдат или да не бъдат
+инстанциирани
+<ul>
+<li>повечето компилатори ще ги инстанциират, тъй като имплементацията им на
+virtual механизма изисква тези функции да съществуват
+– параметри по подразбиране на функции се инстанциират само ако име извикване
+на функцията, при което параметърът по подразбиране се използва</li>
+</ul>
+</li>
+</ul>
+</section></section><section><section><p>Name lookup</p>
+</section><section><p>Name Lookup?</p>
+<p>name lookup процесът, при който компилаторът свързва използваните имена с
+обектите, които те представляват</p>
+<ul>
+<li>в случая под обекти разбираме функции, оператори и типове</li>
+</ul>
+</section><section><p>Видове имена в C++</p>
+<ul>
+<li>Разпределянето на имената в C++ в класове е доста сложно</li>
+<li>Най-основно е следното разделяне:
+<ul>
+<li>квалифицирано и не-квалифицирано име</li>
+<li>зависимо и независимо име</li>
+</ul>
+</li>
+</ul>
+</section><section><p>Квалифицирано име е име, чийто обхват е явно указан чрез оператора <code>::</code> (scope
+resolution operator) или операторите <code>.</code> и <code>-&gt;</code> (member access operators)</p>
+<ul>
+<li>this-&gt;count и count не са съвсем едно и също, но са две имена на едно и също в
+рамките на дефиниция на клас</li>
+</ul>
+</section><section><p>Зависимо име е име, което зависи по някакъв начин от шаблонен параметър</p>
+<ul>
+<li>
+<p><code>std::vector&lt;T&gt;::iterator</code> е зависимо име ако <code>T</code> е шаблонен параметър и е
+независимо име ако Т е име на известен тип</p>
+</li>
+<li>
+<p><code>this-&gt;x</code> - <code>x</code> е зависимо име, когато се среща в шаблон</p>
+</li>
+<li>
+<p><code>f(x)</code> е зависимо име, ако типът на <code>x</code> зависи от шаблонен параметър</p>
+</li>
+</ul>
+</section><section><p>Правила за търсене на имена</p>
+<ul>
+<li>Правилата за търсене на име са пълни с различни детайли за да работят
+интуитивно в общия случай и коректно в сложни частни случаи.</li>
+</ul>
+</section><section><p>Основни правила</p>
+<ul>
+<li>квалифицирани имена се търсят в посоченото от квалификацията пространство от
+имена</li>
+</ul>
+</section><section><ul>
+<li>
+<p>неквалифицираните имена се търсят в последователно разширяващи се пространства
+от имена</p>
+<p>– започва се от текущото пространство, след това се търси в пространството
+съдържащо текущото и така нататък докато не се намери обект определен от
+това име</p>
+</li>
+</ul>
+</section><section><p>Argument Dependent Lookup</p>
+<ul>
+<li>
+<p>за неквалифицираните имена се прилага и Argument Dependent Lookup (ADL, Koenig
+Lookup)</p>
+<p>– когато се търси функция с определено име освен в текущото и обхващащите го
+пространства от имена се търси и в пространствата, асоциирани със типовете
+на аргументите</p>
+<p>– Базира се на идеята, че интефейсът на един клас е съставен от публичните му
+методи и всички функции дефинирани в същото пространство от имена, който
+приемат параметри от този клас</p>
+</li>
+</ul>
+</section><section><pre><code>namespace Lib {
+    class A { // ... } ;
+
+    ostream&amp; operator&lt;&lt;(ostream&amp; s,const A&amp; a);
+
+    bool operator==(const A&amp; l, const A&amp; r);
+}
+
+int main() {
+    cout &lt;&lt; a2 == a1 &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+</section><section><p>Асоциирани пространства от имена - 1</p>
+<ul>
+<li>за примитивните типове - празното множество</li>
+<li>за указатели и масиви - пространството асоциирано със съответния тип на
+сочения / съдържания обект</li>
+<li>за enum - пространството, в което е дефиниран enum-ът</li>
+<li>за членове на клас - пространството е самият клас</li>
+</ul>
+</section><section><p>Асоциирани пространства от имена - 2</p>
+<ul>
+<li>
+<p>за класове - множеството от асоциирани класове е самият клас, съдържащият го
+клас и всеки пряк или непряк родителски клас.  Асоциираното пространство от
+имена са пространствата от имена, в които са декларирание асоциираните класове</p>
+<p>– при инстанцииране на шаблон, класовете на типовите шаблонни параметри и
+класовете и пространствата, в които са декларирани шаблонните шаблонни
+аргументи също се включват</p>
+</li>
+</ul>
+</section><section><p>Асоциирани пространства от имена - 2</p>
+<ul>
+<li>
+<p>за указател към член на клас X - освен асоциираните с X пространства се
+включват и пространствата асоциирани с типа на сочения член</p>
+<p>– за указатели към методи - типа на резултата и типовете на параметрите също
+допринасят с техните асоциирани пространства от имена</p>
+</li>
+</ul>
+</section><section><p>ADL</p>
+<ul>
+<li>ADL търси името във всяко от асоциираните пространства все едно името е било
+квалифицирано в това пространство, като игнорира <code>using</code> директивите</li>
+</ul>
+</section><section><pre><code>namespace X {
+    template &lt;typename T&gt; void f(T);
+}
+
+namespace N {
+    using namespace X;
+
+    enum E { e1 } ;
+    void f(E) { cout &lt;&lt; &quot;N::f(E)\n&quot;; }
+
+}
+
+void f(int) { cout &lt;&lt; &quot;::f()\n&quot;; }
+
+void g() {
+    ::f(N::e1); // квалифицирано, без ADL
+    f(N::e1); // неквалифицирано, ADL
+    // X::f() изобщо не се разглежда
+}
+</code></pre>
+</section></section><section><section><p>Two-Phase Lookup</p>
+</section><section><ul>
+<li>
+<p>При първоначалното компилиране на шаблона, зависимите имена не могат да бъдат
+свързани с функции и типове.</p>
+</li>
+<li>
+<p>Затова се въвежда two-phase lookup</p>
+<ol>
+<li>
+<p>Независимите имена се свързват със съответните функции и типове по време на
+компилация на шаблона</p>
+</li>
+<li>
+<p>Зависимите имена се свързват в момента на инстанцииране</p>
+</li>
+</ol>
+<p>Point of Instantiation (POI) точката на инстанцииране на шаблона - на това
+място компилаторът слага дефиницията на инстанциирания шаблон</p>
+</li>
+</ul>
+</section><section><pre><code>template &lt;typaname T&gt;
+void f(T x) {
+    if (x &gt; 0)
+        g(x);
+}
+
+// (1)
+
+namespace Lib {
+    // (2)
+    void g(MyInt y) {
+        // (3)
+        f&lt;MyInt&gt;(42); // точка на извикване
+        // (4)
+    }
+    // (5)
+}
+// (6)
+</code></pre>
+</section><section><p>Точка на инстанцииране</p>
+<ul>
+<li>
+<p>Точката на инстанцииране не може да съвпадне с точката на извикване, защото не
+можете да дефинирате функция в друга функция</p>
+<p>– съответно отпадат точки (3) и (4)</p>
+</li>
+<li>
+<p>в точки (1) и (2) g(MyInt x) не е видима, което не е особено интуитивно</p>
+</li>
+<li>
+<p>в точка (5) и (6) g(MyInt x) е видима</p>
+</li>
+<li>
+<p>Точката на инстанцииране на шаблонни функции е веднага след най-близката
+декларация или дефиниция която съдържа обръщение към шаблона (в подходящия
+namespace) - (6) в нашия пример</p>
+</li>
+</ul>
+</section><section><pre><code>template &lt;typaname T&gt;
+void f(T x) {
+    if (x &gt; 0)
+        g(x);
+}
+
+namespace Lib {
+    void g(int y) {
+        // (2)
+        f&lt;int&gt;(42);
+        // (3)
+    }
+}
+</code></pre>
+</section><section><p>Предишният пример не се компилира, защото:</p>
+<ul>
+<li>template void f(T) е глобален шаблон и инстнацията на шаблона съответно е в
+глобалния namespace</li>
+<li>няма глобална функция g</li>
+<li>ADL не може да намери g, понеже int е примитивен тип</li>
+</ul>
+</section></section><section><section><h1>Специализация на шаблони</h1>
+</section></section><section><section><h1>Tricky details</h1>
+</section><section><h2>Ключова дума typename</h2>
+</section><section><pre><code>template &lt;typename T&gt;
+class MyClass {
+    typename T::SubType * ptr; // static member
+    // T::StaticMember * ptr; // multiplication
+};
+</code></pre>
+</section><section><ul>
+<li>Квалифицирано име не се смята за тип, освен ако не е предшествано от <code>typename</code>.</li>
+<li><code>typename</code> е задължително да се използва пред едно име, ако:
+<ol>
+<li>името е в шаблон</li>
+<li>името е квалифицирано</li>
+<li>името не е в списък на базовите класове или в списък за инициализация на
+базовите класове</li>
+<li>името зависи от параметър на шаблона</li>
+</ol>
+</li>
+<li>Ако едно от първите 3 не е изпълнено е грешка да се използва <code>typename</code></li>
+</ul>
+</section><section><pre><code>template &lt;typename_1 T&gt;
+struct S: typename_2 X&lt;T&gt;::Base {
+    S(): typename_3 X&lt;T&gt;::Base(typename_4 X&lt;T&gt;::Base(0))
+    { }
+    typename_5 X&lt;T&gt; f() {
+        typename_6 X&lt;T&gt;::C * p;
+        X&lt;T&gt;::D * q;
+    }
+    typename_7 X&lt;int&gt;::C * s;
+};
+struct U {
+    typename_8 X&lt;int&gt;::C * pc;
+};
+</code></pre>
+</section><section><ol>
+<li>декларация на параметър на шаблона</li>
+<li>грешно - списък на базовите класове</li>
+<li>грешно - инициализиращ списък</li>
+<li>необходимо - създаване на обект от <code>X&lt;T&gt;::Base</code></li>
+<li>грешно - <code>X&lt;T&gt;</code> не е квалифицирано име</li>
+<li>задължително, ако декларираме указател</li>
+<li>опционално - <code>s</code> е независимо име</li>
+<li>грешка - извън шаблона</li>
+</ol>
+</section><section><h2>Ключова дума template</h2>
+</section><section><pre><code>template &lt;int N&gt;
+void printBitset(const std::bitset&lt;N&gt;&amp; bs) {
+    typedef char_traits&lt;char&gt; traits;
+    typedef allocator&lt;char&gt; char_alloc;
+    cout &lt;&lt; bs.template to_string&lt;char, traits, char_alloc&gt;();
+}
+</code></pre>
+</section><section><p><code>bs</code> е зависимо име и компилаторът не знае дали <code>&lt;</code> между <code>to_string</code> и <code>char</code> е
+<code>operator&lt;</code> или скоба за шаблонни аргументи.</p>
+</section><section><p>Може да се ползва и с указатели:</p>
+<pre><code>p-&gt;template to_string&lt; ... &gt;()
+</code></pre>
+</section><section><h2>Синтактични проблеми</h2>
+</section><section><pre><code>typedef vector&lt;vector&lt;int&gt; &gt; Matrix;
+// C++ 98 - &gt;&gt; is operator &gt;&gt;
+// lexer tokens are the longest possible
+
+// C++ 11
+typedef vector&lt;vector&lt;int&gt;&gt; Matrix;
+</code></pre>
+</section><section><p>class A;
+namespace L {
+typedef std::vector&lt;::A&gt; VectorA;
+// &lt;: is a digraph and actually means [
+}</p>
+<p>namespace L {
+typedef std::vector&lt; ::A&gt; VectorA;
+}</p>
+</section></section></article><div class="row-fluid"><div class="col-md-12"><hr><ul class="pagination"><li><a href="/advanced-cpp/2015/05/03/sample-test/" title="Previous articles">&larr; Previous</a></li><li><a href="/advanced-cpp/2015/04/20/test-exam-dates/" title="Next articles">Next &rarr;</a></li></ul></div></div></section></div><div class="col-sm-3"><nav role="navigation" class="navbar navbar-default"><div class="navbar-header"><div class="navbar-brand">Recent Posts</div></div><div class="clearfix"></div><ul class="nav navbar-stacked"><li><a href="/advanced-cpp/2015/05/07/templates-in-action/">Templates in Practice</a></li><li><a href="/advanced-cpp/2015/05/07/templates-in-action/">Templates in Practice</a></li><li><a href="/advanced-cpp/2015/05/07/templates-in-action/">Templates in Practice</a></li><li><a href="/advanced-cpp/2015/05/07/templates-in-action/">Templates in Action</a></li><li><a href="/advanced-cpp/2015/05/03/sample-test/">Sample Test</a></li><li><a href="/advanced-cpp/2015/05/02/templates/">Templates</a></li><li><a href="/advanced-cpp/2015/04/20/test-exam-dates/">Test &amp; Exam dates</a></li><li><a href="/advanced-cpp/2015/04/14/locking-problem/">Locking problem</a></li></ul></nav></div></div><footer id="page-footer"><footer><div class="row-fluid"><div class="col-md-12"><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" width="88px" height="31px" src="/advanced-cpp/images/cc-by-sa.png"></a><br><span>Advanced C++</span> by<span> SofiaC++</span> is licensed under a&nbsp;<a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International
+License
+</a></div></div></footer><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/bower_components/bootstrap/dist/js/bootstrap.min.js"></script></footer></div></body></html>

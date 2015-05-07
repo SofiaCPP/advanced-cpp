@@ -1,0 +1,371 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Templates in C++</title></head><body><div class="reveal"><div class="slides"><section><h1>Templates in action</h1></section><section><h2 id="Contents-5">Contents</h2>
+<ol>
+<li>Variadic templates</li>
+<li>Type traits</li>
+<li>Overload control</li>
+<li>SFINAE</li>
+<li>Type Erasure</li>
+<li>Static Polymorphism</li>
+<li>Expression templates</li>
+<li>Metaprogramming</li>
+</ol>
+</section><section><section><h2 id="Variadic_templates-1">Variadic templates</h2>
+<p>Allow much easier implemenation of templates with variable
+arguments, like <code>std::tuple</code>, <code>std::function</code>, etc.</p>
+</section><section><h3 id="Parameter_pack-1">Parameter pack</h3>
+<div data-file="12_templates/variadic.cxx" data-sections="variadic" class="snippet"><p>// loading ...</p>
+</div></section><section><h3 id="Parameter_pack-1">Parameter pack</h3>
+<ul>
+<li>can match remaining arguments</li>
+<li>can be expanded</li>
+<li>can not be stored in a variable or manipulated</li>
+</ul>
+</section><section><h3 id="How_to_use_a_parameter_pack-1">How to use a parameter pack</h3>
+<div data-file="12_templates/variadic.cxx" data-sections="recursion" class="snippet"><p>// loading ...</p>
+</div></section><section><h3 id="How_to_use_a_parameter_pack-1">How to use a parameter pack</h3>
+<pre class="mstretch"><code>// T is a template parameter pack
+sizeof...(T)
+// count of types in T</code></pre></section><section><h3 id="Sample-5">Sample</h3>
+<p>A console that allows exection of arbitrary
+<code>std::function</code>s.</p>
+</section><section><div data-file="12_templates/console.cxx" data-sections="execute" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/console.cxx" data-sections="add-command" class="snippet"><p>// loading ...</p>
+</div><h4>So what does the magic wrap do?</h4></section><section><div data-file="12_templates/console.cxx" data-sections="wrap0" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/console.cxx" data-sections="wrap1" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/console.cxx" data-sections="wrap2" class="snippet"><p>// loading ...</p>
+</div></section><section><h3 id="Using_variadic_templates-1">Using variadic templates</h3>
+<p>Based on <a href="http://channel9.msdn.com/events/GoingNative/2013/The-Way-of-the-Exploding-Tuple" target="_blank" rel="external">&quot;The Way of the Exploding Tuple&quot;</a></p>
+</section><section><div data-file="12_templates/consolev.cxx" data-sections="wrap" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/consolev.cxx" data-sections="helper-0" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/consolev.cxx" data-sections="helper-n" class="snippet"><p>// loading ...</p>
+</div></section></section><section><section><h2 id="Type_Computations-1">Type Computations</h2>
+<ul>
+<li>given existing type <code>T</code>, create a new one based on
+<code>T</code></li>
+<li>given <code>T</code> determine its properties (traits):<ul>
+<li>a pointer?</li>
+<li>polymorphic?</li>
+<li>Plain old data (POD)?</li>
+</ul>
+</li>
+</ul>
+</section><section><h3 id="Type_traits-1">Type traits</h3>
+<p>The general name for the type computational facilities. The standard
+type traits are defined in <code>type_traits</code> header.</p>
+<p>Most of the type traits use template specialization.</p>
+</section><section><h3>Helpers:</h3><pre class="mstretch"><code>template &lt;typename T, T Value&gt;
+struct integral_constant {
+    static T value = Value;
+};
+
+typedef integral_contant&lt;bool, false&gt; false_type;
+typedef integral_contant&lt;bool, true&gt; true_type;
+</code></pre></section><section><h3>Is pointer?</h3><pre class="mstretch"><code>template &lt;typename T&gt;
+struct is_pointer : false_type
+{};
+
+template &lt;typename T&gt;
+struct is_pointer&lt;T*&gt; : true_type
+{};
+</code></pre></section><section><h3>Add pointer</h3><pre class="mstretch"><code>template &lt;typename T&gt;
+struct add_pointer
+{
+    typedef T* type;
+};</code></pre><p>The resulting new type is defined in <code>::type</code>.</p>
+</section><section><h3>Remove pointer</h3><pre class="mstretch"><code>template &lt;typename T&gt;
+struct remove_pointer
+{
+    typedef T type;
+};
+
+template &lt;typename T&gt;
+struct remove_pointer&lt;T*&gt;
+{
+    typedef T type;
+};
+</code></pre></section><section><h3 id="type_traits-1"><code>type_traits</code></h3>
+<ul>
+<li><code>is_arithmetic</code></li>
+<li><code>is_fundamental</code></li>
+<li><code>is_polymorphic</code></li>
+</ul>
+</section><section><h1 id="Practice-5">Practice</h1>
+<ul>
+<li>use <code>std::false_type</code> and <code>std::true_type</code> for
+custom type traits</li>
+<li>always define the result of type transformation in
+<code>type</code></li>
+</ul>
+</section></section><section><section><h2 id="Controlling_the_overload_set-1">Controlling the overload set</h2>
+<p>The overload set is the set function overloads that are viable for
+resolving a call to a function</p>
+</section><section><h3 id="Type_traits_and_tags-1">Type traits and tags</h3>
+</section><section><pre class="mstretch"><code>template &lt;typename T&gt;
+void Copy(T* source, T* destination, size_t count);
+</code></pre></section><section><pre class="mstretch"><code>template &lt;typename T&gt;
+void Copy(T* source, T* destination, size_t count) {
+    for (size_t i = 0; i != count; ++i) {
+        destination[i] = source[i];
+    }
+}</code></pre><p class="fragment fade-in">Can we do better?</p></section><section><pre class="mstretch"><code>template &lt;typename T&gt;
+void Copy(T* source, T* destination, size_t count) {
+    if ((T is POD)) {
+        std::memcpy(destination, source, count * sizeof(T));
+    }
+    else {
+        for (size_t i = 0; i != count; ++i) {
+            destination[i] = source[i];
+        }
+    }
+}
+</code></pre></section><section><h3 id="Overloads-5">Overloads</h3>
+<p>Overloads are distinguished and chosen based on their arguments
+count and type. So we can add another argument and overload on it.</p>
+</section><section><pre class="mstretch"><code>struct isPOD {};
+struct nonPOD {};
+
+template &lt;typename T&gt;
+void Copy(T* source, T* destination, size_t count, isPOD) {
+    std::memcpy(destination, source, count * sizeof(T));
+}
+
+template &lt;typename T&gt;
+void Copy(T* source, T* destination, size_t count, nonPOD) {
+    for (size_t i = 0; i != count; ++i) {
+        destination[i] = source[i];
+    }
+}
+</code></pre></section><section><pre class="mstretch"><code>int a[10], b[10];
+Copy(a, b, 10, isPOD());
+// choses the memcpy implementation, because that is matching
+// overload
+
+std::string c[10], d[10];
+Copy(c, d, 10, isPOD()); // oops
+</code></pre></section><section><h3 id="Not_very_nice-1">Not very nice</h3>
+<ul>
+<li>requires extra parameter for the client to use</li>
+<li>error prone</li>
+<li>requires definition of extra structs</li>
+</ul>
+</section><section><pre class="mstretch"><code>namespace detail
+{
+    template &lt;typename T&gt;
+    void Copy(T* source, T* destination, size_t count,
+    std::true_type /*isPOD*/) {
+        std::memcpy(destination, source, count * sizeof(T));
+    }
+    
+    template &lt;typename T&gt;
+    void Copy(T* source, T* destination, size_t count,
+    std::false_type /*isPOD*/) {
+        for (size_t i = 0; i != count; ++i) {
+            destination[i] = source[i];
+        }
+    }
+}
+template &lt;typename T&gt;
+void Copy(T* source, T* destination, size_t count)
+    detail::Copy(source, destination, count, std::is_pod&lt;T&gt;());
+}
+</code></pre></section></section><section><section><h2 id="SFINAE-10">SFINAE</h2>
+<p>Substitution Failure Is Not An Error</p>
+<p>The compiler doesn&#39;t generate compiler error when a template
+paratemeter can not be substituted with a concrete type, it simply
+ignores the substutition.</p>
+</section><section><pre class="mstretch"><code>template &lt;typename T&gt;
+typename std::enable_if&lt;std::is_pod&lt;T&gt;::value, void&gt;::type
+Copy(T* source, T* destination, size_t count) {
+    std::memcpy(destination, source, count * sizeof(T));
+}
+
+template &lt;typename T&gt;
+typename std::enable_if&lt;!std::is_pod&lt;T&gt;::value, void&gt;::type
+Copy(T* source, T* destination, size_t count) {
+    for (size_t i = 0; i != count; ++i) {
+        destination[i] = source[i];
+    }
+}</code></pre></section><section><pre class="mstretch"><code>template &lt;bool Value, typename T&gt;
+struct enable_if {
+};
+
+template &lt;typename T&gt;
+struct enable_if&lt;true&gt; {
+    typedef T type;
+};
+</code></pre></section><section><pre class="mstretch"><code>int s[10], d[10];
+Copy(s, d, 10);
+</code></pre><p><code>int</code> is POD</p>
+<ul>
+<li><code>enable_if&lt;is_pod&lt;int&gt;::value, void&gt;::type</code> is
+<code>void</code> and the <code>memcpy</code> overload of <code>Copy</code> is viable</li>
+<li>There is no such type in <code>enable_if&lt;!is_pod&lt;int&gt;::value,
+void&gt;</code>, so the substitution fails and the compiler silently
+ignores the <em>for</em> overload</li>
+</ul>
+</section><section><pre class="mstretch"><code>template &lt;typename T&gt;
+typename std::enable_if&lt;!std::is_pod&lt;T&gt;::value, void&gt;::type
+Copy(T* source, T* destination, size_t count) {
+    for (size_t i = 0; i != count; ++i) {
+        destination[i] = source[i];
+    }
+}
+
+</code></pre></section><section><h3 id="SFINAE-11">SFINAE</h3>
+<p>Use <code>std::enable_if</code> to control the overload set of generic
+functions.</p>
+</section></section><section><section><h2 id="Type_erasure-1">Type erasure</h2>
+</section><section><ul>
+<li><em>C++&#39;98</em> doesn&#39;t have <em>C#</em> style delegates.</li>
+<li>In <em>C++&#39;11</em> they are provided by <code>std::function</code> and
+<code>std::bind</code></li>
+</ul>
+<p>How they can be implemented?</p>
+</section><section><div data-file="12_templates/delegate0.cxx" data-sections="delegate-fun" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate0.cxx" data-sections="delegate-method" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate0.cxx" data-sections="delegate-const-method" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate0.cxx" data-sections="functions" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate0.cxx" data-sections="usage" class="snippet"><p>// loading ...</p>
+</div></section><section><p><code>DelegateFun&lt;void()&gt;</code> and <code>DelegateMethod&lt;A, void()&gt;</code>
+can not be a single class, because they have different
+template arguments</p>
+<p>Yet they have the same behavior - the <code>void ()</code> function.</p>
+<p>To make a usable delegate class, we need to erase the type
+difference between the types.</p>
+</section><section><div data-file="12_templates/delegate.cxx" data-sections="impl" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate.cxx" data-sections="delegate-fun" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate.cxx" data-sections="delegate-method" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate.cxx" data-sections="delegate" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate.cxx" data-sections="delegate-ctor" class="snippet"><p>// loading ...</p>
+</div></section><section><div data-file="12_templates/delegate.cxx" data-sections="delegate-value" class="snippet"><p>// loading ...</p>
+</div></section><section><p>The pattern for type erasure is to define a class that exposes the
+API and forwards all calls to a polymorphic object, which implements
+the concrete API.</p>
+<p><code>std::function</code>, <code>boost::any</code> are probably the most famous examples
+of <em>type erasure</em>.</p>
+</section><section><p>The above implementation is pretty low performant.</p>
+<p>The reason for this is that a lot of small objects get allocated and
+always the actual function is away from the <code>Delegate</code> instance we
+have.</p>
+<p>This can be resolved by storing the concrete <code>DelegateFun</code> or
+<code>DelegateMethod</code> in a small buffer, directly in the <code>Delegate</code>
+class.</p>
+</section></section><section><section><h1>Static Polymorphism</h1></section><section><h2 id="CRTP-5">CRTP</h2>
+<p>Curiously Recurring Template Pattern</p>
+<pre class="mstretch"><code>class Derived : public Base&lt;Derived&gt;
+{
+};
+</code></pre></section><section><p>We have already seen that:</p><pre class="mstretch"><code>struct Renderer : std::enabled_shared_from_this&lt;Renderer&gt;
+{};
+
+struct Texture : RefCounted&lt;Texture&gt;
+{};</code></pre></section><section><p>The <em>CRTP</em> allows the base template to use the derived type - it
+can call methods, create/destory instances and so on.</p>
+</section><section><h2 id="Static_polymorphism-1">Static polymorphism</h2>
+<p>Using the derived class implementation though the base class
+interface</p>
+<ul>
+<li>without virtual calls</li>
+<li>compile-time</li>
+</ul>
+</section><section><h3>Runtime polymorphism</h3><pre class="mstretch"><code>struct JSONParser {
+    virtual void array_begin() = 0;
+    virtual void array_end() = 0;
+    bool Parse() {
+        //...
+        char n = next();
+        switch (n) {
+            case '[' : array_begin(); break;
+            case ']' : array_end(); break;
+            // ...
+        }
+    }
+};
+</code></pre></section><section><h3>Runtime polymorphism</h3><pre class="mstretch"><code>struct JSONMinifier : JSONParser {
+    virtual void array_begin() override {
+        output.put('[');
+    }
+    virtual void array_end() override {
+        output.put(']');
+    }
+};
+
+</code></pre></section><section><h3>Runtime polymorphism</h3><p class="fragment fade-in">We are making a virtual call for every token in the JSON file. And
+it is unlikely that we need more than a few different JSON parser
+types.
+
+</p></section><section><h3>Static polymorphism</h3><pre class="mstretch"><code>template &lt;typename Derived&gt;
+struct JSONParser {
+    Derived* This() {
+        return static_cast&lt;Derived*&gt;(this);
+    }
+    bool Parse() {
+        //...
+        char n = next();
+        switch (n) {
+            case '[' : This()-&gt;array_begin(); break;
+            case ']' : This()-&gt;array_end(); break;
+            // ...
+        }
+    }
+};</code></pre></section><section><h3>Static polymorphism</h3><pre class="mstretch"><code>struct JSONMinifier : JSONParser&lt;JSONMinifier&gt; {
+    void array_begin() {
+        output.put('[');
+    }
+    void array_end() {
+        output.put(']');
+    }
+};
+</code></pre></section><section><h2 id="Barton-Nackman_trick-1">Barton-Nackman trick</h2>
+<p>Characterized by an in-class friend function declared in the base
+class of a <em>CRTP</em></p>
+</section><section><pre class="mstretch"><code>template &lt;typename T&gt;
+class comparable {
+    friend bool operator &gt; (const T&amp; lhs, const T&amp; rhs) {
+        return !(lhs &lt; rhs);
+    }
+    friend bool operator == (const T&amp; lhs, const T&amp; rhs) {
+        return !(lhs &lt; rhs || lhs &gt; rhs);
+    }
+};
+
+struct Poly : public comparable&lt;Poly&gt; {
+    bool operator&lt;(const Poly&amp;rhs) const {
+        //...
+    }
+}
+</code></pre></section></section><section><section><h1>Expression Templates</h1></section><section><a>techique for using types (templates) to represent part of an</a><expression></expression></section><section><the>type (template) represents some kind of an operation with its</the><operands>and allows the result to be evaluated later or passed to a</operands><function>(used itself as an operand).</function></section><section><h3>A Polynom class</h3></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="polynom" class="snippet"><p>// loading ...</p>
+</div></section><section><h4>A simple implementation</h4><pre class="mstretch"><code>template &lt;typename T&gt;
+Polynom&lt;T&gt; operator+(const Polynom&lt;T&gt;&amp; lhs, const Polynom&lt;T&gt;&amp; rhs) {
+    auto power = std::max(lhs.power(), rhs.power();
+    Polynom&lt;T&gt; result(power);
+    for (auto i = 0; i != power; ++i) {
+        result.set(i, lhs.get(i) + rhs.get(i));
+    }
+    return result;
+}</code></pre></section><section><h4>How many loops and temporaries?</h4><pre class="mstretch"><code>Polynom&lt;int&gt; a = { 1, 0, 1, 0, 1 }; // x^3 + x + 1
+Polynom&lt;int&gt; b = { 2, 2, 0, 2, 3 }; // 3*x^3 + 2*x^2 + 2*x + 2
+Polynom&lt;int&gt; c = { 42 };
+
+auto d = a + b + c;
+// compiled to:
+// t1 = a + b
+// t2 = t1 + c
+// d = t2</code></pre></section><section><ul><li>2 temporaries</li><li>2 loops!</li><li>heap allocations!</li></ul></section><section><h4>Expressions</h4><pre class="mstretch"><code>auto d = a + b + c;
+// With ET it compiled to:
+// Sum(a,b) t1 = a + b
+// Sum(Sum(a,b),c) t2 = t1 + c
+// d = t2 // create Polynom from Sum(Sum(a, b), c)
+</code></pre></section><section><pre class="mstretch"><code>// Pseudo code ahead
+auto power = std::max(a.power(), b.power(), c.power())
+Polynom&lt;int&gt; d(power);
+for (auto i = 0; i != power; ++i) {
+    d.set(i, a.get(i) + b.get(i) + c.get(i));
+}
+</code></pre></section><section><ul><li>2 temporaries</li><li>1 loop!</li><li>1 heap allocation!</li></ul></section><section><h4>Sum</h4></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="sum" class="snippet"><p>// loading ...</p>
+</div></section><section><h4>Multiplication</h4></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="mult" class="snippet"><p>// loading ...</p>
+</div></section><section><h4>Simple expressions</h4></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="operators" class="snippet"><p>// loading ...</p>
+</div></section><section><h4>All possible expressions</h4></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="all-operators" class="snippet"><p>// loading ...</p>
+</div></section><section><h3>Bonus question</h3><p>Why does the <code>Polynom</code> template have methods <code>get</code> and <code>set</code> instead
+of <code>operator[]</code>?</p>
+</section></section><section><section><h1>Metaprogramming</h1></section><section><a href="http://cpptruths.blogspot.com/2011/07/want-speed-use-constexpr-meta.html" target="_blank" rel="external">http://cpptruths.blogspot.com/2011/07/want-speed-use-constexpr-meta.html</a></section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>
