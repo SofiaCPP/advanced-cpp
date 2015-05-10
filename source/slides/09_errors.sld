@@ -96,7 +96,7 @@ section
             auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
                 0, 0, 0);
             auto memory = ::MapViewOfFile(handle, FILE_MAP_READ, 0, 0, 0);
-            /*
+            
             if (!memory) {
                 auto error = ::GetLastError();
                 std::cout << "Error mapping view: " << error << std::endl;
@@ -111,7 +111,7 @@ section
             auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
                 0, 0, 0);
             auto memory = ::MapViewOfFile(handle, FILE_MAP_READ, 0, 0, 0);
-            /*
+            
             if (!memory) {
                 auto error = ::GetLastError();
                 std::cout << "Error mapping view: " << error << std::endl;
@@ -554,7 +554,7 @@ section
         :markdown
             ## Logging
 
-            Having only an error (with an callstack if we are lucky) often
+            Having only an error (with a callstack if we are lucky) often
             is not enough.
 
             Logging is essential for understanding what is going on with the
