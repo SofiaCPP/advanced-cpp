@@ -57,7 +57,7 @@ section
                 0, 0, 0, &handle);
             if (has_error) {
                 auto error = ::GetLastError();
-                std::cout << "Creating file mapping: " << error" << std::endl;
+                std::cout << "Creating file mapping: " << error << std::endl;
                 return;
             }
             POINTER memory;
@@ -77,7 +77,7 @@ section
             /*
             if (!handle) {
                 auto error = ::GetLastError();
-                std::cout << "Creating file mapping: " << error" << std::endl;
+                std::cout << "Creating file mapping: " << error << std::endl;
                 return;
             }
             */
