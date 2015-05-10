@@ -342,6 +342,9 @@ section
                 }
             }
 
+    section
+        h3 SFINAE
+        +snippet('12_templates/is_convertible.cxx', 'convertible')
 
     section
         :markdown
