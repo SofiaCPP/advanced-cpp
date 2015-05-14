@@ -151,7 +151,9 @@ section
     p C++ allows compilers to implement RVO even breaking this rule
 
 section
-    h2 How is RVO implemented by compilers :cxx std::vector<int> get_random_ints(int count);
+    h2 How is RVO implemented by compilers
+    :cxx
+        std::vector<int> get_random_ints(int count);
         // ...
         auto numbers = get_random_ints(1000);
 
