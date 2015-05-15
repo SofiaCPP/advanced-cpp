@@ -43,7 +43,7 @@ section
 
 section
     :markdown
-        ## Benefits of ```auto```
+        ## Benefits of `auto`
     ul
         li.fragment.fade-in saves time determing what is the correct type
         li.fragment.fade-in allows to refactor the code by renaming a type
@@ -81,7 +81,7 @@ section
 
 section
     :markdown
-        ## ```auto``` gotchas
+        ## `auto` gotchas
 
         * gets the result by value
 
@@ -194,8 +194,8 @@ section
     p.fragment.fade-in
         :markdown
 
-            *```s```* is concatenated with *```t```* in a temporary string
-            which is then copied into *```m```*
+            *`s`* is concatenated with *`t`* in a temporary string
+            which is then copied into *`m`*
 
             *assuming that the compiler will not optimize the code*
 
@@ -204,8 +204,8 @@ section
         ## *lvalues* and *rvalues*
 
         * comes from C
-        * *lvalues* are on the left side of ```operator =```
-        * *rvalues* are on the right side of ```operator =```
+        * *lvalues* are on the left side of `operator =`
+        * *rvalues* are on the right side of `operator =`
 section
     :markdown
         ## *lvalues* and *rvalues*
@@ -246,14 +246,14 @@ section
 
 section
     :markdown
-        ## ```const T&```
+        ## `const T&`
 
         Can reference everything - values stored in variables, result
         values of expressions.
 
 section
     :markdown
-        ## ```const T&&```
+        ## `const T&&`
 
         Can reference only result values of expressions
 
@@ -342,7 +342,7 @@ section
 
 section
     :markdown
-        ## ```std::move```
+        ## `std::move`
 
         Tells the compiler to create an rvalue reference for a lvalue.
         Allows us to move ordinary values stored in variables.
