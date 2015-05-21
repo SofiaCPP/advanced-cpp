@@ -562,3 +562,174 @@ section
             * some STL libraries have a non-standard `slist` container
             
 
+section
+    section
+        :markdown
+            ## Container adaptors
+
+            1. `stack`
+            2. `queue`
+            3. `priority_queue`
+
+    section
+        :markdown
+
+            `stack` and `queue` are not containers, but they adapt (restrict)
+            the operations over the underlying container to *LIFO* and *FIFO*
+
+    section
+        :cxx
+            template <typename T, typename C = std::deque<T>>
+            class stack;
+
+            template <typename T, typename C = std::deque<T>>
+            class queue;
+    section
+        :markdown
+            
+            `priority_queue` is a binary heap over a container.
+
+    section
+        :cxx
+            template <typename T,
+                      typename Container = std::vector<T>, 
+                      typename Cmp = std::less<typename Container::value_type>
+                      >
+            class priority_queue;
+
+section
+    section
+        :markdown
+            ## Associative containers
+
+            1. `set`
+            2. `map`
+            3. `multiset`
+            4. `multimap`
+
+    section
+        :markdown
+            ## C++11 Unordered associative containers
+
+            1. `unordered_set`
+            2. `unordered_map`
+            3. `unordered_multiset`
+            4. `unordered_multimap`
+
+    section
+        :markdown
+
+            Associative containers *assiciate* keys with values.  Both variants
+            have very similar usage and API, but different implementations and
+            requirements for the types.
+
+    section
+        :cxx
+            template <typename T,
+                      typename Compare = std::less<T>,
+                      typename Allocator = std::allocator<T>
+                      >
+            class set;
+
+            template <typename T,
+                      typename Compare = std::less<T>,
+                      typename Allocator = std::allocator<T>
+                      >
+            class multiset;
+
+    section
+        :cxx
+            template <typename K,
+                      typename V,
+                      typename Compare = std::less<K>,
+                      typename Allocator = std::allocator<std::pair<const K, V>>
+                      >
+            class map;
+            template <typename K,
+                      typename V,
+                      typename Compare = std::less<K>,
+                      typename Allocator = std::allocator<std::pair<const K, V>>
+                      >
+            class multimap;
+
+    section
+        :markdown
+
+            `multiset` and `multimap` allow duplicating of keys.
+
+    section
+        :markdown
+            
+            `set`, `map`, `multiset`, `multimap` are ordered because when
+            iterating the (key, value) pairs in the container, the keys are
+            orderer by the `Compare` comparator.
+
+    section
+        :markdown
+
+            ### The order of traversing duplicated keys in a `multiset` or
+              `multimap` is ***undefined***
+
+    section
+        :markdown
+
+            For all *orderered* associative containers the standard requires:
+
+            * *insert* - O(logN) - average and worst
+            * *lookup* - O(logN) - average and worst
+            * *delete* - O(logN) - average and worst
+
+    section
+        :markdown
+
+            This means that effectively they are binary search trees.
+            Most implementations are [red-black tree][rbt].
+            
+            rbt: http://en.wikipedia.org/wiki/Red%E2%80%93black_tree
+
+    section
+        :markdown
+
+            *Unordered* containers have the following complexities:
+        
+            * *insert* - O(1) average and O(N) worst
+            * *lookup* - O(1) average and O(N) worst
+            * *delete* - O(1) average and O(N) worst
+
+    section
+        :markdown
+
+            This means that they have to be implemented as hash tables.
+
+    section
+        :cxx
+            template <typename T,
+                      typename Hash = std::hash<T>,
+                      typename KeyEqual = std::equal_to<T>,
+                      typename Allocator = std::allocator<T>
+                      >
+            class unordered_set;
+
+    section
+        :cxx
+            template <typename K,
+                      typename V,
+                      typename Hash = std::hash<K>,
+                      typename KeyEqual = std::less<K>,
+                      typename Allocator = std::allocator<std::pair<const K, V>>
+                      >
+            class unordered_map;
+
+
+    section
+        :markdown
+
+            Generally unordered_containers have better performance over ordered,
+            so if the order is not important - use `unordered_*`
+
+    section
+        :markdown
+
+            *sorted vector* is also an associative container that can provide
+            both - inordered traversal and better performance over `map` and
+            `set`.
