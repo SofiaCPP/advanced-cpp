@@ -1,0 +1,567 @@
+section
+    h2 Итератори
+    p
+      cite итератор
+    blockquote
+      | Итераторите са обобщени указатели, позволяващи на програмистите
+      | (алгоритмите) да работят със различни по вид контейнери по унифициран
+      | (общ) начин.
+section
+    h2 Видове итератори
+    p Видове итератори
+    ul.simple
+      li input iterator
+      li output iterator
+      li forward iterator
+      li bidirectional iterator
+      li random access iterator
+    p В ред на нарастваща функционалност.
+section
+    h2 input iterator
+    ul.simple
+      li най-ограничени възможности (заедно с output iterator)
+      li
+        tt.docutils.literal
+          span.pre istream_iterator
+        | ,
+        tt.docutils.literal
+          span.pre istreambuf_iterator
+        | - позволяват да разглеждаме
+        | файловете като контейнери
+      li поддържат само one-pass алгоритми
+section
+    h2 input iterator
+    :cxx
+      input_iterator x, y;
+      value = *x; // дереференциране
+      *x = value; // ERROR, read-only values
+      ++x;
+      x++;
+      if (x == y) { } // сравняване
+      if (x != y) { } // сравняване
+      x = y; // копиране
+
+section
+    h2 istream_iterator, istreambuf_iterator
+    ul.simple
+      li
+        | итераторите пазят последната прочетена стойност за да ползволяват
+        | многократно дереференциране
+      li
+        tt.docutils.literal
+          span.pre x++
+        | предизвиква прочитане на следващата стойност от файла
+      li
+        | ако имате повече от един
+        tt.docutils.literal
+          span.pre istream_iterator
+        | (
+        tt.docutils.literal
+          span.pre istreambuf_iterator
+        | ) и го
+        | инкрементирате ще получите изненадващи резултати (представете си, че четете
+        | едновременно един файл от две или повече функции)
+section
+    h2 output iterator
+    ul.simple
+      li най-ограничени възможности (заедно с input iterator)
+      li
+        tt.docutils.literal
+          span.pre ostream_iterator
+        | ,
+        tt.docutils.literal
+          span.pre ostreambuf_iterator
+      li отново поддържат само one-pass алгоритми
+section
+    h2 output iterator
+    :cxx
+      input_iterator x, y;
+      *x = value; // дереференциране и записване на стойност
+      value = *x; // ERROR, write-only values
+      ++x;
+      x++;
+      if (x == y) { } // сравняване
+      if (x != y) { } // сравняване
+      x = y; // копиране
+
+section
+    h2 ostream_iterator, ostreambuf_iterator
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre *x
+          span.pre \=
+          span.pre v;
+        | записва стойността във файла и
+        strong премества
+        | итератора
+      li
+        | ако имате повече от един
+        tt.docutils.literal
+          span.pre ostream_iterator
+        | (
+        tt.docutils.literal
+          span.pre ostreambuf_iterator
+        | )
+        | асоцииран с един и същи файл и ги записвате ще получите изненадващи
+        | резултати (представете си, че пишете едновременно един файл от две или
+        | повече функции)
+section
+    h2 stream vs streambuf iterators
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre istream_iterator
+        | и
+        tt.docutils.literal
+          span.pre ostream_iterator
+        | използват форматираните
+        | входно-изходни операции, т.е.
+        tt.docutils.literal
+          span.pre operator
+          span.pre <<
+      li
+        tt.docutils.literal
+          span.pre istreambuf_iterator
+        | и
+        tt.docutils.literal
+          span.pre ostreambuf_iterator
+        | използват неформатирани
+        | входно-изходни операции и четат/пишат директно буфера на потока
+      li
+        | Ако не се нуждаете от форматирани входно-изходни операции използвайте
+        tt.docutils.literal
+          span.pre istreambuf_iterator
+        | и
+        tt.docutils.literal
+          span.pre ostreambuf_iterator
+        | - те са по - ефективни
+section
+    h2 forward iterator
+    ul.simple
+      li позволяват няколкократно итериране (с няколко итератора)
+      li само в една посока
+      li нито един стандартен контейнер не предоставя forward iterators
+      li
+        tt.docutils.literal
+          span.pre slist::iterator
+        | е forward iterator
+      li
+        | категорията съществува за да представи изискванията на голяма част от
+        | алгоритмите към итераторите, върху които се прилагат
+section
+    h2 bidirectional iterator
+    ul.simple
+      li позволяват няколкократно итериране (с няколко итератора)
+      li и в двете посоки, но само последователно
+      li
+        tt.docutils.literal
+          span.pre list
+        | ,
+        tt.docutils.literal
+          span.pre set
+        | ,
+        tt.docutils.literal
+          span.pre map
+        | ,
+        tt.docutils.literal
+          span.pre multiset
+        | ,
+        tt.docutils.literal
+          span.pre multimap
+        | предоставят
+        | bidirectional iterators
+section
+    h2 random access iterator
+    ul.simple
+      li позволяват произволен достъп до обектите в контейнера
+      li този достъп не се проверява за грешка
+      li
+        tt.docutils.literal
+          span.pre vector
+        | и
+        tt.docutils.literal
+          span.pre deque
+        | предоставят random access iterators
+section
+    h2 random access iterator
+    :cxx
+      random_iterator x, y;
+      y = x + 5;
+      value v = x[42];
+
+section
+    h2 iterator tags
+    p
+      | За всеки тип итератори има съответстващ C++ тип, който се нарича таг.
+      | (Всеки итератор, например
+      tt.docutils.literal
+        span.pre vector::iterator
+      | , е таг-нат със своя семантичен
+      | тип итератор, в случая с
+      tt.docutils.literal
+        span.pre random_access_iterator
+      | )
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre input_iterator_tag
+      li
+        tt.docutils.literal
+          span.pre output_iterator_tag
+      li
+        tt.docutils.literal
+          span.pre forward_iterator_tag
+      li
+        tt.docutils.literal
+          span.pre bidirectional_iterator_tag
+      li
+        tt.docutils.literal
+          span.pre random_access_iterator_tag
+section
+    h2 iterator traits
+    p
+      | Позволяват достъп до характеристиките на даден итератор
+      ul.simple
+        li типа на стойността, към която итераторът сочи
+        li типа на указател към стойността, към която итераторът сочи
+        li типа на псевдоним към стойността, към която итераторът сочи
+        li
+          | типа на разликата на два итератори (
+          tt.docutils.literal
+            span.pre x
+            span.pre -
+            span.pre y
+          | )
+section
+    h2 iterator traits
+    :cxx
+      template <typename Iterator>
+      struct iterator_traits {
+          typedef typename Iterator::difference_type difference_type;
+          typedef typename Iterator::value_type value_type;
+          typedef typename Iterator::pointer pointer;
+          typedef typename Iterator::reference reference;
+          typedef typename Iterator::iterator_category iterator_category;
+      } ;
+
+section
+    h2 ?
+    p
+      | Защо има
+      tt.docutils.literal
+        span.pre iterator_traits
+      | когато явно итераторите сами имат
+      tt.docutils.literal
+        span.pre typedef
+      | със
+      | всичко необходимо?
+section
+    h2 Отговор
+    p
+      tt.docutils.literal
+        span.pre T
+        span.pre *
+      | също е итератор, но няма никакъв
+      tt.docutils.literal
+        span.pre typedef
+      | в себе си
+section
+    h2 iterator_traits<T*>
+    :cxx
+      template <typename T>
+      struct iterator_traits<T*> {
+          typedef ptrdiff_t difference_type;
+          typedef T value_type;
+          typedef T* pointer;
+          typedef T& reference;
+          typedef random_access_iterator_tag iterator_category;
+      } ;
+
+section
+    h2
+      | Защо ни е
+      tt.docutils.literal
+        span.pre iterator_traits
+      | ?
+    :cxx
+      // note: stupid example
+      template <typename Iterator>
+      void swap_values(Iterator x, Iterator y)
+      {
+          typename iterator_traits<Iterator>::value_type tmp = *x;
+          *x = *y;
+          *y = tmp;
+      }
+
+section
+    h2 advance()
+    :cxx
+      template <typename Iterator, typename Distance>
+      void advance(Iterator& i, Distance n)
+      {
+          // ???
+          while (n--) ++i;
+      }
+      // доста бавно за random_access iterator
+
+section
+    h2 advance()
+    :cxx
+      template <typename Iterator, typename Distance>
+      void advance(Iterator& i, Distance n)
+      {
+          advance_impl(i, n, iterator_traits<Iterator>::iterator_category());
+      }
+
+section
+    h2 advance_impl()
+    :cxx
+      template <typename Iterator, typename Distance>
+      void advance_impl(Iterator& i, Distance n, random_iterator_tag tag)
+      {
+          i += n;
+      }
+
+      template <typename Iterator, typename Distance, typename Tag>
+      void advance_impl(Iterator& i, Distance n, Tag tag)
+      {
+          while (n--) ++i;
+      }
+
+section
+    h2 iterator adaptors
+    ul.simple
+      li front_inserter
+      li back_inserter
+      li insert_iterator
+    p
+      | Дефинирание са в
+      tt.docutils.literal
+        span.pre <iterator>
+section
+    h2 front_inserter
+    ul.simple
+      li
+        | писането в този итератор извиква
+        tt.docutils.literal
+          span.pre push_front
+        | на контейнера
+      li
+        | Истинския тип е
+        tt.docutils.literal
+          span.pre std::front_insert_iterator
+        | , но много рядко се налага да
+        | се ползва явно.
+      li
+        tt.docutils.literal
+          span.pre std::front_inserter
+        | е функция, която връща такъв итератор
+section
+    h2 Пример за front_inserter
+    :cxx
+      vector<int> v;
+      list<int> l;
+      // ...
+      copy(v.begin(), v.end(), front_inserter(l));
+      // това ще обърне реда на елементите на v в r
+
+section
+    h2 back_inserter
+    ul.simple
+      li
+        | писането в този итератор извиква
+        tt.docutils.literal
+          span.pre push_back
+        | на контейнера
+      li
+        | типът на итератора е
+        tt.docutils.literal
+          span.pre std::back_insert_iterator
+      li
+        tt.docutils.literal
+          span.pre std::back_inserter
+        | е функция, която връща такъв итератор
+section
+    h2 insert_iterator
+    ul.simple
+      li
+        | писането в този итератор прави
+        tt.docutils.literal
+          span.pre insert
+        | във контейнера. Първия
+        tt.docutils.literal
+          span.pre insert
+        | се прави в позицията определена при създаването на итератора, а всеки
+        | следващ - в позицията след предходно вмъкнатия елемент
+      li
+        tt.docutils.literal
+          span.pre std::inserter(container,
+          span.pre it)
+        | създава такъв итератор
+section
+    h2 Пример за insert_iterator
+    :cxx
+      list<int> l, r;
+      list<int>::iterator i;
+      for (int i = 0; i < 5; ++i)
+          l.push_back(i);
+      r = l;
+      i = r.begin();
+      advance(i, 3);
+      copy(l.begin(), l.end(), inserter(r, i))
+      // 0 1 2 0 1 2 3 4 3 4
+
+section
+    h2 const_iterator
+    ul
+      li
+        p.first
+          | всички контейнери предоставят
+          tt.docutils.literal
+            span.pre const_iterator
+      li
+        p.first
+          | повечето методи на контейнерите изискват
+          tt.docutils.literal
+            span.pre iterator
+      li
+        p.first
+          | за да превърнете
+          tt.docutils.literal
+            span.pre const_iterator
+          | в
+          tt.docutils.literal
+            span.pre iterator
+          | използвайте:
+        :cxx
+          Vector v;
+          Vector::const_iterator c;
+          // ...
+          Vector::iterator i = advance(v.begin(), distance(v.begin, c));
+          // работи за всички видове, контейнери
+          // ще бъде О(N) за forward iterators
+
+section
+    h2 reverse_iterator
+    ul.simple
+      li позволяват обхождането на елементите в контейнерите да става в обратен ред
+      li
+        | за да се запазят изискванията за валидност на указателите
+        tt.docutils.literal
+          span.pre reverse_iterator
+        | сочи към елемента след (при нормално обхождане) текущия
+      li
+        tt.docutils.literal
+          span.pre reverse_iterator
+        | има метод base(), който връща нормален итератор към
+        | сочещ към елемента след (при нормално обхождане) след текущия
+    :cxx
+      vector<int> v;
+      // ... // v is [0, 1, 2, 3]
+      vector<int>::reverse_iterator i = v.rbegin();
+      // i.base() == v.end()
+      ++i;
+      // *i == 2;
+      // *(i.base()) == 3;
+
+section
+    h2 Вмъкване и изтриване през reverse_iterator
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre c.insert(i,
+          span.pre v)
+        | - вмъква
+        tt.docutils.literal
+          span.pre v
+        | преди
+        tt.docutils.literal
+          span.pre i
+      li
+        tt.docutils.literal
+          span.pre c.insert(ri.base(),
+          span.pre v)
+        | - вмъква
+        tt.docutils.literal
+          span.pre v
+        | преди
+        tt.docutils.literal
+          span.pre reverse_iterator
+        | -a
+        tt.docutils.literal
+          span.pre ri
+        | погледнато отзад напред
+      li
+        tt.docutils.literal
+          span.pre c.erase((++ri).base())
+        | ще изтрие елемента сочен от
+        tt.docutils.literal
+          span.pre ri
+
+section
+    section
+        :markdown
+            # Custom iterator
+
+            Writing custom iterator is a tedious task
+
+    section
+        :markdown
+            ## Bare minimum
+
+            * all `typedef`
+            * `operator *`, `operator ->`
+            * `operator ==`, `operator != `
+            * `operator ++`, `operator ++(int)`
+
+    section
+        :markdown
+            ## Random-access iterator
+
+            All `pointer`-like semantics:
+
+            * `operator[]`
+            * `operator <`, `operator <=`,
+            * `operator >`, `operator >=`,
+            * `explicit operator bool`  (or SafeBool idiom)
+            * `operator !`
+
+    section
+        :markdown
+            ## Extra
+
+            * helper functions for creating instances
+
+section
+    section
+        :markdown
+            # Future for iterators
+    section
+        :markdown
+            ## Iterators must go
+
+            Andrei Alexandrescu
+
+            BoostCon 2009
+
+            [Slides](https://github.com/boostcon/2009_presentations/raw/master/wed/iterators-must-go.pdf)
+
+    section
+        :markdown
+
+            * Iterators are error-prone
+              * You always need *begin* and *end* of the same container
+              * Given two iterators there is no way to detect whether they
+                belong to the same container
+            * Writing a custom iterator is too much code
+            * Iterators are almost non-composable
+
+    section
+        :markdown
+            ## `range`
+
+            * basically it is the pair [*begin*, *end*)
+            * doesn't have to be pointer-like
+            * easily composable
+
