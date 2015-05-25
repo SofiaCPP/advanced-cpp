@@ -3,10 +3,12 @@
 #include <list>
 #include <deque>
 #include <algorithm>
+#include <set>
+#include <unordered_set>
 
 CELERO_MAIN
 
-const int size = 2048;
+const int size = 1024;
 
 BASELINE(Construction, PlainArrayInt, 64, 1024)
 {
@@ -89,7 +91,7 @@ struct ContainerBenchmark : celero::TestFixture
     virtual std::vector<int64_t> getExperimentValues() const override
     {
         auto start = 4LL;
-        std::vector<int64_t> values(12);
+        std::vector<int64_t> values(13);
         std::generate(begin(values), end(values), [&start]() {
                 return start *= 2;
         });
@@ -123,6 +125,7 @@ struct IterateContainer<std::unique_ptr<T[]>> : ContainerBenchmark
     size_t size_;
 };
 
+/*
 BASELINE_F(Iteration, PlainArray, IterateContainer<std::unique_ptr<int[]>>, 64, 1024)
 {
     celero::DoNotOptimizeAway(std::accumulate(container_.get(), container_.get() + size_, 0));
@@ -143,6 +146,71 @@ BENCHMARK_F(Iteration, List, IterateContainer<std::list<int>>, 64, 1024)
     celero::DoNotOptimizeAway(std::accumulate(begin(container_), end(container_), 0));
 }
 
+*/
+
+template <typename T>
+struct SearchContainer : ContainerBenchmark
+{
+    virtual void setUp(int64_t size)
+    {
+        container_ = T(size);
+        std::iota(begin(container_), end(container_), 0);
+        needle_ = std::rand() % size;
+    }
+
+    T container_;
+    typename T::value_type needle_;
+};
+
+template <typename T>
+struct SearchContainer<std::unique_ptr<T[]>> : ContainerBenchmark
+{
+    virtual void setUp(int64_t size)
+    {
+        container_.reset(new T[size]);
+        size_ = size;
+        std::iota(container_.get(), container_.get() + size, 0);
+        needle_ = std::rand() % size;
+    }
+
+    std::unique_ptr<T[]> container_;
+    size_t size_;
+    T needle_;
+};
+
+template <typename T>
+struct SearchContainer<std::set<T>> : ContainerBenchmark
+{
+    virtual void setUp(int64_t size)
+    {
+        size_ = size;
+        for (auto i = 0; i < size; ++i)
+            container_.insert(i);
+        needle_ = std::rand() % size;
+    }
+
+    std::set<T> container_;
+    size_t size_;
+    T needle_;
+};
+
+
+template <typename T>
+struct SearchContainer<std::unordered_set<T>> : ContainerBenchmark
+{
+    virtual void setUp(int64_t size)
+    {
+        size_ = size;
+        for (auto i = 0; i < size; ++i)
+            container_.insert(i);
+        needle_ = std::rand() % size;
+    }
+
+    std::unordered_set<T> container_;
+    size_t size_;
+    T needle_;
+};
+
 template <typename T>
 struct SortContainer : ContainerBenchmark
 {
@@ -150,9 +218,11 @@ struct SortContainer : ContainerBenchmark
     {
         container_ = T(size);
         std::generate(begin(container_), end(container_), std::rand);
+        needle_ = std::rand();
     }
 
     T container_;
+    typename T::value_type needle_;
 };
 
 template <typename T>
@@ -163,11 +233,15 @@ struct SortContainer<std::unique_ptr<T[]>> : ContainerBenchmark
         container_.reset(new T[size]);
         size_ = size;
         std::generate(container_.get(), container_.get() + size_, std::rand);
+        needle_ = std::rand();
     }
 
     std::unique_ptr<T[]> container_;
     size_t size_;
+    T needle_;
 };
+
+/*
 
 BASELINE_F(Sorting, PlainArray, SortContainer<std::unique_ptr<int[]>>, 128, 128)
 {
@@ -188,3 +262,55 @@ BENCHMARK_F(Sorting, List, SortContainer<std::list<int>>, 128, 128)
 {
     container_.sort();
 }
+
+BENCHMARK_F(Sorting, Deque, SortContainer<std::deque<int>>, 128, 128)
+{
+    sort(begin(container_), end(container_));
+}
+
+BENCHMARK_F(Sorting, List, SortContainer<std::list<int>>, 128, 128)
+{
+    container_.sort();
+}
+*/
+
+BASELINE_F(Searching, PlainArray, SearchContainer<std::unique_ptr<int[]>>, 128, 2048)
+{
+    celero::DoNotOptimizeAway(std::find(container_.get(), container_.get() + size_, rand() % size_));
+}
+
+BENCHMARK_F(Searching, Vector, SearchContainer<std::vector<int>>, 128, 2048)
+{
+    celero::DoNotOptimizeAway(std::find(begin(container_), end(container_), rand() % container_.size()));
+}
+
+BENCHMARK_F(Searching, BinaryVector, SearchContainer<std::vector<int>>, 128, 2048)
+{
+    celero::DoNotOptimizeAway(std::binary_search(begin(container_), end(container_), rand() % container_.size()));
+}
+
+BENCHMARK_F(Searching, Set, SearchContainer<std::set<int>>, 128, 2048)
+{
+    celero::DoNotOptimizeAway(container_.find(rand() % size_));
+}
+
+BENCHMARK_F(Searching, UnorderedSet, SearchContainer<std::unordered_set<int>>, 128, 2048)
+{
+    celero::DoNotOptimizeAway(container_.find(rand() % size_));
+}
+
+template <typename T>
+struct SortedContainer : SortContainer<T>
+{
+    virtual void setUp(int64_t size)
+    {
+        container_ = T(size);
+        std::generate(begin(container_), end(container_), std::rand);
+        needle_ = std::rand();
+    }
+
+    T container_;
+    typename T::value_type needle_;
+};
+
+
