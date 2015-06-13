@@ -1,0 +1,53 @@
+title: Midterm Marks
+date: 2015-05-31 23:51:49
+tags: news
+categories: news
+---
+p To get your mark, enter your number below.
+.row
+    .col-sm-6
+        form(onsubmit='return getMark();')
+            .form-group
+                label.control-label Number: 
+                    .input-group
+                        input#fn.form-control(type='number', size=6,
+                            required=true, placeholder='123456')
+                        span.input-group-btn
+                            button.btn.btn-primary(type='submit') Go!
+            .form-group
+                label.control-label(for='mmark') Midterm Mark: 
+                input.form-control#mmark(readonly=true)
+            .form-group
+                label.control-label(for='mscore') Midterm Score:
+                input.form-control#mscore(readonly=true)
+    .col-sm-6
+        .alert.alert-info.alert-block The scale is:
+            ul
+                li 2 - below 25
+                li 3 - between 25 and 36
+                li 4 - between 37 and 48
+                li 5 - between 49 and 60
+                li 6 - 61 and above
+
+script.
+    function showScore(result) {
+        if (result.mark) {
+            $('#mscore').val(result.score);
+            $('#mmark').val(result.mark);
+        } else {
+            $('#mscore').val('missing');
+            $('#mmark').val('N/A');
+        }
+    }
+    function showError() {
+        $('#mscore').val('ERROR');
+        $('#mmark').val('ERROR');
+    }
+    function getMark() {
+        var fn = $('#fn').val();
+        $.getJSON('https://advanced-cxx.herokuapp.com/midterm/' + fn)
+            .then(showScore)
+            .fail(showError);
+        return false;
+    }
+
