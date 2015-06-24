@@ -164,7 +164,7 @@ section
             ####  `reserve`
 
             * `reserve(n)` Sets the capacity to **at least** *n* elements
-            * Always you it when you now the number of elements in advance
+            * Always use it when you know the number of elements in advance
     section
         :cxx
             std::ifstream input("input.txt");
@@ -619,7 +619,7 @@ section
     section
         :markdown
 
-            Associative containers *assiciate* keys with values.  Both variants
+            Associative containers *associate* keys with values.  Both variants
             have very similar usage and API, but different implementations and
             requirements for the types.
 
@@ -715,7 +715,7 @@ section
             template <typename K,
                       typename V,
                       typename Hash = std::hash<K>,
-                      typename KeyEqual = std::less<K>,
+                      typename KeyEqual = std::equal_to<K>,
                       typename Allocator = std::allocator<std::pair<const K, V>>
                       >
             class unordered_map;
