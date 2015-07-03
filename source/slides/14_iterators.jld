@@ -89,9 +89,7 @@ section
     ul.simple
       li
         tt.docutils.literal
-          span.pre *x
-          span.pre \=
-          span.pre v;
+          span.pre *x++ = v;
         | записва стойността във файла и
         strong премества
         | итератора
