@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>STL Algorithms</title></head><body><div class="reveal"><div class="slides"><section><h1>Алгоритми</h1><ul class="simple"><li>STL предлага много алгоритми</li><li>ще разгледаме само част от тях</li></ul></section><section><h2></h2></section><section><h2>Видове алгоритми</h2><ul class="simple"><li>не-променящи последователни</li><li>променящи последователни</li><li>сортиращи и търсещи</li><li>множествени</li><li>пирамидални</li><li>числени</li><li>общи</li></ul></section><section><h2>Не-променящи последователни</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">for_each()</span></tt></li><li><tt class="docutils literal"><span class="pre">find()</span></tt></li><li><tt class="docutils literal"><span class="pre">find_end()</span></tt></li><li><tt class="docutils literal"><span class="pre">find_first_of()</span></tt></li><li><tt class="docutils literal"><span class="pre">adjascent_find()</span></tt></li><li><tt class="docutils literal"><span class="pre">count()</span></tt></li><li><tt class="docutils literal"><span class="pre">mismatch()</span></tt></li><li><tt class="docutils literal"><span class="pre">equal()</span></tt></li><li><tt class="docutils literal"><span class="pre">search()</span></tt></li></ul></section><section><h2>Променящи последователни</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">copy()</span></tt></li><li><tt class="docutils literal"><span class="pre">swap()</span></tt></li><li><tt class="docutils literal"><span class="pre">transform()</span></tt></li><li><tt class="docutils literal"><span class="pre">replace()</span></tt></li><li><tt class="docutils literal"><span class="pre">fill()</span></tt></li><li><tt class="docutils literal"><span class="pre">generate()</span></tt></li><li><tt class="docutils literal"><span class="pre">remove()</span></tt></li><li><tt class="docutils literal"><span class="pre">unique()</span></tt></li><li><tt class="docutils literal"><span class="pre">reverse()</span></tt></li><li><tt class="docutils literal"><span class="pre">rotate()</span></tt></li><li><tt class="docutils literal"><span class="pre">random_shuffle()</span></tt></li><li><tt class="docutils literal"><span class="pre">partition()</span></tt></li></ul></section><section><h2>Алгоритми за сортиране и търсене</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">sort()</span></tt></li><li><tt class="docutils literal"><span class="pre">stable_sort()</span></tt></li><li><tt class="docutils literal"><span class="pre">partial_sort()</span></tt></li><li><tt class="docutils literal"><span class="pre">nth_element()</span></tt></li><li><tt class="docutils literal"><span class="pre">lower_bound()</span></tt></li><li><tt class="docutils literal"><span class="pre">upper_bound()</span></tt></li><li><tt class="docutils literal"><span class="pre">equal_range()</span></tt></li><li><tt class="docutils literal"><span class="pre">binary_search()</span></tt></li><li><tt class="docutils literal"><span class="pre">merge()</span></tt></li></ul></section><section><h2>Алгоритми за множества</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">includes()</span></tt></li><li><tt class="docutils literal"><span class="pre">set_union()</span></tt></li><li><tt class="docutils literal"><span class="pre">set_intersection()</span></tt></li><li><tt class="docutils literal"><span class="pre">set_difference()</span></tt></li><li><tt class="docutils literal"><span class="pre">set_symmetric_difference()</span></tt></li></ul><p><em>Тези алгоритми работят само върху сортирани последователности!!!</em></p></section><section><h2>Алгоритми за пирамиди</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">push_heap()</span></tt></li><li><tt class="docutils literal"><span class="pre">pop_heap()</span></tt></li><li><tt class="docutils literal"><span class="pre">make_heap()</span></tt></li><li><tt class="docutils literal"><span class="pre">sort_heap()</span></tt></li></ul></section><section><h2>numeric алгоритми</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">accumulate()</span></tt></li><li><tt class="docutils literal"><span class="pre">inner_product()</span></tt></li><li><tt class="docutils literal"><span class="pre">partial_sum()</span></tt></li><li><tt class="docutils literal"><span class="pre">adjascent_difference()</span></tt></li></ul></section><section><h2>Общи алгоритми</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">min()</span></tt>,<tt class="docutils literal"><span class="pre">max()</span></tt></li><li><tt class="docutils literal"><span class="pre">min_element()</span></tt>,<tt class="docutils literal"><span class="pre">max_element()</span></tt></li><li><tt class="docutils literal"><span class="pre">lexicographical_compare()</span></tt></li><li><tt class="docutils literal"><span class="pre">next_permutation()</span></tt></li><li><tt class="docutils literal"><span class="pre">prev_permutation()</span></tt></li></ul></section><section><h2>for_each</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">for_each(c.begin(),</span><span class="pre">c.end(),</span><span class="pre">g);</span></tt></li><li>Стандартът казва, че<tt class="docutils literal"><span class="pre">for_each</span></tt>е алгоритъм, който не променя редицата,
+върху която се изпълнява.</li><li>Функцията, която подадете на<tt class="docutils literal"><span class="pre">for_each</span></tt>може да промени стойността на
+аргумента си.</li><li>Но това е лош стил - ако искате да променяте редицата използвайте<tt class="docutils literal"><span class="pre">transform</span></tt></li><li><tt class="docutils literal"><span class="pre">for_each</span></tt>връща функцията, с която е била извикана</li></ul></section><section><h2>Пример за for_each</h2><pre class="mstretch"><code>struct Concat : unary_function&lt;string, void&gt;
+{
+        void operator()(const string&amp; s)
+        {
+                result += s;
+        }
+        string result;
+} ;
+// ...
+// v is container of strings
+cout &lt;&lt; for_each(v.begin(), v.end(), Concat()).result &lt;&lt; endl;
+cout &lt;&lt; accumulate(v.begin(), v.end(), &quot;&quot;) &lt;&lt; endl;
+</code></pre></section><section><h2>transform</h2><p>прилага функцията, подадена му като аргумент, върху всички елементи на една
+редица и запазва резултата в друга редици</p></section><section><h2>Използване на transform</h2><pre class="mstretch"><code>vector&lt;int&gt; v;
+transform(v.begin(), v.end(), v.begin(), negate&lt;int&gt;());
+// сменя знака на числата във v
+
+vector&lt;int&gt; r;
+transform(v.begin(), v.end(), back_inserter(r),
+    bind1st(plus&lt;int&gt;(), 42));
+    
+vector&lt;int&gt; a, b;
+transform(a.begin(), a.end(), b.begin(), b.end(),
+    a.begin(), plus&lt;int&gt;());
+// добава b към a почленно
+</code></pre></section><section><h2>Сортиране и търсене</h2><ul class="simple"><li>Много задачи изискват сортиране</li><li>Не по-малко задачи изискват<em>почти</em>сортиране</li><li>STL предлага алгоритми за всички основни типове задачи</li></ul></section><section><h2>Пълно сортиране</h2><pre class="mstretch"><code>template &lt;typename Iterator&gt;
+void sort(Iterator begin, Iterator end);
+// сортира използвайки operator&lt; в нарастващ ред
+
+template &lt;typename Iterator, typename Ordering&gt;
+void sort(Iterator begin, Iterator end, Ordering c);
+
+// sort използва introsort алгоритъма и изисква random
+// access iterators
+// Average O(N*logN), Worst case О(N^2)
+
+// за сортиране на list
+list&lt;int&gt; l;
+l.sort();
+l.sort(greater&lt;int&gt;());
+</code></pre></section><section><h2>Стабилно сортиране</h2><pre class="mstretch"><code>template &lt;typename Iterator&gt;
+void stable_sort(Iterator begin, Iterator end);
+
+template &lt;typename Iterator, typename Ordering&gt;
+void stable_sort(Iterator begin, Iterator end, Ordering c);
+
+// не по-бавно от O(N*logN*logN)
+// O(N*logN) ако има достатъчно голям свободен буфер
+</code></pre></section><section><h2>Частично сортиране</h2><p><em>10-те студента с най-висок успех?</em></p><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ...
+vector&lt;int&gt;::iterator n = v.begin() + 10;
+partial_sort(v.begin(), n, v.end());
+// сортира [v.begin(), n) - поставя най-малките 10
+// елемента сортирани в началото на v
+// O(N*logN)
+</code></pre></section><section><h2>N-ти елемент</h2><p><em>10-тия по успех студент?</em></p><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ...
+vector&lt;int&gt;::iterator n = v.begin() + 10;
+nth_element(v.begin(), n, v.end());
+// *n ще бъде 10-тото най-малко число
+// всички числа в [v.begin(), n) са по-малки или равни на *n
+// всички числа в [n + 1, v.end()) са по-големи или равни на *n
+
+// Avarage: O(N)
+</code></pre></section><section><h2>lower_bound</h2><p>Връща итератор към първата позиция, в която можем да вмъкнем елемента без да
+нарушим подредеността на редицата.</p><p><em>lower_bound ИЗИСКВА редицата да е била сортирана</em></p><p><em>lower_bound прави O(logN) сравнения</em></p><p><em>lower_bound прави O(logN) стъпки за random access iterator и O(N) за forward</em></p><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ...
+sort(v.begin(), v.end());
+int x = g(42);
+vector&lt;int&gt;::iterator p = lower_bound(v.begin(), v.end(), x);
+if (p != v.end() &amp;&amp; !(*p &lt; x || x &lt; *p))
+    cout &lt;&lt; &quot;there is &quot; &lt;&lt; x &lt;&lt; &quot; in v&quot; &lt;&lt; endl;
+v.insert(p, x);
+
+// O(logN)
+</code></pre></section><section><h2>upper_bound</h2><p>Връща итератор към последната позиция, в която можем да вмъкнем елемента без
+да нарушим подредеността на редицата. Ако съществува еквивалентен на дадения
+елемент в редицата,<tt class="docutils literal"><span class="pre">upper_bound</span></tt>сочи точно след последния такъв.</p><p><em>upper_bound има същото поведение както lower_bound относно редицата и итераторите</em></p></section><section><h2>equal_range</h2><p>Връща std::pair от<tt class="docutils literal"><span class="pre">lower_bound</span></tt>и<tt class="docutils literal"><span class="pre">upper_bound</span></tt></p><pre class="mstretch"><code>typedef vector&lt;int&gt; Vector;
+typedef vector&lt;int&gt; VectorIt;
+Vector v;
+// ...
+sort(v.begin(), v.end());
+pair&lt;VectorIt, VectorIt&gt; r = equal_range(v.begin(), v.end(), 42);
+if (r.first == r.second)
+    cout &lt;&lt; &quot;42 is not there&quot;;
+v.insert(r.second, 42);
+// вмъква 42
+
+// O(logN)
+</code></pre></section><section><h2>binary_search</h2><p>Връща<tt class="docutils literal"><span class="pre">true</span></tt>/<tt class="docutils literal"><span class="pre">false</span></tt>резултат дали даден елемент се среща в<strong>СОРТИРАНА</strong>редица.</p><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ...
+sort(v.begin(), v.end());
+if (binary_search(v.begin(), v.end(), 42))
+    cout &lt;&lt; &quot;42 is the Answer&quot; &lt;&lt; endl;
+    
+// O(logN)
+</code></pre></section><section><h2>Как Ви се струва това?</h2><pre class="mstretch"><code>class A { } ;
+
+bool operator==(const A&amp; lhs, const A&amp; rhs);
+
+bool mycmp(const A&amp; x, const A&amp; y) {
+    return x.better_than(y);
+}
+
+vector&lt;A&gt; v;
+// ...
+sort(v.begin(), v.end(), mycmp);
+A x = g(42);
+vector&lt;A&gt;::iterator p = lower_bound(v.begin(), v.end(), mycmp);
+if (p != v.end() &amp;&amp; *p == x)
+    cout &lt;&lt; &quot;there is &quot; &lt;&lt; x &lt;&lt; &quot; in v&quot; &lt;&lt; endl;
+    </code></pre></section><section><h2>Бележки за алгоритмите за сортиране и търсене</h2><ul class="simple"><li>всички алгоритми могат да използват частична наредба определена от
+потребителя вместо<tt class="docutils literal"><span class="pre">operator</span><span class="pre"><</span></tt>.</li><li>ако използвате Ваша наредба трябва да се изключително внимателни да
+използвате навсякъде една и съща наредба</li><li>Алгоритмите за търсене работят върху вече<strong>ПОДРЕДЕНИ</strong>редици</li><li>Правете разлика между равенство (<tt class="docutils literal"><span class="pre">operator</span><span class="pre">\==</span></tt>) и еквивалентност.
+Използвайте или само едното или само другото!</li><li>асоциативните контейнери имат методи<tt class="docutils literal"><span class="pre">find</span></tt>,<tt class="docutils literal"><span class="pre">lower_bound</span></tt>,<tt class="docutils literal"><span class="pre">upper_bound</span></tt>,<tt class="docutils literal"><span class="pre">equal_range</span></tt></li><li><tt class="docutils literal"><span class="pre">list::sort</span></tt>е<em>стабилно</em>сортиране O(NlogN)</li></ul></section><section><h2>Числови алгоритми</h2><ul class="simple"><li>намират се в<tt class="docutils literal"><span class="pre"><numeric></numeric></span></tt></li><li>TR1 добава много повече функции, включително и генериране на произволни
+числа</li></ul></section><section><h2>accumulate</h2><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ...
+int sum = accumulate(v.begin(), v.end(), 0);
+// uses operator+
+int prod = accumulate(v.begin(), v.end(), 1, multiplies&lt;int&gt;());
+</code></pre></section><section><h2>partial_sum</h2><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ...
+int sum = partial_sum(v.begin(), v.end());
+// uses operator+
+int prod = partial_sum(v.begin(), v.end(), multiplies&lt;int&gt;());
+int c = partial_sum(v.begin(), v.end(), Combiner());
+</code></pre></section><section><h2>adjacent_difference</h2><p>Смята разликите между два съседни елемента и ги запазва в друга редица</p><pre class="mstretch"><code>vector&lt;int&gt; v, r;
+// ...
+adjacent_difference(v.begin(), v.end(), back_inserter(r));
+// r[0] = v[0]
+// r[1] = v[1] - v[0];
+// r[n+1] = v[n+1] - v[n];
+</code></pre></section><section><h2>inner_product</h2><p>Смята произведението на две редици:</p><pre class="mstretch"><code>a1*b1 + a2*b2 + ... + aN*bN
+</code></pre><pre class="mstretch"><code>vector&lt;double&gt; a, b;
+// a и b са вектори зададени с координати в ортогонален базис
+double ab = inner_product(a.begin(), a.end(), b.begin(), 0);
+// ab е скаларното произведение на двата вектора
+</code></pre></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

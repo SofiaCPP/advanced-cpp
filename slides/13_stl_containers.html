@@ -1,0 +1,487 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Containers in STL</title></head><body><div class="reveal"><div class="slides"><section><h1 id="STL_Containers">STL Containers</h1>
+</section><section><section><h1 id="Contents">Contents</h1>
+<ol>
+<li>Sequence containers</li>
+<li>Container adaptors</li>
+<li>Associative containers </li>
+<li>Unordered associative containers </li>
+<li>Standard non-containers</li>
+<li>Non-standard containers</li>
+</ol>
+</section><section><h2 id="Sequence_containers">Sequence containers</h2>
+<ol>
+<li><code>vector</code></li>
+<li><code>deque</code></li>
+<li><code>list</code></li>
+<li><code>array</code> - <code>C++</code>11</li>
+<li><code>forward_list</code> - <code>C++</code>11</li>
+</ol>
+</section><section><h2 id="Container_adaptors">Container adaptors</h2>
+<ol>
+<li><code>stack</code></li>
+<li><code>queue</code></li>
+<li><code>priority_queue</code></li>
+</ol>
+</section><section><h2 id="Associative_containers">Associative containers</h2>
+<ol>
+<li><code>set</code></li>
+<li><code>map</code></li>
+<li><code>multiset</code></li>
+<li><code>multimap</code></li>
+</ol>
+</section><section><h2 id="Unordered_associative_containers">Unordered associative containers</h2>
+<ol>
+<li><code>unordered_set</code></li>
+<li><code>unordered_map</code></li>
+<li><code>unordered_multiset</code></li>
+<li><code>unordered_multimap</code></li>
+</ol>
+</section><section><h2 id="Standard_non-containers">Standard non-containers</h2>
+<ol>
+<li><code>bitset</code></li>
+<li><code>vector&lt;bool&gt;</code></li>
+</ol>
+</section><section><h2 id="Non-standard_containers">Non-standard containers</h2>
+<ol>
+<li><code>boost::ptr_container</code></li>
+<li><code>boost::multi_array</code></li>
+<li><code>boost::intrusive</code></li>
+<li><code>boost::bimap</code></li>
+<li><code>boost::circular_buffer</code></li>
+</ol>
+</section></section><section><section><h1 id="STL">STL</h1>
+<ul>
+<li><em>STL</em> stands for <em>Standard Template Library</em></li>
+<li>Created by Alexander Stepanov and Meng Lee</li>
+</ul>
+</section><section><h2 id="Standard_Template_Libraries">Standard Template Libraries</h2>
+<ul>
+<li>Microsoft STL, based on Dinkum STL</li>
+<li>libstdc++ by GNU</li>
+<li>libc++ from clang</li>
+<li>EASTL</li>
+<li>STLPort</li>
+<li>Dinkum STL</li>
+</ul>
+</section></section><section><h2 id="Sequence_containers-1">Sequence containers</h2>
+</section><section><section><h3 id="std::vector"><code>std::vector</code></h3>
+<p>Probably 80% or 90% of the time, <code>std::vector</code> is the
+right choice for container.</p>
+</section><section><pre class="mstretch"><code>template &lt;typename T,
+    typename Allocator = std::allocator&lt;T&gt;&gt;
+class vector;
+</code></pre></section><section><h3 id="std::vector-1"><code>std::vector</code></h3>
+<ul>
+<li>Elements are stored sequentially in memory</li>
+<li>Random-access</li>
+<li><code>push_back</code> - <em>O(1)*</em></li>
+<li>random insert - <em>O(N)</em></li>
+<li>random access - <em>O(1)</em></li>
+</ul>
+</section><section><img src="13_stl_containers/vector.png"><ul>
+<li>overhead</li>
+<li>3 pointers for the vector</li>
+<li>one indirection for access</li>
+</ul>
+</section><section><p><code>vector</code> has:</p>
+<ul>
+<li><em>size</em> - the number of elements in the vector</li>
+<li><em>capacity</em> - the number of elements that can fit in the
+vector, without <em>growing</em></li>
+</ul>
+</section><section><h4 id="Growing"><em>Growing</em></h4>
+<ul>
+<li><em>growing</em> - the process of allocating a new buffer for
+storing the elements, copying/moving them to the new buffer
+and deallocating the old buffer</li>
+<li>Every time the <code>vector</code> grows by a constant factor<ul>
+<li>2, sqrt(2), <em>golden ratio</em></li>
+<li>this allows <code>push_back</code> to be <em>O(1)</em> *<ul>
+<li>N <code>push_back</code>s are <em>O(N)</em></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section><section><h4 id="Beware_of_the_growing_vector">Beware of the <em>growing</em> <code>vector</code></h4>
+<p><code>vector</code> growing invalides all iterators, references or
+pointers to elements in the vector, because the storage has
+moved and the elements are moved to the new storage</p>
+</section><section><pre class="mstretch"><code>std::vector&lt;Texture&gt; cache;
+
+Texture&amp; myTexture = cache[42];
+
+cache.push_back(Texture(...));
+
+renderer.Draw(myTexture); // oops
+
+</code></pre></section><section><h4 id="reserve"><code>reserve</code></h4>
+<ul>
+<li><code>reserve(n)</code> Sets the capacity to <strong>at least</strong> <em>n</em> elements</li>
+<li>Always you it when you now the number of elements in advance</li>
+</ul>
+</section><section><pre class="mstretch"><code>std::ifstream input(&quot;input.txt&quot;);
+
+int n;
+input &gt;&gt; n;
+std::vector&lt;int&gt; numbers;
+numbers.reserve(n);
+while (n--)
+{
+    int x;
+    input &gt;&gt; x;
+    numbers.push_back(x);
+}
+</code></pre></section><section><h4 id="capacity_VS_size"><em>capacity</em> VS <em>size</em></h4>
+<img src="13_stl_containers/vector.png"></section><section><pre class="mstretch"><code>std::ifstream input(&quot;input.txt&quot;);
+
+int n;
+input &gt;&gt; n;
+std::vector&lt;int&gt; numbers(n);
+for (int i = 0; i &lt; n; ++i)
+{
+    input &gt;&gt; numbers[i];
+}</code></pre><p class="fragment fade-in">Still a single allocation</p><p class="fragment fade-in">But ...</p></section><section><p><code>std::vector&lt;int&gt; numbers(n);</code> is a call to
+<code>vector(size_t count, T value = T())</code>, i.e.
+<code>vector(size_t count, int value = 0)</code>.</p>
+<p>This constructor initializes all the numbers with 0.  And we
+overwrite them immediately.</p>
+</section><section><p><code>reserve</code> doesn&#39;t initialize anything.</p>
+</section><section><p>When elements are loaded one by one it is better to use
+<code>reserve</code>.</p>
+</section><section><pre class="mstretch"><code>void ToVector(int* a, size_t n, std::vector&lt;int&gt;&amp; v)
+{
+    v.resize(n);
+    // if v.size() &lt; n, allocate storage for n ints
+    std::copy(a, a + n, v.begin());
+}
+</code></pre><p><code>std::copy</code> can use <code>std::memcpy</code>, so it will be
+faster</p>
+</section><section><h4 id="std::vector_almost_never_frees_storage"><code>std::vector</code> almost never frees storage</h4>
+<pre class="mstretch"><code>void reserve(size_t n) {
+    if (n &gt; capacity()) {
+        grow(n);
+    }
+}
+</code></pre></section><section><pre class="mstretch"><code>void resize(size_t n) {
+    reserve(n);
+    if (n &gt; size()) {
+        // default construct the missing elements
+        // and set the size to n
+        for (auto new_end = _begin + n; _end != new_end; ++_end)
+        {
+            new (_end) T();
+        }
+    } else {
+        // destruct any extra elements
+        // and set the size to n
+        for (auto new_end = _begin + n; _end != new_end; --_end)
+        {
+            _end-&gt;~T();
+        }
+    }
+}</code></pre></section><section><pre class="mstretch"><code>void clear() {
+    resize(0);
+}
+</code></pre></section><section><p>Sort the sequences in a file</p><pre class="mstretch"><code>N1 A1_1 A1_2 ... A1_$N1
+N2 A2_1 A2_2 ... A2_$N2
+...
+</code></pre></section><section><pre class="mstretch"><code>std::ifstream input(&quot;input.txt&quot;);
+
+while (input) 
+{
+    int n;
+    input &gt;&gt; n;
+    std::vector&lt;int&gt; numbers(n);
+    for (int i = 0; i &lt; n; ++i)
+    {
+        input &gt;&gt; numbers[i];
+    }
+    
+    std::sort(numbers.begin(), numbers.end());
+    
+    print_result(numbers);
+}</code></pre><p class="fragment fade-in">Every iteration `numbers` is destroyed, its</p>storage is deallocated and allocated again</section><section><pre class="mstretch"><code>std::ifstream input(&quot;input.txt&quot;);
+
+std::vector&lt;int&gt; numbers;
+
+int n;
+int x;
+while (input) 
+{
+    input &gt;&gt; n;
+    numbers.resize(n);
+    for (int i = 0; i &lt; n; ++i)
+    {
+        input &gt;&gt; numbers[i];
+    }
+    
+    std::sort(numbers.begin(), numbers.end());
+    
+    print_result(numbers);
+}</code></pre><p class="fragment fade-in">`numbers` will go to the maximum sequence</p>  length in the file and will not allocate again</section><section><h4 id="shrinking_a_vector"><code>shrinking</code> a vector</h4>
+<p>So how to actually free storage from a <code>vector</code>?</p>
+</section><section><h4>C++11 style</h4><pre class="mstretch"><code>std::vector&lt;int&gt; v;
+std::vector&lt;int&gt; q;
+// ...
+v.clear();
+v.shrink_to_fit();
+
+q.resize(5);
+q.shrink_to_fit();
+</code></pre></section><section><h4>C++98 style - swap idiom </h4><pre class="mstretch"><code>std::vector&lt;int&gt; v;
+std::vector&lt;int&gt; q;
+// ...
+
+// clear v
+std::vector&lt;int&gt;().swap(v);
+
+// shrink q
+std::vector&lt;int&gt;(q).swap(q);
+</code></pre></section><section><h4 id="vector-erase"><code>vector.erase</code></h4>
+<p>Erasing a random element in a <code>vector</code>, requires all the
+elements after the erased to be moved 1 position towards the
+front. This makes the <code>erase</code> to be <em>O(N)</em></p>
+</section><section><h4 id="vector-erase-1"><code>vector.erase</code></h4>
+<p>If the order of elements is not important, you can make:</p>
+<pre class="mstretch"><code>std::vector&lt;A&gt; v;
+std::vector&lt;A&gt;::iterator x;
+
+// ...
+
+swap(*x, v.back());
+v.pop_back();
+</code></pre></section><section><h4 id="vector_and_OOP"><code>vector</code> and OOP</h4>
+<pre class="mstretch"><code>std::vector&lt;Base&gt; c;
+Derived d;
+
+c.push_back(d);
+// d just got sliced.
+// only the Base part of d gets copied
+</code></pre></section><section><h4 id="vector_and_OOP-1"><code>vector</code> and OOP</h4>
+<pre class="mstretch"><code>{
+    std::vector&lt;Base*&gt; c;
+    
+    c.push_back(new Derived);
+    
+}
+// the Derived object leaked</code></pre></section><section><h4 id="vector_and_OOP-1"><code>vector</code> and OOP</h4>
+<ul>
+<li><code>vector</code> is not polymorphic friendly</li>
+<li><code>vector</code> doesn&#39;t take ownership of your pointers<ul>
+<li>std::vector<std::unique_ptr<a>&gt; might do</std::unique_ptr<a></li>
+</ul>
+</li>
+</ul>
+</section><section><h4 id="vector"><code>vector</code></h4>
+<p>Everytime you need a container:</p>
+<ol>
+<li>Try vector</li>
+<li>If it doesn&#39;t seem to fit, try vector again</li>
+<li>If it still doesn&#39;t fit, use something else</li>
+</ol>
+</section></section><section><section><h3 id="std::array_-_C++11"><code>std::array</code> - C++11</h3>
+<p>Array with constant at compile time size with STL friendly
+interface.</p>
+</section><section><pre class="mstretch"><code>template &lt;typename T, size_t Size&gt;
+class array {
+public:
+    iterator begin();
+    iterator end();
+    // ..
+private:
+    T m_Array[Size];        
+};
+</code></pre></section><section><ul>
+<li>No allocations</li>
+<li>Does not silently decay to T*</li>
+</ul>
+</section></section><section><section><h3 id="std::dynarray_-_C++XY"><code>std::dynarray</code> - C++XY</h3>
+<ul>
+<li>Array with fixed at construction time size</li>
+<li>STL friendly interface</li>
+<li>Voted out of C++14, but still might get in C++17</li>
+</ul>
+</section><section><h4 id="Stack_allocation">Stack allocation</h4>
+<p>The idea is that if the <code>dynarray</code> size is small enough,
+it storage to be allocated on the stack, instead of on the
+heap. This will be much more efficient.</p>
+</section><section><h4 id="Stack_allocation-1">Stack allocation</h4>
+<p>C++ doesn&#39;t allow stack allocation, so the proposal says:</p>
+<ul>
+<li>implement always as a single heap allocation</li>
+<li>in future the compiler might replace the heap allocation
+with stack allocation if it is safe.  </li>
+</ul>
+</section></section><section><section><h3 id="deque"><code>deque</code></h3>
+<p><strong>D</strong>ouble <strong>E</strong>nded <strong>Que</strong>ue</p>
+</section><section><ul>
+<li><code>push_back</code>, <code>pop_back</code> - <em>O(1)*</em></li>
+<li><code>push_front</code>, <code>pop_front</code> - <em>O(1)*</em></li>
+<li>random insert - <em>O(N)</em></li>
+<li>random access - <em>O(1)</em></li>
+</ul>
+</section><section><img src="13_stl_containers/deque.png"></section><section><p>The cost of <em>growing</em> a <code>deque</code> is lower than <em>growing</em> a
+<code>vector</code>, because only the collection with pointers to
+segments is copied.</p>
+</section></section><section><section><h3 id="list"><code>list</code></h3>
+<ul>
+<li>C++ <code>list</code> is double-linked list</li>
+<li>Most implementations are circular, but that is not required
+by the standard</li>
+</ul>
+</section><section><h4 id="Operations">Operations</h4>
+<ul>
+<li>any insert / any erase - <em>O(1)</em></li>
+<li>random access - <em>O(N)</em></li>
+</ul>
+</section><section><h4 id="Overhead">Overhead</h4>
+<ul>
+<li>two pointers for each element in the list</li>
+<li>elements can be at random locations in memory</li>
+</ul>
+</section><section><h4 id="list-size"><code>list.size</code></h4>
+<ul>
+<li><em>O(N)</em> or <em>O(1)</em> - C++98</li>
+<li><em>O(1)</em> in C++11<ul>
+<li>at the cost of <em>O(N)</em> <code>splice</code> in certain cases</li>
+</ul>
+</li>
+</ul>
+</section><section><h4 id="list-splice"><code>list.splice</code></h4>
+<ul>
+<li>The most important operation of <code>list</code></li>
+<li>Allows to take a piece of one list and insert it in another</li>
+<li><em>O(1)</em><ul>
+<li>moving elements in a single list</li>
+<li>moving an entire list in another list</li>
+<li>moving a single element from one list to another</li>
+</ul>
+</li>
+<li><em>O(N)</em> - moving [start, end) of one list to another<ul>
+<li>it has to count the elements in [start, end) so that
+`size()`` can be a <em>O(1)</em></li>
+</ul>
+</li>
+</ul>
+</section><section><h4 id="Invalidation">Invalidation</h4>
+<ul>
+<li>elements are never moved around the memory</li>
+<li>iterators and pointer/references to elements always remain
+valid, unless the element is erased from the list</li>
+</ul>
+</section><section><h4 id="Usage">Usage</h4>
+<p>Use <code>list</code> only if:</p>
+<ul>
+<li>most of the time the elements are shuffled around</li>
+<li>the elements must never move in memory<ul>
+<li>consider <code>std::vector&lt;pointer&gt;</code> - it will be
+more efficient again</li>
+</ul>
+</li>
+</ul>
+</section></section><section><section><h3 id="forward_list_-_C++11"><code>forward_list</code> - C++11</h3>
+<ul>
+<li>Single linked list</li>
+<li>some STL libraries have a non-standard <code>slist</code> container</li>
+</ul>
+</section></section><section><section><h2 id="Container_adaptors-1">Container adaptors</h2>
+<ol>
+<li><code>stack</code></li>
+<li><code>queue</code></li>
+<li><code>priority_queue</code></li>
+</ol>
+</section><section><p><code>stack</code> and <code>queue</code> are not containers, but they adapt (restrict)
+the operations over the underlying container to <em>LIFO</em> and <em>FIFO</em></p>
+</section><section><pre class="mstretch"><code>template &lt;typename T, typename C = std::deque&lt;T&gt;&gt;
+class stack;
+
+template &lt;typename T, typename C = std::deque&lt;T&gt;&gt;
+class queue;</code></pre></section><section><p><code>priority_queue</code> is a binary heap over a container.</p>
+</section><section><pre class="mstretch"><code>template &lt;typename T,
+          typename Container = std::vector&lt;T&gt;, 
+          typename Cmp = std::less&lt;typename Container::value_type&gt;
+          &gt;
+class priority_queue;
+</code></pre></section></section><section><section><h2 id="Associative_containers-1">Associative containers</h2>
+<ol>
+<li><code>set</code></li>
+<li><code>map</code></li>
+<li><code>multiset</code></li>
+<li><code>multimap</code></li>
+</ol>
+</section><section><h2 id="C++11_Unordered_associative_containers">C++11 Unordered associative containers</h2>
+<ol>
+<li><code>unordered_set</code></li>
+<li><code>unordered_map</code></li>
+<li><code>unordered_multiset</code></li>
+<li><code>unordered_multimap</code></li>
+</ol>
+</section><section><p>Associative containers <em>assiciate</em> keys with values.  Both variants
+have very similar usage and API, but different implementations and
+requirements for the types.</p>
+</section><section><pre class="mstretch"><code>template &lt;typename T,
+          typename Compare = std::less&lt;T&gt;,
+          typename Allocator = std::allocator&lt;T&gt;
+          &gt;
+class set;
+
+template &lt;typename T,
+          typename Compare = std::less&lt;T&gt;,
+          typename Allocator = std::allocator&lt;T&gt;
+          &gt;
+class multiset;
+</code></pre></section><section><pre class="mstretch"><code>template &lt;typename K,
+          typename V,
+          typename Compare = std::less&lt;K&gt;,
+          typename Allocator = std::allocator&lt;std::pair&lt;const K, V&gt;&gt;
+          &gt;
+class map;
+template &lt;typename K,
+          typename V,
+          typename Compare = std::less&lt;K&gt;,
+          typename Allocator = std::allocator&lt;std::pair&lt;const K, V&gt;&gt;
+          &gt;
+class multimap;
+</code></pre></section><section><p><code>multiset</code> and <code>multimap</code> allow duplicating of keys.</p>
+</section><section><p><code>set</code>, <code>map</code>, <code>multiset</code>, <code>multimap</code> are ordered because when
+iterating the (key, value) pairs in the container, the keys are
+orderer by the <code>Compare</code> comparator.</p>
+</section><section><h3 id="The_order_of_traversing_duplicated_keys_in_a_multiset_or">The order of traversing duplicated keys in a <code>multiset</code> or</h3>
+<p>  <code>multimap</code> is <strong><em>undefined</em></strong></p>
+</section><section><p>For all <em>orderered</em> associative containers the standard requires:</p>
+<ul>
+<li><em>insert</em> - O(logN) - average and worst</li>
+<li><em>lookup</em> - O(logN) - average and worst</li>
+<li><em>delete</em> - O(logN) - average and worst</li>
+</ul>
+</section><section><p>This means that effectively they are binary search trees.
+Most implementations are [red-black tree][rbt].</p>
+<p>rbt: <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree" target="_blank" rel="external">http://en.wikipedia.org/wiki/Red%E2%80%93black_tree</a></p>
+</section><section><p><em>Unordered</em> containers have the following complexities:</p>
+<ul>
+<li><em>insert</em> - O(1) average and O(N) worst</li>
+<li><em>lookup</em> - O(1) average and O(N) worst</li>
+<li><em>delete</em> - O(1) average and O(N) worst</li>
+</ul>
+</section><section><p>This means that they have to be implemented as hash tables.</p>
+</section><section><pre class="mstretch"><code>template &lt;typename T,
+          typename Hash = std::hash&lt;T&gt;,
+          typename KeyEqual = std::equal_to&lt;T&gt;,
+          typename Allocator = std::allocator&lt;T&gt;
+          &gt;
+class unordered_set;
+</code></pre></section><section><pre class="mstretch"><code>template &lt;typename K,
+          typename V,
+          typename Hash = std::hash&lt;K&gt;,
+          typename KeyEqual = std::less&lt;K&gt;,
+          typename Allocator = std::allocator&lt;std::pair&lt;const K, V&gt;&gt;
+          &gt;
+class unordered_map;
+
+</code></pre></section><section><p>Generally unordered<em>containers have better performance over ordered,
+so if the order is not important - use `unordered</em>*`</p>
+</section><section><p><em>sorted vector</em> is also an associative container that can provide
+both - inordered traversal and better performance over <code>map</code> and
+<code>set</code>.</p>
+</section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

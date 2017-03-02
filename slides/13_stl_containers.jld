@@ -1,0 +1,735 @@
+section
+    :markdown
+        # STL Containers
+
+section
+    section
+        :markdown
+            # Contents
+
+            1. Sequence containers
+            2. Container adaptors
+            3. Associative containers 
+            4. Unordered associative containers 
+            5. Standard non-containers
+            6. Non-standard containers
+
+    section
+        :markdown
+            ## Sequence containers
+
+            1. `vector`
+            2. `deque`
+            3. `list`
+            4. `array` - `C++`11
+            5. `forward_list` - `C++`11
+
+    section
+        :markdown
+            ## Container adaptors
+
+            1. `stack`
+            2. `queue`
+            3. `priority_queue`
+
+    section
+        :markdown
+            ## Associative containers
+
+            1. `set`
+            2. `map`
+            3. `multiset`
+            4. `multimap`
+
+    section
+        :markdown
+            ## Unordered associative containers
+
+            1. `unordered_set`
+            2. `unordered_map`
+            3. `unordered_multiset`
+            4. `unordered_multimap`
+
+    section
+        :markdown
+            ## Standard non-containers
+
+            1. `bitset`
+            2. `vector<bool>`
+
+    section
+        :markdown
+            ## Non-standard containers
+
+            1. `boost::ptr_container`
+            2. `boost::multi_array`
+            3. `boost::intrusive`
+            4. `boost::bimap`
+            5. `boost::circular_buffer`
+
+section
+    section
+        :markdown
+            # STL
+
+            * *STL* stands for *Standard Template Library*
+            * Created by Alexander Stepanov and Meng Lee
+
+    section
+        :markdown
+            ## Standard Template Libraries
+
+            * Microsoft STL, based on Dinkum STL
+            * libstdc++ by GNU
+            * libc++ from clang
+            * EASTL
+            * STLPort
+            * Dinkum STL
+
+section
+    :markdown
+        ## Sequence containers
+
+section
+    section
+        :markdown
+            ### `std::vector`
+
+            Probably 80% or 90% of the time, `std::vector` is the
+            right choice for container.
+
+    section
+        :cxx
+            template <typename T,
+                typename Allocator = std::allocator<T>>
+            class vector;
+
+    section
+        :markdown
+            ### `std::vector`
+
+            * Elements are stored sequentially in memory
+            * Random-access
+            * `push_back` - *O(1)**
+            * random insert - *O(N)*
+            * random access - *O(1)*
+
+    section
+        img(src='13_stl_containers/vector.png')
+        :markdown
+            * overhead
+            * 3 pointers for the vector
+            * one indirection for access
+
+    section
+        :markdown
+            
+            `vector` has:
+
+            * *size* - the number of elements in the vector
+            * *capacity* - the number of elements that can fit in the
+              vector, without *growing*
+    section
+        :markdown
+            #### *Growing*
+
+            * *growing* - the process of allocating a new buffer for
+              storing the elements, copying/moving them to the new buffer
+              and deallocating the old buffer
+            * Every time the `vector` grows by a constant factor
+                * 2, sqrt(2), *golden ratio*
+                * this allows `push_back` to be *O(1)* *
+                    * N `push_back`s are *O(N)*
+    section
+        :markdown
+            #### Beware of the *growing* `vector`
+
+            `vector` growing invalides all iterators, references or
+            pointers to elements in the vector, because the storage has
+            moved and the elements are moved to the new storage
+
+    section
+        :cxx
+            std::vector<Texture> cache;
+
+            Texture& myTexture = cache[42];
+
+            cache.push_back(Texture(...));
+
+            renderer.Draw(myTexture); // oops
+
+
+    section
+        :markdown
+            ####  `reserve`
+
+            * `reserve(n)` Sets the capacity to **at least** *n* elements
+            * Always you it when you now the number of elements in advance
+    section
+        :cxx
+            std::ifstream input("input.txt");
+
+            int n;
+            input >> n;
+            std::vector<int> numbers;
+            numbers.reserve(n);
+            while (n--)
+            {
+                int x;
+                input >> x;
+                numbers.push_back(x);
+            }
+
+    section
+        :markdown
+            #### *capacity* VS *size*
+        img(src='13_stl_containers/vector.png')
+
+    section
+        :cxx
+            std::ifstream input("input.txt");
+
+            int n;
+            input >> n;
+            std::vector<int> numbers(n);
+            for (int i = 0; i < n; ++i)
+            {
+                input >> numbers[i];
+            }
+        p.fragment.fade-in Still a single allocation
+        p.fragment.fade-in But ...
+
+    section
+        :markdown
+            
+            `std::vector<int> numbers(n);` is a call to
+            `vector(size_t count, T value = T())`, i.e.
+            `vector(size_t count, int value = 0)`.
+
+            This constructor initializes all the numbers with 0.  And we
+            overwrite them immediately.
+
+    section
+        :markdown
+            
+            `reserve` doesn't initialize anything.
+
+    section
+        :markdown
+
+            When elements are loaded one by one it is better to use
+            `reserve`.
+
+    section
+        :cxx
+            
+            void ToVector(int* a, size_t n, std::vector<int>& v)
+            {
+                v.resize(n);
+                // if v.size() < n, allocate storage for n ints
+                std::copy(a, a + n, v.begin());
+            }
+
+        :markdown
+            
+            `std::copy` can use `std::memcpy`, so it will be
+            faster
+
+    section
+        :markdown
+            #### `std::vector` almost never frees storage
+
+        :cxx
+            void reserve(size_t n) {
+                if (n > capacity()) {
+                    grow(n);
+                }
+            }
+
+    section
+        :cxx
+            void resize(size_t n) {
+                reserve(n);
+                if (n > size()) {
+                    // default construct the missing elements
+                    // and set the size to n
+                    for (auto new_end = _begin + n; _end != new_end; ++_end)
+                    {
+                        new (_end) T();
+                    }
+                } else {
+                    // destruct any extra elements
+                    // and set the size to n
+                    for (auto new_end = _begin + n; _end != new_end; --_end)
+                    {
+                        _end->~T();
+                    }
+                }
+            }
+    section
+        :cxx
+            void clear() {
+                resize(0);
+            }
+            
+    section
+        p Sort the sequences in a file
+
+        :cxx
+            N1 A1_1 A1_2 ... A1_$N1
+            N2 A2_1 A2_2 ... A2_$N2
+            ...
+
+    section
+        :cxx
+            std::ifstream input("input.txt");
+
+            while (input) 
+            {
+                int n;
+                input >> n;
+                std::vector<int> numbers(n);
+                for (int i = 0; i < n; ++i)
+                {
+                    input >> numbers[i];
+                }
+
+                std::sort(numbers.begin(), numbers.end());
+
+                print_result(numbers);
+            }
+        p.fragment.fade-in Every iteration `numbers` is destroyed, its
+        | storage is deallocated and allocated again
+            
+    section
+        :cxx
+            std::ifstream input("input.txt");
+
+            std::vector<int> numbers;
+
+            int n;
+            int x;
+            while (input) 
+            {
+                input >> n;
+                numbers.resize(n);
+                for (int i = 0; i < n; ++i)
+                {
+                    input >> numbers[i];
+                }
+
+                std::sort(numbers.begin(), numbers.end());
+
+                print_result(numbers);
+            }
+        p.fragment.fade-in `numbers` will go to the maximum sequence
+        |   length in the file and will not allocate again
+
+    section
+        :markdown
+            #### `shrinking` a vector
+
+            So how to actually free storage from a `vector`?
+
+    section
+        h4 C++11 style
+        :cxx
+            std::vector<int> v;
+            std::vector<int> q;
+            // ...
+            v.clear();
+            v.shrink_to_fit();
+
+            q.resize(5);
+            q.shrink_to_fit();
+
+    section
+        h4 C++98 style - swap idiom 
+        :cxx
+            std::vector<int> v;
+            std::vector<int> q;
+            // ...
+
+            // clear v
+            std::vector<int>().swap(v);
+
+            // shrink q
+            std::vector<int>(q).swap(q);
+
+    section
+        :markdown
+            #### `vector.erase`
+
+            Erasing a random element in a `vector`, requires all the
+            elements after the erased to be moved 1 position towards the
+            front. This makes the `erase` to be *O(N)*
+
+    section
+        :markdown
+            #### `vector.erase`
+
+            If the order of elements is not important, you can make:
+        :cxx
+            std::vector<A> v;
+            std::vector<A>::iterator x;
+
+            // ...
+
+            swap(*x, v.back());
+            v.pop_back();
+
+    section
+        :markdown
+            #### `vector` and OOP
+        :cxx
+            std::vector<Base> c;
+            Derived d;
+
+            c.push_back(d);
+            // d just got sliced.
+            // only the Base part of d gets copied
+
+    section
+        :markdown
+            #### `vector` and OOP
+        :cxx
+            {
+                std::vector<Base*> c;
+
+                c.push_back(new Derived);
+
+            }
+            // the Derived object leaked
+    section
+        :markdown
+            #### `vector` and OOP
+
+            * `vector` is not polymorphic friendly
+            * `vector` doesn't take ownership of your pointers
+                * std::vector<std::unique_ptr<A>> might do
+
+    section
+        :markdown
+            #### `vector`
+
+            Everytime you need a container:
+
+            1. Try vector
+            2. If it doesn't seem to fit, try vector again
+            3. If it still doesn't fit, use something else
+
+section
+    section
+        :markdown
+            ### `std::array` - C++11
+
+            Array with constant at compile time size with STL friendly
+            interface.
+    section
+        :cxx
+            template <typename T, size_t Size>
+            class array {
+            public:
+                iterator begin();
+                iterator end();
+                // ..
+            private:
+                T m_Array[Size];        
+            };
+
+    section
+        :markdown
+            
+            * No allocations
+            * Does not silently decay to T*
+section
+    section
+        :markdown
+            ### `std::dynarray` - C++XY    
+
+            * Array with fixed at construction time size
+            * STL friendly interface
+            * Voted out of C++14, but still might get in C++17
+    section
+        :markdown
+            #### Stack allocation
+
+            The idea is that if the `dynarray` size is small enough,
+            it storage to be allocated on the stack, instead of on the
+            heap. This will be much more efficient.
+
+    section
+        :markdown
+            #### Stack allocation
+
+            C++ doesn't allow stack allocation, so the proposal says:
+            
+            * implement always as a single heap allocation
+            * in future the compiler might replace the heap allocation
+              with stack allocation if it is safe.  
+
+section
+    section
+        :markdown
+            ### `deque`
+
+            **D**ouble **E**nded **Que**ue
+
+    section
+        :markdown
+            
+            * `push_back`, `pop_back` - *O(1)**
+            * `push_front`, `pop_front` - *O(1)**
+            * random insert - *O(N)*
+            * random access - *O(1)*
+
+    section
+        img(src='13_stl_containers/deque.png')
+
+    section
+        :markdown
+
+            The cost of *growing* a `deque` is lower than *growing* a
+            `vector`, because only the collection with pointers to
+            segments is copied.
+
+section
+    section
+        :markdown
+            ### `list`
+
+            * C++ `list` is double-linked list
+            * Most implementations are circular, but that is not required
+              by the standard
+    section
+        :markdown
+            #### Operations
+
+            * any insert / any erase - *O(1)*
+            * random access - *O(N)*
+    section
+        :markdown
+            #### Overhead
+
+            * two pointers for each element in the list
+            * elements can be at random locations in memory
+
+    section
+        :markdown
+            #### `list.size`
+
+            * *O(N)* or *O(1)* - C++98
+            * *O(1)* in C++11
+                * at the cost of *O(N)* `splice` in certain cases
+    section
+        :markdown
+            #### `list.splice`
+
+            * The most important operation of `list`
+            * Allows to take a piece of one list and insert it in another
+            * *O(1)*
+                * moving elements in a single list
+                * moving an entire list in another list
+                * moving a single element from one list to another
+            * *O(N)* - moving [start, end) of one list to another
+                * it has to count the elements in [start, end) so that
+                  `size()`` can be a *O(1)*
+    section
+        :markdown
+            #### Invalidation
+
+            * elements are never moved around the memory
+            * iterators and pointer/references to elements always remain
+              valid, unless the element is erased from the list
+
+    section
+        :markdown
+            #### Usage
+
+            Use `list` only if:
+
+            * most of the time the elements are shuffled around
+            * the elements must never move in memory
+                * consider `std::vector<pointer>` - it will be
+                  more efficient again
+
+section
+    section
+        :markdown
+            ### `forward_list` - C++11
+
+            * Single linked list
+            * some STL libraries have a non-standard `slist` container
+            
+
+section
+    section
+        :markdown
+            ## Container adaptors
+
+            1. `stack`
+            2. `queue`
+            3. `priority_queue`
+
+    section
+        :markdown
+
+            `stack` and `queue` are not containers, but they adapt (restrict)
+            the operations over the underlying container to *LIFO* and *FIFO*
+
+    section
+        :cxx
+            template <typename T, typename C = std::deque<T>>
+            class stack;
+
+            template <typename T, typename C = std::deque<T>>
+            class queue;
+    section
+        :markdown
+            
+            `priority_queue` is a binary heap over a container.
+
+    section
+        :cxx
+            template <typename T,
+                      typename Container = std::vector<T>, 
+                      typename Cmp = std::less<typename Container::value_type>
+                      >
+            class priority_queue;
+
+section
+    section
+        :markdown
+            ## Associative containers
+
+            1. `set`
+            2. `map`
+            3. `multiset`
+            4. `multimap`
+
+    section
+        :markdown
+            ## C++11 Unordered associative containers
+
+            1. `unordered_set`
+            2. `unordered_map`
+            3. `unordered_multiset`
+            4. `unordered_multimap`
+
+    section
+        :markdown
+
+            Associative containers *assiciate* keys with values.  Both variants
+            have very similar usage and API, but different implementations and
+            requirements for the types.
+
+    section
+        :cxx
+            template <typename T,
+                      typename Compare = std::less<T>,
+                      typename Allocator = std::allocator<T>
+                      >
+            class set;
+
+            template <typename T,
+                      typename Compare = std::less<T>,
+                      typename Allocator = std::allocator<T>
+                      >
+            class multiset;
+
+    section
+        :cxx
+            template <typename K,
+                      typename V,
+                      typename Compare = std::less<K>,
+                      typename Allocator = std::allocator<std::pair<const K, V>>
+                      >
+            class map;
+            template <typename K,
+                      typename V,
+                      typename Compare = std::less<K>,
+                      typename Allocator = std::allocator<std::pair<const K, V>>
+                      >
+            class multimap;
+
+    section
+        :markdown
+
+            `multiset` and `multimap` allow duplicating of keys.
+
+    section
+        :markdown
+            
+            `set`, `map`, `multiset`, `multimap` are ordered because when
+            iterating the (key, value) pairs in the container, the keys are
+            orderer by the `Compare` comparator.
+
+    section
+        :markdown
+
+            ### The order of traversing duplicated keys in a `multiset` or
+              `multimap` is ***undefined***
+
+    section
+        :markdown
+
+            For all *orderered* associative containers the standard requires:
+
+            * *insert* - O(logN) - average and worst
+            * *lookup* - O(logN) - average and worst
+            * *delete* - O(logN) - average and worst
+
+    section
+        :markdown
+
+            This means that effectively they are binary search trees.
+            Most implementations are [red-black tree][rbt].
+            
+            rbt: http://en.wikipedia.org/wiki/Red%E2%80%93black_tree
+
+    section
+        :markdown
+
+            *Unordered* containers have the following complexities:
+        
+            * *insert* - O(1) average and O(N) worst
+            * *lookup* - O(1) average and O(N) worst
+            * *delete* - O(1) average and O(N) worst
+
+    section
+        :markdown
+
+            This means that they have to be implemented as hash tables.
+
+    section
+        :cxx
+            template <typename T,
+                      typename Hash = std::hash<T>,
+                      typename KeyEqual = std::equal_to<T>,
+                      typename Allocator = std::allocator<T>
+                      >
+            class unordered_set;
+
+    section
+        :cxx
+            template <typename K,
+                      typename V,
+                      typename Hash = std::hash<K>,
+                      typename KeyEqual = std::less<K>,
+                      typename Allocator = std::allocator<std::pair<const K, V>>
+                      >
+            class unordered_map;
+
+
+    section
+        :markdown
+
+            Generally unordered_containers have better performance over ordered,
+            so if the order is not important - use `unordered_*`
+
+    section
+        :markdown
+
+            *sorted vector* is also an associative container that can provide
+            both - inordered traversal and better performance over `map` and
+            `set`.

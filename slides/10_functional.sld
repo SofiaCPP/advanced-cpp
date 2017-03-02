@@ -134,7 +134,7 @@ variables defined outside the anonymous functions.
 
 * `[]` - no variables are captured
 * `[x]` - x is captured by value
-* `[&x]` - any external variable is implicitly captured by ref
+* `[&x]` - x is captured by ref
 * `[&]` - any external variable is implicitly captured by ref
 * `[=]` - any external variable is implicitly captured by value
 * `[x, &y]` - x is captured by value, y - by reference

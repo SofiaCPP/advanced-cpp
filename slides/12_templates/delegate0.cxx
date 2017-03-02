@@ -1,3 +1,5 @@
+#include <iostream>
+
 //@{ delegate-fun
 template <typename Function>
 class DelegateFun;

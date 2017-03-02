@@ -1,0 +1,156 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Iterators in STL</title></head><body><div class="reveal"><div class="slides"><section><h2>Итератори</h2><p><cite>итератор</cite></p><blockquote>Итераторите са обобщени указатели, позволяващи на програмистите
+(алгоритмите) да работят със различни по вид контейнери по унифициран
+(общ) начин.</blockquote></section><section><h2>Видове итератори</h2><p>Видове итератори</p><ul class="simple"><li>input iterator</li><li>output iterator</li><li>forward iterator</li><li>bidirectional iterator</li><li>random access iterator</li></ul><p>В ред на нарастваща функционалност.</p></section><section><h2>input iterator</h2><ul class="simple"><li>най-ограничени възможности (заедно с output iterator)</li><li><tt class="docutils literal"><span class="pre">istream_iterator</span></tt>,<tt class="docutils literal"><span class="pre">istreambuf_iterator</span></tt>- позволяват да разглеждаме
+файловете като контейнери</li><li>поддържат само one-pass алгоритми</li></ul></section><section><h2>input iterator</h2><pre class="mstretch"><code>input_iterator x, y;
+value = *x; // дереференциране
+*x = value; // ERROR, read-only values
+++x;
+x++;
+if (x == y) { } // сравняване
+if (x != y) { } // сравняване
+x = y; // копиране
+</code></pre></section><section><h2>istream_iterator, istreambuf_iterator</h2><ul class="simple"><li>итераторите пазят последната прочетена стойност за да ползволяват
+многократно дереференциране</li><li><tt class="docutils literal"><span class="pre">x++</span></tt>предизвиква прочитане на следващата стойност от файла</li><li>ако имате повече от един<tt class="docutils literal"><span class="pre">istream_iterator</span></tt>(<tt class="docutils literal"><span class="pre">istreambuf_iterator</span></tt>) и го
+инкрементирате ще получите изненадващи резултати (представете си, че четете
+едновременно един файл от две или повече функции)</li></ul></section><section><h2>output iterator</h2><ul class="simple"><li>най-ограничени възможности (заедно с input iterator)</li><li><tt class="docutils literal"><span class="pre">ostream_iterator</span></tt>,<tt class="docutils literal"><span class="pre">ostreambuf_iterator</span></tt></li><li>отново поддържат само one-pass алгоритми</li></ul></section><section><h2>output iterator</h2><pre class="mstretch"><code>input_iterator x, y;
+*x = value; // дереференциране и записване на стойност
+value = *x; // ERROR, write-only values
+++x;
+x++;
+if (x == y) { } // сравняване
+if (x != y) { } // сравняване
+x = y; // копиране
+</code></pre></section><section><h2>ostream_iterator, ostreambuf_iterator</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">*x</span><span class="pre">\=</span><span class="pre">v;</span></tt>записва стойността във файла и<strong>премества</strong>итератора</li><li>ако имате повече от един<tt class="docutils literal"><span class="pre">ostream_iterator</span></tt>(<tt class="docutils literal"><span class="pre">ostreambuf_iterator</span></tt>)
+асоцииран с един и същи файл и ги записвате ще получите изненадващи
+резултати (представете си, че пишете едновременно един файл от две или
+повече функции)</li></ul></section><section><h2>stream vs streambuf iterators</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">istream_iterator</span></tt>и<tt class="docutils literal"><span class="pre">ostream_iterator</span></tt>използват форматираните
+входно-изходни операции, т.е.<tt class="docutils literal"><span class="pre">operator</span><span class="pre"><<</span></tt></li><li><tt class="docutils literal"><span class="pre">istreambuf_iterator</span></tt>и<tt class="docutils literal"><span class="pre">ostreambuf_iterator</span></tt>използват неформатирани
+входно-изходни операции и четат/пишат директно буфера на потока</li><li>Ако не се нуждаете от форматирани входно-изходни операции използвайте<tt class="docutils literal"><span class="pre">istreambuf_iterator</span></tt>и<tt class="docutils literal"><span class="pre">ostreambuf_iterator</span></tt>- те са по - ефективни</li></ul></section><section><h2>forward iterator</h2><ul class="simple"><li>позволяват няколкократно итериране (с няколко итератора)</li><li>само в една посока</li><li>нито един стандартен контейнер не предоставя forward iterators</li><li><tt class="docutils literal"><span class="pre">slist::iterator</span></tt>е forward iterator</li><li>категорията съществува за да представи изискванията на голяма част от
+алгоритмите към итераторите, върху които се прилагат</li></ul></section><section><h2>bidirectional iterator</h2><ul class="simple"><li>позволяват няколкократно итериране (с няколко итератора)</li><li>и в двете посоки, но само последователно</li><li><tt class="docutils literal"><span class="pre">list</span></tt>,<tt class="docutils literal"><span class="pre">set</span></tt>,<tt class="docutils literal"><span class="pre">map</span></tt>,<tt class="docutils literal"><span class="pre">multiset</span></tt>,<tt class="docutils literal"><span class="pre">multimap</span></tt>предоставят
+bidirectional iterators</li></ul></section><section><h2>random access iterator</h2><ul class="simple"><li>позволяват произволен достъп до обектите в контейнера</li><li>този достъп не се проверява за грешка</li><li><tt class="docutils literal"><span class="pre">vector</span></tt>и<tt class="docutils literal"><span class="pre">deque</span></tt>предоставят random access iterators</li></ul></section><section><h2>random access iterator</h2><pre class="mstretch"><code>random_iterator x, y;
+y = x + 5;
+value v = x[42];
+</code></pre></section><section><h2>iterator tags</h2><p>За всеки тип итератори има съответстващ C++ тип, който се нарича таг.
+(Всеки итератор, например<tt class="docutils literal"><span class="pre">vector::iterator</span></tt>, е таг-нат със своя семантичен
+тип итератор, в случая с<tt class="docutils literal"><span class="pre">random_access_iterator</span></tt>)</p><ul class="simple"><li><tt class="docutils literal"><span class="pre">input_iterator_tag</span></tt></li><li><tt class="docutils literal"><span class="pre">output_iterator_tag</span></tt></li><li><tt class="docutils literal"><span class="pre">forward_iterator_tag</span></tt></li><li><tt class="docutils literal"><span class="pre">bidirectional_iterator_tag</span></tt></li><li><tt class="docutils literal"><span class="pre">random_access_iterator_tag</span></tt></li></ul></section><section><h2>iterator traits</h2><p>Позволяват достъп до характеристиките на даден итератор<ul class="simple"><li>типа на стойността, към която итераторът сочи</li><li>типа на указател към стойността, към която итераторът сочи</li><li>типа на псевдоним към стойността, към която итераторът сочи</li><li>типа на разликата на два итератори (<tt class="docutils literal"><span class="pre">x</span><span class="pre">-</span><span class="pre">y</span></tt>)</li></ul></p></section><section><h2>iterator traits</h2><pre class="mstretch"><code>template &lt;typename Iterator&gt;
+struct iterator_traits {
+    typedef typename Iterator::difference_type difference_type;
+    typedef typename Iterator::value_type value_type;
+    typedef typename Iterator::pointer pointer;
+    typedef typename Iterator::reference reference;
+    typedef typename Iterator::iterator_category iterator_category;
+} ;
+</code></pre></section><section><h2>?</h2><p>Защо има<tt class="docutils literal"><span class="pre">iterator_traits</span></tt>когато явно итераторите сами имат<tt class="docutils literal"><span class="pre">typedef</span></tt>със
+всичко необходимо?</p></section><section><h2>Отговор</h2><p><tt class="docutils literal"><span class="pre">T</span><span class="pre">*</span></tt>също е итератор, но няма никакъв<tt class="docutils literal"><span class="pre">typedef</span></tt>в себе си</p></section><section><h2>iterator_traits<t*></t*></h2><pre class="mstretch"><code>template &lt;typename T&gt;
+struct iterator_traits&lt;T*&gt; {
+    typedef ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef T* pointer;
+    typedef T&amp; reference;
+    typedef random_access_iterator_tag iterator_category;
+} ;
+</code></pre></section><section><h2>Защо ни е<tt class="docutils literal"><span class="pre">iterator_traits</span></tt>?</h2><pre class="mstretch"><code>// note: stupid example
+template &lt;typename Iterator&gt;
+void swap_values(Iterator x, Iterator y)
+{
+    typename iterator_traits&lt;Iterator&gt;::value_type tmp = *x;
+    *x = *y;
+    *y = tmp;
+}
+</code></pre></section><section><h2>advance()</h2><pre class="mstretch"><code>template &lt;typename Iterator, typename Distance&gt;
+void advance(Iterator&amp; i, Distance n)
+{
+    // ???
+    while (n--) ++i;
+}
+// доста бавно за random_access iterator
+</code></pre></section><section><h2>advance()</h2><pre class="mstretch"><code>template &lt;typename Iterator, typename Distance&gt;
+void advance(Iterator&amp; i, Distance n)
+{
+    advance_impl(i, n, iterator_traits&lt;Iterator&gt;::iterator_category());
+}
+</code></pre></section><section><h2>advance_impl()</h2><pre class="mstretch"><code>template &lt;typename Iterator, typename Distance&gt;
+void advance_impl(Iterator&amp; i, Distance n, random_iterator_tag tag)
+{
+    i += n;
+}
+
+template &lt;typename Iterator, typename Distance, typename Tag&gt;
+void advance_impl(Iterator&amp; i, Distance n, Tag tag)
+{
+    while (n--) ++i;
+}
+</code></pre></section><section><h2>iterator adaptors</h2><ul class="simple"><li>front_inserter</li><li>back_inserter</li><li>insert_iterator</li></ul><p>Дефинирание са в<tt class="docutils literal"><span class="pre"><iterator></iterator></span></tt></p></section><section><h2>front_inserter</h2><ul class="simple"><li>писането в този итератор извиква<tt class="docutils literal"><span class="pre">push_front</span></tt>на контейнера</li><li>Истинския тип е<tt class="docutils literal"><span class="pre">std::front_insert_iterator</span></tt>, но много рядко се налага да
+се ползва явно.</li><li><tt class="docutils literal"><span class="pre">std::front_inserter</span></tt>е функция, която връща такъв итератор</li></ul></section><section><h2>Пример за front_inserter</h2><pre class="mstretch"><code>vector&lt;int&gt; v;
+list&lt;int&gt; l;
+// ...
+copy(v.begin(), v.end(), front_inserter(l));
+// това ще обърне реда на елементите на v в r
+</code></pre></section><section><h2>back_inserter</h2><ul class="simple"><li>писането в този итератор извиква<tt class="docutils literal"><span class="pre">push_back</span></tt>на контейнера</li><li>типът на итератора е<tt class="docutils literal"><span class="pre">std::back_insert_iterator</span></tt></li><li><tt class="docutils literal"><span class="pre">std::back_inserter</span></tt>е функция, която връща такъв итератор</li></ul></section><section><h2>insert_iterator</h2><ul class="simple"><li>писането в този итератор прави<tt class="docutils literal"><span class="pre">insert</span></tt>във контейнера. Първия<tt class="docutils literal"><span class="pre">insert</span></tt>се прави в позицията определена при създаването на итератора, а всеки
+следващ - в позицията след предходно вмъкнатия елемент</li><li><tt class="docutils literal"><span class="pre">std::inserter(container,</span><span class="pre">it)</span></tt>създава такъв итератор</li></ul></section><section><h2>Пример за insert_iterator</h2><pre class="mstretch"><code>list&lt;int&gt; l, r;
+list&lt;int&gt;::iterator i;
+for (int i = 0; i &lt; 5; ++i)
+    l.push_back(i);
+r = l;
+i = r.begin();
+advance(i, 3);
+copy(l.begin(), l.end(), inserter(r, i))
+// 0 1 2 0 1 2 3 4 3 4
+</code></pre></section><section><h2>const_iterator</h2><ul><li><p class="first">всички контейнери предоставят<tt class="docutils literal"><span class="pre">const_iterator</span></tt></p></li><li><p class="first">повечето методи на контейнерите изискват<tt class="docutils literal"><span class="pre">iterator</span></tt></p></li><li><p class="first">за да превърнете<tt class="docutils literal"><span class="pre">const_iterator</span></tt>в<tt class="docutils literal"><span class="pre">iterator</span></tt>използвайте:</p><pre class="mstretch"><code>Vector v;
+Vector::const_iterator c;
+// ...
+Vector::iterator i = advance(v.begin(), distance(v.begin, c));
+// работи за всички видове, контейнери
+// ще бъде О(N) за forward iterators
+</code></pre></li></ul></section><section><h2>reverse_iterator</h2><ul class="simple"><li>позволяват обхождането на елементите в контейнерите да става в обратен ред</li><li>за да се запазят изискванията за валидност на указателите<tt class="docutils literal"><span class="pre">reverse_iterator</span></tt>сочи към елемента след (при нормално обхождане) текущия</li><li><tt class="docutils literal"><span class="pre">reverse_iterator</span></tt>има метод base(), който връща нормален итератор към
+сочещ към елемента след (при нормално обхождане) след текущия</li></ul><pre class="mstretch"><code>vector&lt;int&gt; v;
+// ... // v is [0, 1, 2, 3]
+vector&lt;int&gt;::reverse_iterator i = v.rbegin();
+// i.base() == v.end()
+++i;
+// *i == 2;
+// *(i.base()) == 3;
+</code></pre></section><section><h2>Вмъкване и изтриване през reverse_iterator</h2><ul class="simple"><li><tt class="docutils literal"><span class="pre">c.insert(i,</span><span class="pre">v)</span></tt>- вмъква<tt class="docutils literal"><span class="pre">v</span></tt>преди<tt class="docutils literal"><span class="pre">i</span></tt></li><li><tt class="docutils literal"><span class="pre">c.insert(ri.base(),</span><span class="pre">v)</span></tt>- вмъква<tt class="docutils literal"><span class="pre">v</span></tt>преди<tt class="docutils literal"><span class="pre">reverse_iterator</span></tt>-a<tt class="docutils literal"><span class="pre">ri</span></tt>погледнато отзад напред</li><li><tt class="docutils literal"><span class="pre">c.erase((++ri).base())</span></tt>ще изтрие елемента сочен от<tt class="docutils literal"><span class="pre">ri</span></tt></li></ul></section><section><section><h1 id="Custom_iterator">Custom iterator</h1>
+<p>Writing custom iterator is a tedious task</p>
+</section><section><h2 id="Bare_minimum">Bare minimum</h2>
+<ul>
+<li>all <code>typedef</code></li>
+<li><code>operator *</code>, <code>operator -&gt;</code></li>
+<li><code>operator ==</code>, <code>operator !=</code></li>
+<li><code>operator ++</code>, <code>operator ++(int)</code></li>
+</ul>
+</section><section><h2 id="Random-access_iterator">Random-access iterator</h2>
+<p>All <code>pointer</code>-like semantics:</p>
+<ul>
+<li><code>operator[]</code></li>
+<li><code>operator &lt;</code>, <code>operator &lt;=</code>,</li>
+<li><code>operator &gt;</code>, <code>operator &gt;=</code>,</li>
+<li><code>explicit operator bool</code>  (or SafeBool idiom)</li>
+<li><code>operator !</code></li>
+</ul>
+</section><section><h2 id="Extra">Extra</h2>
+<ul>
+<li>helper functions for creating instances</li>
+</ul>
+</section></section><section><section><h1 id="Future_for_iterators">Future for iterators</h1>
+</section><section><h2 id="Iterators_must_go">Iterators must go</h2>
+<p>Andrei Alexandrescu</p>
+<p>BoostCon 2009</p>
+<p><a href="https://github.com/boostcon/2009_presentations/raw/master/wed/iterators-must-go.pdf" target="_blank" rel="external">Slides</a></p>
+</section><section><ul>
+<li>Iterators are error-prone<ul>
+<li>You always need <em>begin</em> and <em>end</em> of the same container</li>
+<li>Given two iterators there is no way to detect whether they
+belong to the same container</li>
+</ul>
+</li>
+<li>Writing a custom iterator is too much code</li>
+<li>Iterators are almost non-composable</li>
+</ul>
+</section><section><h2 id="range"><code>range</code></h2>
+<ul>
+<li>basically it is the pair [<em>begin</em>, <em>end</em>)</li>
+<li>doesn&#39;t have to be pointer-like</li>
+<li>easily composable</li>
+</ul>
+</section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

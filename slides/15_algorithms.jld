@@ -1,0 +1,517 @@
+section
+    h1 Алгоритми
+    ul.simple
+      li STL предлага много алгоритми
+      li ще разгледаме само част от тях
+section
+    h2
+
+section
+    h2 Видове алгоритми
+    ul.simple
+      li не-променящи последователни
+      li променящи последователни
+      li сортиращи и търсещи
+      li множествени
+      li пирамидални
+      li числени
+      li общи
+section
+    h2 Не-променящи последователни
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre for_each()
+      li
+        tt.docutils.literal
+          span.pre find()
+      li
+        tt.docutils.literal
+          span.pre find_end()
+      li
+        tt.docutils.literal
+          span.pre find_first_of()
+      li
+        tt.docutils.literal
+          span.pre adjascent_find()
+      li
+        tt.docutils.literal
+          span.pre count()
+      li
+        tt.docutils.literal
+          span.pre mismatch()
+      li
+        tt.docutils.literal
+          span.pre equal()
+      li
+        tt.docutils.literal
+          span.pre search()
+section
+    h2 Променящи последователни
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre copy()
+      li
+        tt.docutils.literal
+          span.pre swap()
+      li
+        tt.docutils.literal
+          span.pre transform()
+      li
+        tt.docutils.literal
+          span.pre replace()
+      li
+        tt.docutils.literal
+          span.pre fill()
+      li
+        tt.docutils.literal
+          span.pre generate()
+      li
+        tt.docutils.literal
+          span.pre remove()
+      li
+        tt.docutils.literal
+          span.pre unique()
+      li
+        tt.docutils.literal
+          span.pre reverse()
+      li
+        tt.docutils.literal
+          span.pre rotate()
+      li
+        tt.docutils.literal
+          span.pre random_shuffle()
+      li
+        tt.docutils.literal
+          span.pre partition()
+section
+    h2 Алгоритми за сортиране и търсене
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre sort()
+      li
+        tt.docutils.literal
+          span.pre stable_sort()
+      li
+        tt.docutils.literal
+          span.pre partial_sort()
+      li
+        tt.docutils.literal
+          span.pre nth_element()
+      li
+        tt.docutils.literal
+          span.pre lower_bound()
+      li
+        tt.docutils.literal
+          span.pre upper_bound()
+      li
+        tt.docutils.literal
+          span.pre equal_range()
+      li
+        tt.docutils.literal
+          span.pre binary_search()
+      li
+        tt.docutils.literal
+          span.pre merge()
+section
+    h2 Алгоритми за множества
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre includes()
+      li
+        tt.docutils.literal
+          span.pre set_union()
+      li
+        tt.docutils.literal
+          span.pre set_intersection()
+      li
+        tt.docutils.literal
+          span.pre set_difference()
+      li
+        tt.docutils.literal
+          span.pre set_symmetric_difference()
+    p
+      em Тези алгоритми работят само върху сортирани последователности!!!
+section
+    h2 Алгоритми за пирамиди
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre push_heap()
+      li
+        tt.docutils.literal
+          span.pre pop_heap()
+      li
+        tt.docutils.literal
+          span.pre make_heap()
+      li
+        tt.docutils.literal
+          span.pre sort_heap()
+section
+    h2 numeric алгоритми
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre accumulate()
+      li
+        tt.docutils.literal
+          span.pre inner_product()
+      li
+        tt.docutils.literal
+          span.pre partial_sum()
+      li
+        tt.docutils.literal
+          span.pre adjascent_difference()
+section
+    h2 Общи алгоритми
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre min()
+        | ,
+        tt.docutils.literal
+          span.pre max()
+      li
+        tt.docutils.literal
+          span.pre min_element()
+        | ,
+        tt.docutils.literal
+          span.pre max_element()
+      li
+        tt.docutils.literal
+          span.pre lexicographical_compare()
+      li
+        tt.docutils.literal
+          span.pre next_permutation()
+      li
+        tt.docutils.literal
+          span.pre prev_permutation()
+section
+    h2 for_each
+    ul.simple
+      li
+        tt.docutils.literal
+          span.pre for_each(c.begin(),
+          span.pre c.end(),
+          span.pre g);
+      li
+        | Стандартът казва, че
+        tt.docutils.literal
+          span.pre for_each
+        | е алгоритъм, който не променя редицата,
+        | върху която се изпълнява.
+      li
+        | Функцията, която подадете на
+        tt.docutils.literal
+          span.pre for_each
+        | може да промени стойността на
+        | аргумента си.
+      li
+        | Но това е лош стил - ако искате да променяте редицата използвайте
+        tt.docutils.literal
+          span.pre transform
+      li
+        tt.docutils.literal
+          span.pre for_each
+        | връща функцията, с която е била извикана
+section
+    h2 Пример за for_each
+    :cxx
+      struct Concat : unary_function<string, void>
+      {
+              void operator()(const string& s)
+              {
+                      result += s;
+              }
+              string result;
+      } ;
+      // ...
+      // v is container of strings
+      cout << for_each(v.begin(), v.end(), Concat()).result << endl;
+      cout << accumulate(v.begin(), v.end(), "") << endl;
+
+section
+    h2 transform
+    p
+      | прилага функцията, подадена му като аргумент, върху всички елементи на една
+      | редица и запазва резултата в друга редици
+section
+    h2 Използване на transform
+    :cxx
+      vector<int> v;
+      transform(v.begin(), v.end(), v.begin(), negate<int>());
+      // сменя знака на числата във v
+
+      vector<int> r;
+      transform(v.begin(), v.end(), back_inserter(r),
+          bind1st(plus<int>(), 42));
+
+      vector<int> a, b;
+      transform(a.begin(), a.end(), b.begin(), b.end(),
+          a.begin(), plus<int>());
+      // добава b към a почленно
+
+section
+    h2 Сортиране и търсене
+    ul.simple
+      li Много задачи изискват сортиране
+      li
+        | Не по-малко задачи изискват
+        em почти
+        | сортиране
+      li STL предлага алгоритми за всички основни типове задачи
+section
+    h2 Пълно сортиране
+    :cxx
+      template <typename Iterator>
+      void sort(Iterator begin, Iterator end);
+      // сортира използвайки operator< в нарастващ ред
+
+      template <typename Iterator, typename Ordering>
+      void sort(Iterator begin, Iterator end, Ordering c);
+
+      // sort използва introsort алгоритъма и изисква random
+      // access iterators
+      // Average O(N*logN), Worst case О(N^2)
+
+      // за сортиране на list
+      list<int> l;
+      l.sort();
+      l.sort(greater<int>());
+
+section
+    h2 Стабилно сортиране
+    :cxx
+      template <typename Iterator>
+      void stable_sort(Iterator begin, Iterator end);
+
+      template <typename Iterator, typename Ordering>
+      void stable_sort(Iterator begin, Iterator end, Ordering c);
+
+      // не по-бавно от O(N*logN*logN)
+      // O(N*logN) ако има достатъчно голям свободен буфер
+
+section
+    h2 Частично сортиране
+    p
+      em 10-те студента с най-висок успех?
+    :cxx
+      vector<int> v;
+      // ...
+      vector<int>::iterator n = v.begin() + 10;
+      partial_sort(v.begin(), n, v.end());
+      // сортира [v.begin(), n) - поставя най-малките 10
+      // елемента сортирани в началото на v
+      // O(N*logN)
+
+section
+    h2 N-ти елемент
+    p
+      em 10-тия по успех студент?
+    :cxx
+      vector<int> v;
+      // ...
+      vector<int>::iterator n = v.begin() + 10;
+      nth_element(v.begin(), n, v.end());
+      // *n ще бъде 10-тото най-малко число
+      // всички числа в [v.begin(), n) са по-малки или равни на *n
+      // всички числа в [n + 1, v.end()) са по-големи или равни на *n
+
+      // Avarage: O(N)
+
+section
+    h2 lower_bound
+    p
+      | Връща итератор към първата позиция, в която можем да вмъкнем елемента без да
+      | нарушим подредеността на редицата.
+    p
+      em lower_bound ИЗИСКВА редицата да е била сортирана
+    p
+      em lower_bound прави O(logN) сравнения
+    p
+      em lower_bound прави O(logN) стъпки за random access iterator и O(N) за forward
+    :cxx
+      vector<int> v;
+      // ...
+      sort(v.begin(), v.end());
+      int x = g(42);
+      vector<int>::iterator p = lower_bound(v.begin(), v.end(), x);
+      if (p != v.end() && !(*p < x || x < *p))
+          cout << "there is " << x << " in v" << endl;
+      v.insert(p, x);
+
+      // O(logN)
+
+section
+    h2 upper_bound
+    p
+      | Връща итератор към последната позиция, в която можем да вмъкнем елемента без
+      | да нарушим подредеността на редицата. Ако съществува еквивалентен на дадения
+      | елемент в редицата,
+      tt.docutils.literal
+        span.pre upper_bound
+      | сочи точно след последния такъв.
+    p
+      em
+        | upper_bound има същото поведение както lower_bound относно редицата и итераторите
+section
+    h2 equal_range
+    p
+      | Връща std::pair от
+      tt.docutils.literal
+        span.pre lower_bound
+      | и
+      tt.docutils.literal
+        span.pre upper_bound
+    :cxx
+      typedef vector<int> Vector;
+      typedef vector<int> VectorIt;
+      Vector v;
+      // ...
+      sort(v.begin(), v.end());
+      pair<VectorIt, VectorIt> r = equal_range(v.begin(), v.end(), 42);
+      if (r.first == r.second)
+          cout << "42 is not there";
+      v.insert(r.second, 42);
+      // вмъква 42
+
+      // O(logN)
+
+section
+    h2 binary_search
+    p
+      | Връща
+      tt.docutils.literal
+        span.pre true
+      | /
+      tt.docutils.literal
+        span.pre false
+      | резултат дали даден елемент се среща в
+      strong СОРТИРАНА
+      | редица.
+    :cxx
+      vector<int> v;
+      // ...
+      sort(v.begin(), v.end());
+      if (binary_search(v.begin(), v.end(), 42))
+          cout << "42 is the Answer" << endl;
+
+      // O(logN)
+
+section
+    h2 Как Ви се струва това?
+    :cxx
+      class A { } ;
+
+      bool operator==(const A& lhs, const A& rhs);
+
+      bool mycmp(const A& x, const A& y) {
+          return x.better_than(y);
+      }
+
+      vector<A> v;
+      // ...
+      sort(v.begin(), v.end(), mycmp);
+      A x = g(42);
+      vector<A>::iterator p = lower_bound(v.begin(), v.end(), mycmp);
+      if (p != v.end() && *p == x)
+          cout << "there is " << x << " in v" << endl;
+
+section
+    h2 Бележки за алгоритмите за сортиране и търсене
+    ul.simple
+      li
+        | всички алгоритми могат да използват частична наредба определена от
+        | потребителя вместо
+        tt.docutils.literal
+          span.pre operator
+          span.pre <
+        | .
+      li
+        | ако използвате Ваша наредба трябва да се изключително внимателни да
+        | използвате навсякъде една и съща наредба
+      li
+        | Алгоритмите за търсене работят върху вече
+        strong ПОДРЕДЕНИ
+        | редици
+      li
+        | Правете разлика между равенство (
+        tt.docutils.literal
+          span.pre operator
+          span.pre \==
+        | ) и еквивалентност.
+        | Използвайте или само едното или само другото!
+      li
+        | асоциативните контейнери имат методи
+        tt.docutils.literal
+          span.pre find
+        | ,
+        tt.docutils.literal
+          span.pre lower_bound
+        | ,
+        tt.docutils.literal
+          span.pre upper_bound
+        | ,
+        tt.docutils.literal
+          span.pre equal_range
+      li
+        tt.docutils.literal
+          span.pre list::sort
+        | е
+        em стабилно
+        | сортиране O(NlogN)
+section
+    h2 Числови алгоритми
+    ul.simple
+      li
+        | намират се в
+        tt.docutils.literal
+          span.pre <numeric>
+      li
+        | TR1 добава много повече функции, включително и генериране на произволни
+        | числа
+section
+    h2 accumulate
+    :cxx
+      vector<int> v;
+      // ...
+      int sum = accumulate(v.begin(), v.end(), 0);
+      // uses operator+
+      int prod = accumulate(v.begin(), v.end(), 1, multiplies<int>());
+
+section
+    h2 partial_sum
+    :cxx
+      vector<int> v;
+      // ...
+      int sum = partial_sum(v.begin(), v.end());
+      // uses operator+
+      int prod = partial_sum(v.begin(), v.end(), multiplies<int>());
+      int c = partial_sum(v.begin(), v.end(), Combiner());
+
+section
+    h2 adjacent_difference
+    p Смята разликите между два съседни елемента и ги запазва в друга редица
+    :cxx
+      vector<int> v, r;
+      // ...
+      adjacent_difference(v.begin(), v.end(), back_inserter(r));
+      // r[0] = v[0]
+      // r[1] = v[1] - v[0];
+      // r[n+1] = v[n+1] - v[n];
+
+section
+    h2 inner_product
+    p Смята произведението на две редици:
+    :cxx
+      a1*b1 + a2*b2 + ... + aN*bN
+
+    :cxx
+      vector<double> a, b;
+      // a и b са вектори зададени с координати в ортогонален базис
+      double ab = inner_product(a.begin(), a.end(), b.begin(), 0);
+      // ab е скаларното произведение на двата вектора
+

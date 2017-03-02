@@ -4,7 +4,7 @@
 #include <vector>
 #include <functional>
 
-#include <boost/regex.hpp>
+#include <regex>
 #include <boost/lexical_cast.hpp>
 
 using namespace std::placeholders;
@@ -121,7 +121,7 @@ class Console
         const std::vector<std::string>& Split(const std::string& line)
         {
 
-            typedef boost::sregex_iterator iterator;
+            typedef std::sregex_iterator iterator;
 
             m_Line.clear();
             std::transform(iterator(line.begin(), line.end(), m_Split), iterator(),
@@ -147,7 +147,7 @@ class Console
         };
         //@} wrap
 
-        boost::regex m_Split;
+        std::regex m_Split;
         std::vector<std::string> m_Line;
 };
 
@@ -196,6 +196,14 @@ std::function<R (T)> make_fun(C& instance, R (C::*m)(T) const)
     return std::function<R (T)>(std::bind(m, std::ref(instance), _1));
 }
 
+template <typename R, typename C, typename T>
+std::function<R(T, T, T)> make_fun(C& instance,
+                                   R (C::*m)(T, T, T))
+{
+    return std::function<R(T, T, T)>(
+        std::bind(m, std::ref(instance), _1, _2, _3));
+}
+
 class Sum
 {
 public:
@@ -208,6 +216,14 @@ public:
     {
         ++m_Count;
         return m_Sum += x;
+    }
+
+    double Mult(double x, double y, double z)
+    {
+        ++m_Count;
+        auto m = x * y * z;
+        m_Sum += m;
+        return m;
     }
     double Average()
     {
@@ -231,6 +247,7 @@ int main()
 
     console.AddCommand("add", make_fun(sum, &Sum::Add));
     console.AddCommand("avg", make_fun(sum, &Sum::Average));
+    console.AddCommand("mul", make_fun(sum, &Sum::Mult));
 
     while (std::getline(std::cin, line))
     {
