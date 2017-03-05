@@ -95,7 +95,7 @@ std::for_each(v.begin(), v.end(), [&amp;](int x) {
 <ul>
 <li><code>[]</code> - no variables are captured</li>
 <li><code>[x]</code> - x is captured by value</li>
-<li><code>[&amp;x]</code> - any external variable is implicitly captured by ref</li>
+<li><code>[&amp;x]</code> - x is captured by ref</li>
 <li><code>[&amp;]</code> - any external variable is implicitly captured by ref</li>
 <li><code>[=]</code> - any external variable is implicitly captured by value</li>
 <li><code>[x, &amp;y]</code> - x is captured by value, y - by reference</li>

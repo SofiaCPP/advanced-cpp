@@ -24,7 +24,7 @@ auto has_error = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
     0, 0, 0, &amp;handle);
 if (has_error) {
     auto error = ::GetLastError();
-    std::cout &lt;&lt; &quot;Creating file mapping: &quot; &lt;&lt; error&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;Creating file mapping: &quot; &lt;&lt; error &lt;&lt; std::endl;
     return;
 }
 POINTER memory;
@@ -40,7 +40,7 @@ if (has_error) {
 /*
 if (!handle) {
     auto error = ::GetLastError();
-    std::cout &lt;&lt; &quot;Creating file mapping: &quot; &lt;&lt; error&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;Creating file mapping: &quot; &lt;&lt; error &lt;&lt; std::endl;
     return;
 }
 */
@@ -55,7 +55,7 @@ if (!memory) {
 <pre class="mstretch"><code>auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
     0, 0, 0);
 auto memory = ::MapViewOfFile(handle, FILE_MAP_READ, 0, 0, 0);
-/*
+
 if (!memory) {
     auto error = ::GetLastError();
     std::cout &lt;&lt; &quot;Error mapping view: &quot; &lt;&lt; error &lt;&lt; std::endl;
@@ -64,7 +64,7 @@ if (!memory) {
 <pre class="mstretch"><code>auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
     0, 0, 0);
 auto memory = ::MapViewOfFile(handle, FILE_MAP_READ, 0, 0, 0);
-/*
+
 if (!memory) {
     auto error = ::GetLastError();
     std::cout &lt;&lt; &quot;Error mapping view: &quot; &lt;&lt; error &lt;&lt; std::endl;
@@ -235,12 +235,12 @@ void vector::push_back(T&amp; x) {
     }
 }
 </code></pre></section><section><h3 id="Exception_specifiers">Exception specifiers</h3>
-</section><section><h2 id="Pros-2">Pros</h2>
+</section><section><h2 id="Pros">Pros</h2>
 <ul>
 <li>Separete program logic from error handling</li>
 <li>They can&#39;t be ignored.</li>
 </ul>
-</section><section><h2 id="Cons-1">Cons</h2>
+</section><section><h2 id="Cons">Cons</h2>
 <ul>
 <li>Implementations - have some overhead even when no exceptions
 occur<ul>
@@ -291,7 +291,7 @@ class optional {
     explicit operator bool();
 };
 </code></pre></section></section><section><section><h2 id="Logging-1">Logging</h2>
-<p>Having only an error (with an callstack if we are lucky) often
+<p>Having only an error (with a callstack if we are lucky) often
 is not enough.</p>
 <p>Logging is essential for understanding what is going on with the
 program.</p>
