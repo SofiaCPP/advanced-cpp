@@ -538,3 +538,12 @@ to an `intrusive_ptr`
 * `C++`14 - `std::make_unique<T>` - creates an unique pointer
 
 ===
+=== topic
+
+## Other smart pointers
+
+- [Facebook log and leak](https://github.com/facebook/folly) 
+  - use 15 counts and when it reaches 16, log and leave it to leak
+- [`link_ptr`](https://cs.chromium.org/chromium/src/base/memory/linked_ptr.h)
+
+===
