@@ -334,7 +334,12 @@ struct Poly : public comparable&lt;Poly&gt; {
         //...
     }
 }
-</code></pre></section></section><section><section><h1>Expression Templates</h1></section><section><a>techique for using types (templates) to represent part of an</a><expression></expression></section><section><the>type (template) represents some kind of an operation with its</the><operands>and allows the result to be evaluated later or passed to a</operands><function>(used itself as an operand).</function></section><section><h3>A Polynom class</h3></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="polynom" class="snippet"><p>// loading ...</p>
+</code></pre></section></section><section><section><h1>Expression Templates</h1></section><section>A techique for using types (templates) to represent part of an
+expression.
+</section><section>The type (template) represents some kind of an operation with its
+operands and allows the result to be evaluated later or passed to a
+function (used itself as an operand).
+</section><section><h3>A Polynom class</h3></section><section><div data-file="12_templates/exprtemp0.cxx" data-sections="polynom" class="snippet"><p>// loading ...</p>
 </div></section><section><h4>A simple implementation</h4><pre class="mstretch"><code>template &lt;typename T&gt;
 Polynom&lt;T&gt; operator+(const Polynom&lt;T&gt;&amp; lhs, const Polynom&lt;T&gt;&amp; rhs) {
     auto power = std::max(lhs.power(), rhs.power();
