@@ -41,7 +41,7 @@ address of every variable is a multiple of its alignment.</p>
 <pre><code>static_assert(alignof(bool) == 1, &quot;the alignment of bool is 1&quot;);
 </code></pre>
 </section><section><ul>
-<li><code>m_IsAlive</code> is <code>bool</code>, size 4, alignment 1</li>
+<li><code>m_IsAlive</code> is <code>bool</code>, size 1, alignment 1</li>
 <li><code>m_HP</code> is <code>int</code> - size 4, alignment 4</li>
 </ul>
 <p>The compiler must create a hole of 3 bytes in <code>Pawn</code> in order to fulfill the
@@ -184,6 +184,53 @@ Pawn::vtable for Pawn: 6u entries
 <p>The virtual tables are dumped with:</p>
 <pre><code>g++ -fdump-class-hierarchy -std=c++11 -c vlayout.cc 
 </code></pre>
+</section><section><h3>Multiple-inheritance</h3>
+<pre><code>class FlyingPawn : public Pawn, public Flying
+{
+    int m_FlyingPawnMember;
+};
+</code></pre>
+</section><section><p>The same as single inheritance, all the base classes are at the beginning of the
+object in the order their are inherited.</p>
+</section><section><p>Given:</p>
+<pre><code>class Flying {
+    public:
+        int altitude;
+};
+</code></pre>
+</section><section><h4>Pointer assignment</h4>
+<pre><code>FlyingPawn fp;
+Flying* f = &amp;fp;
+cout &lt;&lt; f-&gt;altitude &lt;&lt; std::endl;
+// compiler generates cout &lt;&lt; reinterpret_cast_cast&lt;int*&gt;(f) &lt;&lt; endl;
+</code></pre>
+<p>What is requried from <code>Flying* f = &amp;fp;</code> in order for the code to work?</p>
+</section><section><pre><code>FlyingPawn fp;
+Flying* f = &amp;fp;
+// compiler generates f = &amp;fp + offset_of_Flying_in_FlyingPawn
+</code></pre>
+<p>The offset is known at compile time, so there is no significant runtime penalty.</p>
+</section><section><pre><code>Flying* f = new FlyingPawn;
+delete f;
+</code></pre>
+</section><section><p>Undefined behaviour. Best case - warning for deleting an object with virtual
+method and without virtual destructor.</p>
+</section><section><h3>Virtual inheritance</h3>
+<p>The idea is simple - instead of having the base class at a fixed at compile
+time offset, use a runtime offset.</p>
+<p>Runtime offset - actually a pointer to the base class.</p>
+</section><section><pre><code>struct Player : virtual Pawn {
+    const char* m_Name;
+    int m_Score;
+};
+</code></pre>
+</section><section><p>The compiler generates a pointer to <code>Pawn</code> at the beginning of <code>Player</code> and
+places the actual <code>Pawn</code> instance somewhere in <code>Player</code>.</p>
+<p><em>Somewhere</em> is at the end for most implementations.</p>
+</section><section><h3>Multiple-inheritance with virtual functions</h3>
+<p>The object gets multiple virtual tables, one for each base class with virtual
+functions. Each virtual table has the same indices as the virtual table of the
+corresponding base class.</p>
 </section><section><h2>Setting of the vtable pointer</h2>
 </section><section><p><strong>Pseudo-C++ class for virtual tables</strong></p>
 <pre><code>class VTable;

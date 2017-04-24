@@ -43,26 +43,26 @@ T partition(T begin, T end, P unary_predicate);
 // partitions a range so that all X for which predicate(X) is true
 // precede all Y for which predicate(Y) is false
 </code></pre>
-</section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/partition.cxx" data-sections="less-than"><pre><code><span class="hljs-keyword">template</span> &lt;typename T&gt;
-struct less_than_t
+</section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/partition.cxx" data-sections="less-than"><pre><code>template &lt;typename T&gt;
+<span class="hljs-keyword">struct</span> less_than_t
 {
-    explicit less_than_t(T value)
-        : _value(value)
-    {}
+    <span class="hljs-function"><span class="hljs-keyword">explicit</span> <span class="hljs-title">less_than_t</span>(<span class="hljs-params">T <span class="hljs-keyword">value</span></span>)
+        : _<span class="hljs-title">value</span>(<span class="hljs-params"><span class="hljs-keyword">value</span></span>)
+    </span>{}
 
-    <span class="hljs-type">bool</span> operator()(T x) <span class="hljs-keyword">const</span> {
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">operator</span>(<span class="hljs-params"></span>)(<span class="hljs-params">T x</span>) <span class="hljs-keyword">const</span> </span>{
         <span class="hljs-keyword">return</span> x &lt; _value;
     }
 
     T _value;
 };
 
-<span class="hljs-keyword">template</span> &lt;typename T&gt;
+template &lt;typename T&gt;
 
-less_than_t&lt;T&gt; less_than(T x)
-{
+<span class="hljs-function">less_than_t&lt;T&gt; <span class="hljs-title">less_than</span>(<span class="hljs-params">T x</span>)
+</span>{
     <span class="hljs-keyword">return</span> less_than_t&lt;T&gt;(x);
-}</code></pre></div></section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/partition.cxx" data-sections="partition"><pre><code><span class="hljs-rule"><span class="hljs-attribute">std</span>:<span class="hljs-value">:<span class="hljs-function">partition</span>(numbers, numbers + size, <span class="hljs-function">less_than</span>(<span class="hljs-number">5</span>))</span></span>;</code></pre></div></section><section><ul>
+}</code></pre></div></section><section><div class="snippet" data-file="/advanced-cpp/slides/10_functional/partition.cxx" data-sections="partition"><pre><code><span class="hljs-built_in">std</span>::partition(numbers, numbers + size, less_than(<span class="hljs-number">5</span>));</code></pre></div></section><section><ul>
 <li>it is quite a lot of code</li>
 <li><code>struct</code> can be defined inside a function
 <ul>

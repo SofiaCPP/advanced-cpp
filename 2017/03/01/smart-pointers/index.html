@@ -51,37 +51,37 @@ removed from the language. It is fully replaced by <code>std::unique_ptr</code>
 without any drawbacks</p>
 </section><section><h2>A simplified implementation of <code>std::auto_ptr</code></h2>
 </section><section><h2>The &quot;smart pointer&quot; part</h2>
-<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/auto_ptr.hxx" data-sections="header smart_ptr footer"><pre><code><span class="hljs-keyword">template</span> &lt;typename T&gt;
-class auto_ptr {
-// ...
-T* operator-&gt;()
+<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/auto_ptr.hxx" data-sections="header smart_ptr footer"><pre><code><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;
+<span class="hljs-keyword">class</span> <span class="hljs-built_in">auto_ptr</span> {
+<span class="hljs-comment">// ...</span>
+T* <span class="hljs-keyword">operator</span>-&gt;()
 {
 	<span class="hljs-keyword">return</span> m_Pointer;
 }
 
-T&amp; operator* ()
+T&amp; <span class="hljs-keyword">operator</span>* ()
 {
 	<span class="hljs-keyword">return</span> *m_Pointer;
 }
-// ...
+<span class="hljs-comment">// ...</span>
 T* m_Pointer;
 };</code></pre></div></section><section><h2>The RAII part</h2>
-<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/auto_ptr.hxx" data-sections="header RAII footer"><pre><code><span class="hljs-keyword">template</span> &lt;typename T&gt;
-class auto_ptr {
-// ...
-auto_ptr()
-	: m_Pointer(nullptr)
+<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/auto_ptr.hxx" data-sections="header RAII footer"><pre><code><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;
+<span class="hljs-keyword">class</span> <span class="hljs-built_in">auto_ptr</span> {
+<span class="hljs-comment">// ...</span>
+<span class="hljs-built_in">auto_ptr</span>()
+	: m_Pointer(<span class="hljs-literal">nullptr</span>)
 {}
 
-auto_ptr(T* <span class="hljs-type">pointer</span>)
-	: m_Pointer(<span class="hljs-type">pointer</span>)
+<span class="hljs-built_in">auto_ptr</span>(T* pointer)
+	: m_Pointer(pointer)
 {}
 
-~auto_ptr()
+~<span class="hljs-built_in">auto_ptr</span>()
 {
-	delete m_Pointer;
+	<span class="hljs-keyword">delete</span> m_Pointer;
 }
-// ...
+<span class="hljs-comment">// ...</span>
 T* m_Pointer;
 };</code></pre></div></section><section><h2>The bad parts</h2>
 <div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/auto_ptr.hxx" data-sections="header copy-assign footer"><pre><code><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;
@@ -89,7 +89,7 @@ T* m_Pointer;
 <span class="hljs-comment">// ...</span>
 <span class="hljs-comment">// copy ctor changes the original!!!</span>
 <span class="hljs-built_in">auto_ptr</span>(<span class="hljs-built_in">auto_ptr</span>&amp; o) : m_Pointer(o.m_Pointer) {
-	o.m_Pointer = <span class="hljs-keyword">nullptr</span>;
+	o.m_Pointer = <span class="hljs-literal">nullptr</span>;
 }
 
 <span class="hljs-comment">// assignment changes the original!!!</span>
@@ -97,7 +97,7 @@ T* m_Pointer;
 	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> != &amp;rhs) {
 		<span class="hljs-keyword">delete</span> m_Pointer;
 		m_Pointer = rhs.m_Pointer;
-		rhs.m_Pointer = <span class="hljs-keyword">nullptr</span>;
+		rhs.m_Pointer = <span class="hljs-literal">nullptr</span>;
 	}
 	<span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
 }
@@ -117,37 +117,37 @@ guarantees for containers.</p>
 </ul>
 </section><section><h2>A simplified implementation of <code>std::unique_ptr</code></h2>
 </section><section><h2>The &quot;smart pointer&quot; part</h2>
-<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/unique_ptr.hxx" data-sections="header smart_ptr footer"><pre><code><span class="hljs-keyword">template</span> &lt;typename T&gt;
-struct unique_ptr {
-// ...
-T* operator-&gt;()
+<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/unique_ptr.hxx" data-sections="header smart_ptr footer"><pre><code><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;
+<span class="hljs-keyword">struct</span> unique_ptr {
+<span class="hljs-comment">// ...</span>
+T* <span class="hljs-keyword">operator</span>-&gt;()
 {
     <span class="hljs-keyword">return</span> m_Pointer;
 }
 
-T&amp; operator* ()
+T&amp; <span class="hljs-keyword">operator</span>* ()
 {
     <span class="hljs-keyword">return</span> *m_Pointer;
 }
-// ...
+<span class="hljs-comment">// ...</span>
 T* m_Pointer;
 };</code></pre></div></section><section><h2>The RAII part</h2>
-<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/unique_ptr.hxx" data-sections="header RAII footer"><pre><code><span class="hljs-keyword">template</span> &lt;typename T&gt;
+<div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/unique_ptr.hxx" data-sections="header RAII footer"><pre><code>template &lt;typename T&gt;
 struct unique_ptr {
-// ...
-unique_ptr()
-    : m_Pointer(nullptr)
+<span class="hljs-comment">// ...</span>
+<span class="hljs-function">unique_ptr</span>()
+    <span class="hljs-value">: <span class="hljs-function">m_Pointer</span>(nullptr)
 {}
 
-unique_ptr(T* <span class="hljs-type">pointer</span>)
-    : m_Pointer(<span class="hljs-type">pointer</span>)
+<span class="hljs-function">unique_ptr</span>(T* pointer)
+    : <span class="hljs-function">m_Pointer</span>(pointer)
 {}
 
-~unique_ptr()
+~<span class="hljs-function">unique_ptr</span>()
 {
-    delete m_Pointer;
+    delete m_Pointer;</span>
 }
-// ...
+<span class="hljs-comment">// ...</span>
 T* m_Pointer;
 };</code></pre></div></section><section><h2>The non-copyable part</h2>
 <div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/unique_ptr.hxx" data-sections="header copy footer"><pre><code><span class="hljs-keyword">template</span> &lt;<span class="hljs-keyword">typename</span> T&gt;
@@ -164,7 +164,7 @@ T* m_Pointer;
 unique_ptr(unique_ptr&amp;&amp; o)
     : m_Pointer(o.m_Pointer)
 {
-    o.m_Pointer = <span class="hljs-keyword">nullptr</span>;
+    o.m_Pointer = <span class="hljs-literal">nullptr</span>;
 }
 
 unique_ptr&amp; <span class="hljs-keyword">operator</span>=(unique_ptr&amp;&amp; rhs)
@@ -172,7 +172,7 @@ unique_ptr&amp; <span class="hljs-keyword">operator</span>=(unique_ptr&amp;&amp;
     <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> != &amp;rhs) {
         <span class="hljs-keyword">delete</span> m_Pointer;
         m_Pointer = rhs.m_Pointer;
-        rhs.m_Pointer = <span class="hljs-keyword">nullptr</span>;
+        rhs.m_Pointer = <span class="hljs-literal">nullptr</span>;
     }
     <span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
 }
@@ -247,7 +247,7 @@ std::unique_ptr&lt;ID3D11Device, ReleaseDelete&gt; device;
 <li>template specialization</li>
 </ul>
 </section><section><h2><code>std::unique_ptr</code> owns the resource it is pointing to</h2>
-<p>Use this to express ownership reletion between types</p>
+<p>Use this to express ownership relation between types</p>
 </section></section><section><section><h2><code>std::shared_ptr</code></h2>
 <p><code>std::shared_ptr</code> allows sharing of a resource. It is freed when the
 last <code>std::shared_ptr</code> instance pointing to the resource is destroyed.
@@ -291,10 +291,11 @@ instances. So they have to be on the heap.</p>
 }
 <span class="hljs-comment">// ...</span>
 int* m_RC;
-T* m_Pointer;</code></pre></div></section><section><div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/shared_ptr.hxx" data-sections="RC"><pre><code><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">RemoveRefernce</span><span class="hljs-params">()</span>
+T* m_Pointer;</code></pre></div></section><section><div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/shared_ptr.hxx" data-sections="RC"><pre><code><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">RemoveReference</span><span class="hljs-params">()</span>
 </span>{
     <span class="hljs-keyword">if</span> (m_RC &amp;&amp; --*m_RC == <span class="hljs-number">0</span>)
     {
+        <span class="hljs-keyword">delete</span> m_Pointer;
         <span class="hljs-keyword">delete</span> m_RC;
     }
 }
@@ -302,8 +303,8 @@ T* m_Pointer;</code></pre></div></section><section><div class="snippet" data-fil
 </span>{
     ++*m_RC;
 }</code></pre></div></section><section><div class="snippet" data-file="/advanced-cpp/slides/05_smartptr/shared_ptr.hxx" data-sections="copy"><pre><code>SharedPtr(<span class="hljs-keyword">const</span> SharedPtr&amp; o)
-    : m_RC(pointer.m_RC)
-    , m_Pointer(pointer.m_Pointer)
+    : m_RC(o.m_RC)
+    , m_Pointer(o.m_Pointer)
 {
     AddReference();
 }
@@ -322,8 +323,8 @@ SharedPtr&amp; operator=(<span class="hljs-keyword">const</span> SharedPtr&amp; 
     : m_RC(pointer.m_RC)
     , m_Pointer(pointer.m_Pointer)
 {
-    o.m_RC = <span class="hljs-keyword">nullptr</span>;
-    o.m_Pointer = <span class="hljs-keyword">nullptr</span>;
+    o.m_RC = <span class="hljs-literal">nullptr</span>;
+    o.m_Pointer = <span class="hljs-literal">nullptr</span>;
 }
 
 SharedPtr&amp; <span class="hljs-keyword">operator</span>=(SharedPtr&amp;&amp; rhs)
@@ -332,8 +333,8 @@ SharedPtr&amp; <span class="hljs-keyword">operator</span>=(SharedPtr&amp;&amp; r
         RemoveReference();
         m_RC = rhs.m_RC;
         m_Pointer = rhs.m_Pointer;
-        rhs.m_RC = <span class="hljs-keyword">nullptr</span>;
-        rhs.m_Pointer = <span class="hljs-keyword">nullptr</span>;
+        rhs.m_RC = <span class="hljs-literal">nullptr</span>;
+        rhs.m_Pointer = <span class="hljs-literal">nullptr</span>;
     }
     <span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
 }</code></pre></div></section><section><h3><code>shared_ptr</code> is for sharing</h3>
@@ -403,7 +404,7 @@ std::shared_ptr&lt;int&gt; q = std::make_shared&lt;int&gt;(42);
 </li>
 <li>extra memory allocation
 <ul>
-<li>worse - it is a small memory allocation, which are most wastefull</li>
+<li>worse - it is a small memory allocation, which are most wasteful</li>
 </ul>
 </li>
 </ul>

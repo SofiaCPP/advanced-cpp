@@ -26,7 +26,7 @@ arguments, like <code>std::tuple</code>, <code>std::function</code>, etc.</p>
 <pre class="mstretch"><code>// T is a template parameter pack
 sizeof...(T)
 // count of types in T</code></pre></section><section><h3 id="Sample">Sample</h3>
-<p>A console that allows exection of arbitrary
+<p>A console that allows execution of arbitrary
 <code>std::function</code>s.</p>
 </section><section><div data-file="12_templates/console.cxx" data-sections="execute" class="snippet"><p>// loading ...</p>
 </div></section><section><div data-file="12_templates/console.cxx" data-sections="add-command" class="snippet"><p>// loading ...</p>
@@ -260,7 +260,7 @@ class.</p>
 
 struct Texture : RefCounted&lt;Texture&gt;
 {};</code></pre></section><section><p>The <em>CRTP</em> allows the base template to use the derived type - it
-can call methods, create/destory instances and so on.</p>
+can call methods, create/destroy instances and so on.</p>
 </section><section><h2 id="Static_polymorphism">Static polymorphism</h2>
 <p>Using the derived class implementation though the base class
 interface</p>
@@ -334,7 +334,7 @@ struct Poly : public comparable&lt;Poly&gt; {
         //...
     }
 }
-</code></pre></section></section><section><section><h1>Expression Templates</h1></section><section><p>A techique for using types (templates) to represent part of an
+</code></pre></section></section><section><section><h1>Expression Templates</h1></section><section><p>A technique for using types (templates) to represent part of an
 expression.</p>
 </section><section><p>The type (template) represents some kind of an operation with its
 operands and allows the result to be evaluated later or passed to a

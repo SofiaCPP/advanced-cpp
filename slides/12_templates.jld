@@ -574,13 +574,11 @@ section
 
     section
         :markdown
-
-	        A technique for using types (templates) to represent part of an
+            A technique for using types (templates) to represent part of an
             expression.
 
     section
         :markdown
-        
             The type (template) represents some kind of an operation with its
             operands and allows the result to be evaluated later or passed to a
             function (used itself as an operand).
