@@ -253,7 +253,7 @@ Will be back to `unique_ptr` deleter when we get to:
 
 ## `std::unique_ptr` owns the resource it is pointing to
 
-Use this to express ownership reletion between types
+Use this to express ownership relation between types
     
 +++
 ===
@@ -436,7 +436,7 @@ If you have a cycle in the references between resources in
 * double indirection
     * can be optimized with a little higher memory usage
 * extra memory allocation
-    * worse - it is a small memory allocation, which are most wastefull
+    * worse - it is a small memory allocation, which are most wasteful
 
 +++
 +++ slide
