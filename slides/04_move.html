@@ -71,7 +71,7 @@ get_random_ints(1000, numbers);
 </code></pre></section><section><h2>Move</h2><p class="fragment fade-in">Instead of copying values move them directly into their new
 variables
 </p></section><section><h2 id="Move">Move</h2>
-<p>In C++ it is easy to create unneccessary copies of object,
+<p>In C++ it is easy to create unnecessary copies of object,
 hurting performance.</p>
 </section><section><pre class="mstretch"><code>std::string s = &quot;Hello&quot;;
 std::string t = &quot;World&quot;;
@@ -106,7 +106,7 @@ which is then copied into <em><code>m</code></em></p>
 {
     // ...
 }
-</code></pre></section><section><ul><li class="fragment fade-in">lvalue reference<code>T&</code></li><li class="fragment fade-in">rvalue reference<code>T&&</code></li></ul></section><section><h2 id="const_T&amp;"><code>const T&amp;</code></h2>
+</code></pre></section><section><ul><li class="fragment fade-in">lvalue reference <code>T&</code></li><li class="fragment fade-in">rvalue reference <code>T&&</code></li></ul></section><section><h2 id="const_T&amp;"><code>const T&amp;</code></h2>
 <p>Can reference everything - values stored in variables, result
 values of expressions.</p>
 </section><section><h2 id="const_T&amp;&amp;"><code>const T&amp;&amp;</code></h2>
@@ -232,7 +232,7 @@ T factory(/*const*/ Arg1 /*&amp;*/ arg1)
 <li>will be <em>OK</em> if T stores a <strong><code>const</code></strong> reference/pointer to the
 value</li>
 <li><em>no</em> extra copying</li>
-<li>will <em>NOT</em> work for const references and temporaries</li>
+<li>will work for const references and temporaries</li>
 </ul>
 </section><section><h3>And now what?</h3></section><section><h3>Overloading</h3><pre class="mstretch"><code>template &lt;typename T, typename Arg1&gt;
 T factory(Arg1&amp; arg1);

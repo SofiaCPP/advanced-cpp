@@ -54,7 +54,7 @@ section
         :markdown
             ### Sample
 
-            A console that allows exection of arbitrary
+            A console that allows execution of arbitrary
             `std::function`s.
 
     section
@@ -460,7 +460,7 @@ section
         :markdown
             
             The *CRTP* allows the base template to use the derived type - it
-            can call methods, create/destory instances and so on.
+            can call methods, create/destroy instances and so on.
 
     section
         :markdown
@@ -575,7 +575,7 @@ section
     section
         :markdown
 
-            A techique for using types (templates) to represent part of an
+	        A technique for using types (templates) to represent part of an
             expression.
 
     section

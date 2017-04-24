@@ -74,7 +74,7 @@ std::ofstream input(&quot;input.txt&quot;);
 std::ifstream* input = new std::ifstream(&quot;input.txt&quot;);
 // ...
 delete input; // &lt;-- input gets destroyed here
-</code></pre></section><section><h2>Automatic variables are cool</h2><ul><li>deterministic* lifetime</li><li>always* get destroyed</li><li>* - non-static automatic variables</li></ul></section><section><h2>RAII</h2><h2>Resource Acquisation is Initialization</h2><p><ul><li class="fragment fade-in">Obtain the resource in the constructor of an automatic
+</code></pre></section><section><h2>Automatic variables are cool</h2><ul><li>deterministic* lifetime</li><li>always* get destroyed</li><li>* - non-static automatic variables</li></ul></section><section><h2>RAII</h2><h2>Resource Acquisition is Initialization</h2><p><ul><li class="fragment fade-in">Obtain the resource in the constructor of an automatic
 variable
 </li><li class="fragment fade-in">Free the resource in the destructor of an automatic
 variable
@@ -99,7 +99,7 @@ Lifetime:       0x7fffcbf05d67: dies
 </div><pre class="fragment fade-in"><code>Lifetime:       0x119d010:      lives
 Leaking:        0x7fff49285b00: lives
 exception: it all goes wrong
-</code></pre></section><section>Resource management is difficult not only in presense of exceptions</section><section><pre class="mstretch"><code>bool HasEmbededNull(const char* file)
+</code></pre></section><section>Resource management is difficult not only in presence of exceptions</section><section><pre class="mstretch"><code>bool HasEmbededNull(const char* file)
 {
     std::ifstream input(file, std::ios::binary);
     while (input) {
@@ -132,7 +132,7 @@ exception: it all goes wrong
     fclose(input);
     return false;
 }
-</code></pre></section><section><h2>So the moral is?</h2><p class="fragment fade-in">ALWAYS manage resouces following RAII!</p><p class="fragment fade-in">NEVER STORE a resource by a plain pointer!
+</code></pre></section><section><h2>So the moral is?</h2><p class="fragment fade-in">ALWAYS manage resources following RAII!</p><p class="fragment fade-in">NEVER STORE a resource by a plain pointer!
 </p><aside class="notes">By STORE we mean own - if you are just having a reference to use -
 then it is OK to be stored by a plain pointer. EXAMPLE!
 

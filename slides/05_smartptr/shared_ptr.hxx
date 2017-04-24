@@ -19,8 +19,8 @@ public:
 
     //@{ copy
     SharedPtr(const SharedPtr& o)
-        : m_RC(pointer.m_RC)
-        , m_Pointer(pointer.m_Pointer)
+        : m_RC(o.m_RC)
+        , m_Pointer(o.m_Pointer)
     {
         AddReference();
     }
@@ -70,10 +70,11 @@ public:
 private:
 
     //@{ RC
-    void RemoveRefernce()
+    void RemoveReference()
     {
         if (m_RC && --*m_RC == 0)
         {
+            delete m_Pointer;
             delete m_RC;
         }
     }
