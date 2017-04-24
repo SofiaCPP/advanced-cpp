@@ -14,7 +14,6 @@
 * Virtual inheritance
 
 +++
-=== topic
 
 +++ slide
 # Object Layout
@@ -125,10 +124,6 @@ equal.
 +++
 
 
-
-===
-=== topic
-
 +++ slide
 ## Inheritance
 +++
@@ -229,8 +224,6 @@ class.
 
 +++
 
-===
-=== topic
 
 +++ slide
 # Virtual Functions
@@ -484,4 +477,3 @@ Cannot be derived from.
 * optimizations - de-virtualization
 
 +++
-===

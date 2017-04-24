@@ -7,7 +7,7 @@
 <li>Virtual functions</li>
 <li>Virtual inheritance</li>
 </ul>
-</section><section><section><h1>Object Layout</h1>
+</section><section><h1>Object Layout</h1>
 </section><section><pre><code>class Pawn {
     int m_Id;
     bool m_IsAlive;
@@ -58,7 +58,7 @@ if (std::memcmp(&amp;p1, &amp;p2, sizeof(p1)))
 <p>This will take the 3 random bytes in <code>p1</code> and <code>p2</code> into the comparison and might
 return that they are different, although all of their data members are actually
 equal.</p>
-</section></section><section><section><h2>Inheritance</h2>
+</section><section><h2>Inheritance</h2>
 </section><section><pre><code>struct Player : Pawn {
     const char* m_Name;
     int m_Score;
@@ -115,7 +115,7 @@ struct EnemyPawn : Pawn, Enemy {
 </code></pre>
 </section><section><p>The members of the derived class are laid out after the members of the base
 class.</p>
-</section></section><section><section><h1>Virtual Functions</h1>
+</section><section><h1>Virtual Functions</h1>
 </section><section><pre><code>struct Pawn {
     virtual ~Pawn() {} 
     virtual void NotOverridden() {}
@@ -270,4 +270,4 @@ destroyed object.</p>
 <li>show intention</li>
 <li>optimizations - de-virtualization</li>
 </ul>
-</section></section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>
+</section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Library API</title></head><body><div class="reveal"><div class="slides"><section><h1>Library API Design</h1></section><section><h2>What is an API</h2><p>Application Program Interface</p><p>The set of functions and types that a library provides</p></section><section><h2>Contents</h2><ul><li>Kind of libraries<ul><li>Header only</li><li>Static</li><li>Dynamic/shared</li></ul></li><li>Symbol linkage</li><li>interfaces</li><li>Heap allocated objects</li><li>std:: cross library</li></ul></section><section></section><section><h2>Header only libraries</h2><p>A collection of header files</p></section><section><h3 id="Pros-1">Pros</h3>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Library API</title></head><body><div class="reveal"><div class="slides"><section><h1>Library API Design</h1></section><section><h2>What is an API</h2><p>Application Program Interface</p><p>The set of functions and types that a library provides</p></section><section><h2>Contents</h2><ul><li>Kind of libraries<ul><li>Header only</li><li>Static</li><li>Dynamic/shared</li></ul></li><li>Symbol linkage</li><li>interfaces</li><li>Heap allocated objects</li><li>std:: cross library</li></ul></section><section></section><section><h2>Header only libraries</h2><p>A collection of header files</p></section><section><h3 id="Pros">Pros</h3>
 <ul>
 <li>Very easy to use - just copy the files and <code>#include</code></li>
 <li>No overhead at all - even some calls  might get inlined</li>
@@ -227,14 +227,14 @@ model, and all compilers implement it in the same way.</p>
 </section><section></section><section><h2 id="pImpl">pImpl</h2>
 <p><em>Pointer-to-Implementation</em> is a technique for reducing coupling
 between a class (a library) and its clients</p>
-</section><section><h3 id="Pros-2">Pros</h3>
+</section><section><h3 id="Pros-1">Pros</h3>
 <ul>
 <li>Allows the class implementation to change with recompiling the
 client</li>
 <li>Reducing compilation times by including <em>expensive</em> headers only in
 a single source file</li>
 </ul>
-</section><section><h3 id="Cons-1">Cons</h3>
+</section><section><h3 id="Cons">Cons</h3>
 <ul>
 <li>Prevents function inlining </li>
 <li>Adds an extra redirection for each call</li>
