@@ -1,0 +1,677 @@
+include snippet
+
+section
+    h1 Templates in action
+
+section
+    :markdown
+        ## Contents
+
+        1. Variadic templates
+        2. Type traits
+        3. Overload control
+        4. SFINAE
+        5. Type Erasure
+        6. Static Polymorphism
+        7. Expression templates
+        8. Compile-time computation
+
+section
+    section
+        :markdown
+            ## Variadic templates
+
+            Allow much easier implemenation of templates with variable
+            arguments, like `std::tuple`, `std::function`, etc.
+
+    section
+        :markdown
+            ### Parameter pack
+
+        +snippet('12_templates/variadic.cxx', 'variadic')
+
+    section
+        :markdown
+            ### Parameter pack
+
+            * can match remaining arguments
+            * can be expanded
+            * can not be stored in a variable or manipulated
+    section
+        :markdown
+            ### How to use a parameter pack
+
+        +snippet('12_templates/variadic.cxx', 'recursion')
+
+    section
+        :markdown
+            ### How to use a parameter pack
+        :cxx
+            // T is a template parameter pack
+            sizeof...(T)
+            // count of types in T
+    section
+        :markdown
+            ### Sample
+
+            A console that allows exection of arbitrary
+            `std::function`s.
+
+    section
+        +snippet('12_templates/console.cxx', 'execute')
+
+    section
+        +snippet('12_templates/console.cxx', 'add-command')
+        h4 So what does the magic wrap do?
+
+    section
+        +snippet('12_templates/console.cxx', 'wrap0')
+
+    section
+        +snippet('12_templates/console.cxx', 'wrap1')
+
+    section
+        +snippet('12_templates/console.cxx', 'wrap2')
+
+    section
+        :markdown
+            ### Using variadic templates
+
+            Based on ["The Way of the Exploding Tuple"] [1]
+
+            [1]: http://channel9.msdn.com/events/GoingNative/2013/The-Way-of-the-Exploding-Tuple
+
+    section
+        +snippet('12_templates/consolev.cxx', 'wrap')
+
+    section
+        +snippet('12_templates/consolev.cxx', 'helper-0')
+
+    section
+        +snippet('12_templates/consolev.cxx', 'helper-n')
+
+section
+    section
+        :markdown
+            ## Type Computations
+
+            * given existing type `T`, create a new one based on
+              `T`
+            * given `T` determine its properties (traits):
+                * a pointer?
+                * polymorphic?
+                * Plain old data (POD)?
+    section
+        :markdown
+            ### Type traits
+
+            The general name for the type computational facilities. The standard
+            type traits are defined in `type_traits` header.
+
+            Most of the type traits use template specialization.
+
+    section
+        h3 Helpers:
+        :cxx
+            template <typename T, T Value>
+            struct integral_constant {
+                static T value = Value;
+            };
+
+            typedef integral_contant<bool, false> false_type;
+            typedef integral_contant<bool, true> true_type;
+            
+    section
+        h3 Is pointer?
+        :cxx
+            template <typename T>
+            struct is_pointer : false_type
+            {};
+
+            template <typename T>
+            struct is_pointer<T*> : true_type
+            {};
+
+    section
+        h3 Add pointer
+        :cxx
+            template <typename T>
+            struct add_pointer
+            {
+                typedef T* type;
+            };
+        :markdown
+            The resulting new type is defined in `::type`.
+
+    section
+        h3 Remove pointer
+        :cxx
+            template <typename T>
+            struct remove_pointer
+            {
+                typedef T type;
+            };
+            
+            template <typename T>
+            struct remove_pointer<T*>
+            {
+                typedef T type;
+            };
+
+    section
+        :markdown
+            ### `type_traits`
+
+            * `is_arithmetic`
+            * `is_fundamental`
+            * `is_polymorphic`
+
+    section
+        :markdown
+            # Practice
+            
+            * use `std::false_type` and `std::true_type` for
+              custom type traits
+            * always define the result of type transformation in
+              `type`
+
+section
+    section
+        :markdown
+            ## Controlling the overload set
+
+            The overload set is the set function overloads that are viable for
+            resolving a call to a function
+
+    section
+        :markdown
+            ### Type traits and tags
+
+    section
+        :cxx
+            template <typename T>
+            void Copy(T* source, T* destination, size_t count);
+
+    section
+        :cxx
+            template <typename T>
+            void Copy(T* source, T* destination, size_t count) {
+                for (size_t i = 0; i != count; ++i) {
+                    destination[i] = source[i];
+                }
+            }
+        p.fragment.fade-in Can we do better?
+
+    section
+        :cxx
+            template <typename T>
+            void Copy(T* source, T* destination, size_t count) {
+                if ((T is POD)) {
+                    std::memcpy(destination, source, count * sizeof(T));
+                }
+                else {
+                    for (size_t i = 0; i != count; ++i) {
+                        destination[i] = source[i];
+                    }
+                }
+            }
+
+    section
+        :markdown
+            ### Overloads
+
+            Overloads are distinguished and chosen based on their arguments
+            count and type. So we can add another argument and overload on it.
+
+    section
+        :cxx
+            struct isPOD {};
+            struct nonPOD {};
+
+            template <typename T>
+            void Copy(T* source, T* destination, size_t count, isPOD) {
+                std::memcpy(destination, source, count * sizeof(T));
+            }
+
+            template <typename T>
+            void Copy(T* source, T* destination, size_t count, nonPOD) {
+                for (size_t i = 0; i != count; ++i) {
+                    destination[i] = source[i];
+                }
+            }
+
+    section
+        :cxx
+            int a[10], b[10];
+            Copy(a, b, 10, isPOD());
+            // choses the memcpy implementation, because that is matching
+            // overload
+
+            std::string c[10], d[10];
+            Copy(c, d, 10, isPOD()); // oops
+
+    section
+        :markdown
+            ### Not very nice
+            
+            * requires extra parameter for the client to use
+            * error prone
+            * requires definition of extra structs
+
+    section
+        :cxx
+            namespace detail
+            {
+                template <typename T>
+                void Copy(T* source, T* destination, size_t count,
+                std::true_type /*isPOD*/) {
+                    std::memcpy(destination, source, count * sizeof(T));
+                }
+
+                template <typename T>
+                void Copy(T* source, T* destination, size_t count,
+                std::false_type /*isPOD*/) {
+                    for (size_t i = 0; i != count; ++i) {
+                        destination[i] = source[i];
+                    }
+                }
+            }
+            template <typename T>
+            void Copy(T* source, T* destination, size_t count)
+                detail::Copy(source, destination, count, std::is_pod<T>());
+            }
+
+section
+    section
+        :markdown
+            ## SFINAE
+
+            Substitution Failure Is Not An Error
+
+            The compiler doesn't generate compiler error when a template
+            paratemeter can not be substituted with a concrete type, it simply
+            ignores the substutition.
+
+    section
+        :cxx
+            template <typename T>
+            typename std::enable_if<std::is_pod<T>::value, void>::type
+            Copy(T* source, T* destination, size_t count) {
+                std::memcpy(destination, source, count * sizeof(T));
+            }
+
+            template <typename T>
+            typename std::enable_if<!std::is_pod<T>::value, void>::type
+            Copy(T* source, T* destination, size_t count) {
+                for (size_t i = 0; i != count; ++i) {
+                    destination[i] = source[i];
+                }
+            }
+    section
+        :cxx
+            template <bool Value, typename T>
+            struct enable_if {
+            };
+
+            template <typename T>
+            struct enable_if<true> {
+                typedef T type;
+            };
+
+    section
+        :cxx
+            int s[10], d[10];
+            Copy(s, d, 10);
+
+        :markdown
+            `int` is POD
+
+            * `enable_if<is_pod<int>::value, void>::type` is
+              `void` and the `memcpy` overload of `Copy` is viable
+            * There is no such type in `enable_if<!is_pod<int>::value,
+              void>`, so the substitution fails and the compiler silently
+              ignores the *for* overload
+
+    section
+        :cxx
+            template <typename T>
+            typename std::enable_if<!std::is_pod<T>::value, void>::type
+            Copy(T* source, T* destination, size_t count) {
+                for (size_t i = 0; i != count; ++i) {
+                    destination[i] = source[i];
+                }
+            }
+
+
+    section
+        :markdown
+            ### SFINAE
+            
+            Use `std::enable_if` to control the overload set of generic
+            functions.
+
+section
+    section
+        :markdown
+            ## Type erasure
+
+    section
+        :markdown
+            * *C++'98* doesn't have *C#* style delegates.
+            * In *C++'11* they are provided by `std::function` and
+              `std::bind`
+
+            How they can be implemented?
+
+    section
+        +snippet('12_templates/delegate0.cxx', 'delegate-fun')
+
+    section
+        +snippet('12_templates/delegate0.cxx', 'delegate-method')
+
+    section
+        +snippet('12_templates/delegate0.cxx', 'delegate-const-method')
+
+    section
+        +snippet('12_templates/delegate0.cxx', 'functions')
+
+    section
+        +snippet('12_templates/delegate0.cxx', 'usage')
+    
+    section
+        :markdown
+
+            `DelegateFun<void()>` and `DelegateMethod<A, void()>`
+            can not be a single class, because they have different
+            template arguments
+
+            Yet they have the same behavior - the `void ()` function.
+
+            To make a usable delegate class, we need to erase the type
+            difference between the types.
+            
+    section
+        +snippet('12_templates/delegate.cxx', 'impl')
+
+    section
+        +snippet('12_templates/delegate.cxx', 'delegate-fun')
+
+    section
+        +snippet('12_templates/delegate.cxx', 'delegate-method')
+
+    section
+        +snippet('12_templates/delegate.cxx', 'delegate')
+
+    section
+        +snippet('12_templates/delegate.cxx', 'delegate-ctor')
+
+    section
+        +snippet('12_templates/delegate.cxx', 'delegate-value')
+
+    section
+        :markdown
+
+            The pattern for type erasure is to define a class that exposes the
+            API and forwards all calls to a polymorphic object, which implements
+            the concrete API.
+
+            `std::function`, `boost::any` are probably the most famous examples
+            of *type erasure*.
+
+    section
+        :markdown
+            The above implementation is pretty low performant.
+
+            The reason for this is that a lot of small objects get allocated and
+            always the actual function is away from the `Delegate` instance we
+            have.
+
+            This can be resolved by storing the concrete `DelegateFun` or
+            `DelegateMethod` in a small buffer, directly in the `Delegate`
+            class.
+            
+section
+    section
+        h1 Static Polymorphism
+
+    section
+        :markdown
+            ## CRTP
+
+            Curiously Recurring Template Pattern
+
+        :cxx
+            class Derived : public Base<Derived>
+            {
+            };
+
+    section
+        p We have already seen that:
+        :cxx
+            struct Renderer : std::enabled_shared_from_this<Renderer>
+            {};
+
+            struct Texture : RefCounted<Texture>
+            {};
+    section
+        :markdown
+            
+            The *CRTP* allows the base template to use the derived type - it
+            can call methods, create/destory instances and so on.
+
+    section
+        :markdown
+        
+            ## Static polymorphism
+
+            Using the derived class implementation though the base class
+            interface
+
+            * without virtual calls
+            * compile-time
+
+    section
+        h3 Runtime polymorphism
+        :cxx
+            struct JSONParser {
+                virtual void array_begin() = 0;
+                virtual void array_end() = 0;
+                bool Parse() {
+                    //...
+                    char n = next();
+                    switch (n) {
+                        case '[' : array_begin(); break;
+                        case ']' : array_end(); break;
+                        // ...
+                    }
+                }
+            };
+        
+    section
+        h3 Runtime polymorphism
+        :cxx
+            struct JSONMinifier : JSONParser {
+                virtual void array_begin() override {
+                    output.put('[');
+                }
+                virtual void array_end() override {
+                    output.put(']');
+                }
+            };
+
+        
+    section
+        h3 Runtime polymorphism
+        p.fragment.fade-in.
+        
+            We are making a virtual call for every token in the JSON file. And
+            it is unlikely that we need more than a few different JSON parser
+            types.
+    
+         
+    section
+        h3 Static polymorphism
+        :cxx
+            template <typename Derived>
+            struct JSONParser {
+                Derived* This() {
+                    return static_cast<Derived*>(this);
+                }
+                bool Parse() {
+                    //...
+                    char n = next();
+                    switch (n) {
+                        case '[' : This()->array_begin(); break;
+                        case ']' : This()->array_end(); break;
+                        // ...
+                    }
+                }
+            };
+    section
+        h3 Static polymorphism
+        :cxx
+            struct JSONMinifier : JSONParser<JSONMinifier> {
+                void array_begin() {
+                    output.put('[');
+                }
+                void array_end() {
+                    output.put(']');
+                }
+            };
+
+    section
+        :markdown
+
+            ## Barton-Nackman trick
+
+            Characterized by an in-class friend function declared in the base
+            class of a *CRTP*
+
+    section
+        :cxx
+            template <typename T>
+            class comparable {
+                friend bool operator > (const T& lhs, const T& rhs) {
+                    return !(lhs < rhs);
+                }
+                friend bool operator == (const T& lhs, const T& rhs) {
+                    return !(lhs < rhs || lhs > rhs);
+                }
+            };
+
+            struct Poly : public comparable<Poly> {
+                bool operator<(const Poly&rhs) const {
+                    //...
+                }
+            }
+
+section
+    section
+        h1 Expression Templates
+
+    section
+
+        A techique for using types (templates) to represent part of an
+        expression.
+
+    section
+        
+        The type (template) represents some kind of an operation with its
+        operands and allows the result to be evaluated later or passed to a
+        function (used itself as an operand).
+
+    section
+        h3 A Polynom class
+    section
+        +snippet('12_templates/exprtemp0.cxx', 'polynom')
+
+    section
+        h4 A simple implementation
+
+        :cxx
+            template <typename T>
+            Polynom<T> operator+(const Polynom<T>& lhs, const Polynom<T>& rhs) {
+                auto power = std::max(lhs.power(), rhs.power();
+                Polynom<T> result(power);
+                for (auto i = 0; i != power; ++i) {
+                    result.set(i, lhs.get(i) + rhs.get(i));
+                }
+                return result;
+            }
+    section
+        h4 How many loops and temporaries?
+
+        :cxx
+            Polynom<int> a = { 1, 0, 1, 0, 1 }; // x^3 + x + 1
+            Polynom<int> b = { 2, 2, 0, 2, 3 }; // 3*x^3 + 2*x^2 + 2*x + 2
+            Polynom<int> c = { 42 };
+
+            auto d = a + b + c;
+            // compiled to:
+            // t1 = a + b
+            // t2 = t1 + c
+            // d = t2
+    section
+        ul
+            li 2 temporaries
+            li 2 loops!
+            li heap allocations!
+           
+    section
+        h4 Expressions
+        :cxx
+            auto d = a + b + c;
+            // With ET it compiled to:
+            // Sum(a,b) t1 = a + b
+            // Sum(Sum(a,b),c) t2 = t1 + c
+            // d = t2 // create Polynom from Sum(Sum(a, b), c)
+
+    section
+        :cxx
+            // Pseudo code ahead
+            auto power = std::max(a.power(), b.power(), c.power())
+            Polynom<int> d(power);
+            for (auto i = 0; i != power; ++i) {
+                d.set(i, a.get(i) + b.get(i) + c.get(i));
+            }
+           
+    section
+        ul
+            li 2 temporaries
+            li 1 loop!
+            li 1 heap allocation!
+
+    section
+        h4 Sum
+    section
+        +snippet('12_templates/exprtemp0.cxx', 'sum')
+
+    section
+        h4 Multiplication
+    section
+        +snippet('12_templates/exprtemp0.cxx', 'mult')
+
+    section
+        h4 Simple expressions
+    section
+        +snippet('12_templates/exprtemp0.cxx', 'operators')
+
+    section
+        h4 All possible expressions
+    section
+        +snippet('12_templates/exprtemp0.cxx', 'all-operators')
+
+    section
+        h3 Bonus question
+
+        :markdown
+        
+            Why does the `Polynom` template have methods `get` and `set` instead
+            of `operator[]`?
+
+section
+    section
+        h1 Compile-time computation
+    section
+        a(href='http://cpptruths.blogspot.com/2011/07/want-speed-use-constexpr-meta.html')
+            | http://cpptruths.blogspot.com/2011/07/want-speed-use-constexpr-meta.html
