@@ -128,7 +128,7 @@ section
 
     section
         :markdown
-            ## Issues with manual error hanlding
+            ## Issues with manual error handling
 
             * it is very easy to skip the check for error
             * needs special error values
