@@ -91,7 +91,7 @@ In C++11, the `alignof` operator gives the alignment of a type.
 +++
 +++ slide
 
-* `m_IsAlive` is `bool`, size 4, alignment 1
+* `m_IsAlive` is `bool`, size 1, alignment 1
 * `m_HP` is `int` - size 4, alignment 4
 
 The compiler must create a hole of 3 bytes in `Pawn` in order to fulfill the
@@ -336,6 +336,96 @@ executes it.
 The virtual tables are dumped with:
 
     g++ -fdump-class-hierarchy -std=c++11 -c vlayout.cc 
+
++++
++++ slide
+### Multiple-inheritance
+
+    class FlyingPawn : public Pawn, public Flying
+    {
+        int m_FlyingPawnMember;
+    };
++++
++++ slide
+
+The same as single inheritance, all the base classes are at the beginning of the
+object in the order their are inherited.
+
++++
++++ slide
+
+Given:
+
+    class Flying {
+        public:
+            int altitude;
+    };
+
++++
++++ slide
+#### Pointer assignment
+
+
+    FlyingPawn fp;
+    Flying* f = &fp;
+    cout << f->altitude << std::endl;
+    // compiler generates cout << reinterpret_cast_cast<int*>(f) << endl;
+
+What is requried from `Flying* f = &fp;` in order for the code to work?
+
++++
++++ slide
+
+    FlyingPawn fp;
+    Flying* f = &fp;
+    // compiler generates f = &fp + offset_of_Flying_in_FlyingPawn
+
+The offset is known at compile time, so there is no significant runtime penalty.
+
++++
++++ slide
+
+    Flying* f = new FlyingPawn;
+    delete f;
+
++++
++++ slide
+
+Undefined behaviour. Best case - warning for deleting an object with virtual
+method and without virtual destructor.
+
++++
++++ slide
+### Virtual inheritance
+
+The idea is simple - instead of having the base class at a fixed at compile
+time offset, use a runtime offset.
+
+Runtime offset - actually a pointer to the base class. 
+
++++
++++ slide
+
+    struct Player : virtual Pawn {
+        const char* m_Name;
+        int m_Score;
+    };
+
++++
++++ slide
+
+The compiler generates a pointer to `Pawn` at the beginning of `Player` and
+places the actual `Pawn` instance somewhere in `Player`. 
+
+*Somewhere* is at the end for most implementations.
+
++++
++++ slide
+### Multiple-inheritance with virtual functions
+
+The object gets multiple virtual tables, one for each base class with virtual
+functions. Each virtual table has the same indices as the virtual table of the
+corresponding base class.
 
 +++
 +++ slide
