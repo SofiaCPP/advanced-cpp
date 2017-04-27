@@ -40,7 +40,7 @@ section
         :markdown
             ### `using namespace`
 
-            It is a really practice to use `using namespace` at
+            It is a really bad practice to use `using namespace` at
             anything but function or block level in headers.
 
             You never know where this header is going to be included.
@@ -78,7 +78,7 @@ section
             ### *Anonymous* namespaces
 
             * `namespace` without a name
-            * allow private definitions for translation unit
+            * allow private definitions for a translation unit
               * definitions in anonymous namespaces are global for the
                 translation unit
               * they can not be accessed by any other translation unit
