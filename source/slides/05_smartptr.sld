@@ -25,7 +25,7 @@ and `operator->()`
 ===
 === topic
 
-    // the most simple SmartPointer
+    // the simplest SmartPointer
     template <typename T>
     class SmartPointer
     {
@@ -106,7 +106,7 @@ without any drawbacks
 
 Due to the lack of move semantics in C++ 98, `std::auto_ptr` is forced
 to transfer the ownership of the pointer during copy construction and
-assignment. Also `std::auto_ptr` was copiable and assignable. You could
+assignment. `std::auto_ptr` was also copiable and assignable. You could
 make a `std::vector<std::auto_ptr>`, but it would be completely
 unpredictable - the standard does not require certain copy/assignment
 guarantees for containers.
