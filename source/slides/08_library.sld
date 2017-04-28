@@ -9,7 +9,7 @@ section
 section
     h2 Contents
     ul
-      li Kind of libraries
+      li Kinds of libraries
        ul
          li Header only
          li Static
@@ -17,9 +17,8 @@ section
       li Symbol linkage
       li interfaces
       li Heap allocated objects
-      li std:: cross library
+      li std::cross library
 
-section
 section
   h2 Header only libraries
   p A collection of header files
@@ -35,12 +34,11 @@ section
     h3 Cons
     ul
       li No isolation at all - the client sees all implementation details
-      li Changes in the library requires recompile
+      li Changes in the library require recompiles
       li Difficult to use with non-open-source licenses
       li May significantly increase compilation time
       li Tends to creep all over the place
 
-section
 section
   h2 Static Libraries
   p An archive of object files
@@ -64,7 +62,6 @@ section
       li 3rd party dependencies conflict
 
 section
-section
   h2 Dynamic/Shared Libraries
 
   p a single object file, that allows calling of predefined set of
@@ -83,7 +80,6 @@ section
     li A lot of platform specifics
     li DLL boundary
 
-section
 section
   h3 Symbol Visibility
   ul
@@ -233,15 +229,12 @@ section
         undefined symbols in the library are reported when linking an
         executable, not the library itself
 
-      li Symbols in the executable or a 3rd party library can override your
-      own symbols
+      li Symbols in the executable of a 3rd party library can override your own symbols
 
     code.fragment.fade-in
       pre.
         # link with
         g++ *.o -Xlinker -Bsymbolic -o myLibrary.so
-
-section
 
 section
   h2 API
@@ -264,7 +257,7 @@ section
       * C# (.NET) - PInvoke
 
     Cons
-      * `C` - no ``++`` features - resource management, OOP, generics 
+      * no ``C++`` features - resource management, OOP, generics 
       * prefix on every function
 
 section
@@ -348,7 +341,7 @@ section
     Implementation may be different when using different compiler options
 
     Visual Studio has *debug iterators* enabled in *Debug* build. They
-    allow to detect incorrect usage of `STL`. For example, using an
+    allow detection of incorrect usage of `STL`. For example, using an
     iterator to a vector, after it has been invalidated.
 
     In *Release* a `vector::iterator` can be a plain pointer, but a
@@ -366,7 +359,7 @@ section
 
 section
   :markdown
-    `STL` hides allocations from the user, so it impossible to be sure
+    `STL` hides allocations from the user, so it is impossible to be sure
     that the memory will be deallocated from the allocator that allocated
     it.
 
@@ -385,7 +378,7 @@ section
   :cxx
     namespace Lua {
       class State {
-        virtual void ~Lua() = 0;
+        virtual void ~State() = 0;
         virtual void destroy() = 0;
         virtual bool compile(const char* file) = 0;
       };
@@ -400,7 +393,7 @@ section
 
       class StateImpl: public State {
 
-        virtual void ~State() {
+        virtual void ~StateImpl() {
         }
 
         virtual void destroy() override {
@@ -476,7 +469,6 @@ section
     [HowTo: Export C++ classes from a DLL]
     (http://www.codeproject.com/Articles/28969/HowTo-Export-C-classes-from-a-DLL)
 
-section
 section
   :markdown
     ## pImpl
