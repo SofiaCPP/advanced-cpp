@@ -318,7 +318,7 @@ section
         class String {
             // ...
             String(String&& o)
-                : m_Buffer(o.m_Buffer);
+                : m_Buffer(o.m_Buffer)
                 , m_Length(o.m_Length)
             {
                 o.m_Buffer = nullptr;
@@ -361,7 +361,7 @@ section
         // We have moved s into t, it's value is unknown
 
 section
-    h2 Asignment operator
+    h2 Assignment operator
 
     :cxx
         class String {
@@ -370,24 +370,24 @@ section
             String& operator= (const String& rhs) {
                 if (this != &rhs) {
                     delete [] m_Buffer;
-                    m_Length = o.m_Length;
+                    m_Length = rhs.m_Length;
                     m_Buffer = new char[rhs.m_Length];
                     std::memcpy(m_Buffer, rhs.m_Buffer, m_Length);
                 }
                 return *this;
             }
 section
-    h2 Asignment operator
+    h2 Assignment operator
     p before
     img(width = '100%' src='04_move/assign.svg')
 
 section
-    h2 Asignment operator
+    h2 Assignment operator
     p after
     img(width = '100%' src='04_move/copy_assign.svg')
 
 section
-    h2 Move asignment
+    h2 Move assignment
 
     :cxx
         class String {
@@ -396,9 +396,10 @@ section
             String& operator= (String&& rhs) {
                 if (this != &rhs) {
                     delete [] m_Buffer;
-                    m_Length = o.m_Length;
+                    m_Length = rhs.m_Length;
                     m_Buffer = rhs.m_Buffer;
                     rhs.m_Buffer = nullptr;
+                    rhs.m_Length = 0;
                 }
                 return *this;
             }
@@ -410,7 +411,7 @@ section
     img(width = '100%' src='04_move/assign.svg')
 
 section
-    h2 Move Asignment
+    h2 Move Assignment
     p after
     img(width = '100%' src='04_move/move_assign_1.svg')
 
@@ -432,7 +433,7 @@ section
         li.fragment.fade-in move
 
 section
-    h2 Move asignment - alternative implementation
+    h2 Move assignment - alternative implementation
 
     :cxx
         class String {
@@ -451,12 +452,12 @@ section
     img(width = '100%' src='04_move/assign.svg')
 
 section
-    h2 Move Asignment - alternative implementation
+    h2 Move Assignment - alternative implementation
     p after
     img(width = '100%' src='04_move/move_assign_2_1.svg')
 
 section
-    h2 Move Asignment - alternative implementation
+    h2 Move Assignment - alternative implementation
     p in the end
     img(width = '100%' src='04_move/move_assign_2.svg')
 
