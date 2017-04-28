@@ -94,9 +94,6 @@ It is the same as every other resource:
 +++
 +++ slide
 
-+++
-+++ slide
-
 ### Directly using a deleter
 
 +++
@@ -141,7 +138,7 @@ Implemented in:
     template <class T>
     using owner = T;
 
-https://github.com/Microsoft/GSL/blob/master/include/gsl/gsl#L55
+(https://github.com/Microsoft/GSL/blob/master/include/gsl/gsl#L55)
 
 +++
 +++ slide
