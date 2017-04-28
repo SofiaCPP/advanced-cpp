@@ -34,8 +34,8 @@ section
 * does not work for *non-POD*
 * needs a new function
 * `C++'98` does not allow defining functions inside functions
-* the functions does not allow to store state, unless it is global
-* the function has to always be called indirectly through pointer
+* the function does not allow to store state, unless it is global
+* the function has to always be called indirectly through a pointer
   * and will get called O(N*log*N) times for sorting *N* numbers
 
 
@@ -294,7 +294,7 @@ function with one argument less.
     // "x" -> ";x"
 
     std::transform(v.begin(), v.end(), v.begin(),
-        std::bind2st(std::plus<std::string>(), ";"));
+        std::bind2nd(std::plus<std::string>(), ";"));
     // "x" -> "x;"
 
 +++
@@ -309,7 +309,7 @@ function with one argument less.
 
 Generalized version of `std::mem_fun`.
 
-* handles arbitrary number of arguments
+* handles an arbitrary number of arguments
 * the object can be passed by reference, plain or smart pointer.
 
 +++
