@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Allocators</title></head><body><div class="reveal"><div class="slides"><section><h1>Custom allocators</h1>
+</section><section><h2>Contents</h2>
+<ul>
+<li>Using custom <code>new</code>/<code>delete</code></li>
+<li>STL allocators</li>
+<li>Using custom allocators with STL</li>
+<li>HeapLayers</li>
+<li>Allocation schemes</li>
+<li>Custom allocators and tools</li>
+</ul>
+</section><section><p>Disclaimer: The standard memory allocation functions on each platform are pretty fast.
+But they are very general purpose, so there are a lot of usages when they will be inefficient.
+Use a custom allocator when you know there will be performance gain and measure!</p>
+</section><section><h1>Custom <code>new</code> / <code>delete</code></h1>
+</section><section><p>To change the global <code>operator new</code> and <code>operator delete</code>, one has to define them.</p>
+<pre><code>#include &lt;new&gt;
+
+void* operator new(size_t size);
+void* operator new(std::size_t count, const std::nothrow_t&amp; tag);
+void* operator new[](std::size_t count, const std::nothrow_t&amp; tag);
+void* operator new[](size_t size);
+
+void operator delete(void* ptr);
+void operator delete(void* ptr, const std::nothrow_t&amp; tag);
+void operator delete[](void* ptr);
+void operator delete[](void* ptr, const std::nothrow_t&amp; tag);
+</code></pre>
+</section><section><p>Same goes for <code>malloc</code>, <code>calloc</code>, <code>realloc</code> and <code>free</code></p>
+</section><section><p>It is easy, but it works at global level.</p>
+<ul>
+<li>There is no any context about the allocation itself
+<ul>
+<li>not possible to have a more efficient implementation for a type</li>
+<li>not possible to have a more efficient implementation for a usage pattern</li>
+<li>not easy to have a different allocator in different subsystems</li>
+<li>global state</li>
+</ul>
+</li>
+<li>A library can change the allocator for the entire application
+<ul>
+<li>Not always a good idea</li>
+</ul>
+</li>
+</ul>
+</section><section><p>Most applications have custom allocators.</p>
+<ul>
+<li>tcmalloc (Chromium and Android)</li>
+<li>jemalloc (Firefox and <a href="https://www.facebook.com/notes/facebook-engineering/scalable-memory-allocation-using-jemalloc/480222803919/" target="_blank" rel="external">Facebook</a>)</li>
+</ul>
+<p>Both have tools for:</p>
+<ul>
+<li>profiling</li>
+<li>leak detection</li>
+<li>corruption detection</li>
+</ul>
+</section><section><h2>Custom allocator per allocation</h2>
+</section><section><pre><code>struct MyAllocator {
+    void* Allocate(size_t size);
+    void Free(void* pointer);
+};
+
+// Overload operator new
+void* operator new(size_t size, MyAllocator&amp; allocator);
+</code></pre>
+</section><section><pre><code>MyAllocator allocator;
+auto game = new (allocator) Game();
+
+delete game; /// ????
+</code></pre>
+</section><section><p>There is no <code>delete (allocator) game;</code> syntax.
+So one has to create its own.</p>
+<pre><code>template &lt;typename T&gt;
+void destroy(T* pointer)
+{
+    if (pointer) {
+        pointer-&gt;~T();
+    }
+    // Deallocation?
+}
+</code></pre>
+</section><section><p>From which allocator to free the memory?</p>
+<ul>
+<li>Each object has a pointer to the allocator that has allocated it
+<ul>
+<li>Expensive - a pointer per object is quite expensive - Think arrays of objects</li>
+<li>Does not work with primitive types</li>
+</ul>
+</li>
+<li>Prepend the address of the allocator before the allocated memory
+<ul>
+<li>Still relatively expensive - extra pointer for each allocation</li>
+<li>Allignment</li>
+</ul>
+</li>
+<li>Partition the address space and derive from the address the adress of the allocator
+<ul>
+<li>0x0000 - 0x00FF - Allocator 0</li>
+<li>0x00FF - 0x01FF - Allocator 1</li>
+</ul>
+</li>
+<li>Just keep the allocator pointer available and be careful
+<ul>
+<li>In practice it is rare to have large count of allocators, so that is OK</li>
+</ul>
+</li>
+</ul>
+</section><section><h3>Padding</h3>
+<pre><code>template &lt;typename Allocator, typename T&gt;
+void destroy(Allocator&amp; allocator, T* pointer)
+{
+    if (pointer) {
+        pointer-&gt;~T();
+        allocator.Free(pointer);
+    }
+}
+</code></pre>
+</section><section><p>Arrays?</p>
+<pre><code>template &lt;typename Allocator, typename T&gt;
+void destroy_array(Allocator&amp; allocator, T* pointer)
+{
+    if (pointer) {
+        // N - ????
+        for (auto p = pointer + N - 1; p &gt;= pointer; --p)
+        {
+            p-&gt;~T();
+        }
+        allocator.Free(pointer);
+    }
+}
+</code></pre>
+<ul>
+<li>extra argument or use <code>std::vector</code> or other dynamic array</li>
+</ul>
+</section><section><pre><code>#define RENDER_NEW new (gRenderAllocator)
+#define RENDER_DELETE(P) destroy(gRenderAllocator, P);
+
+auto texture = RENDER_NEW Texture(&quot;file.png&quot;);
+RENDER_DELETE(texture);
+</code></pre>
+</section><section><p>Macros has additional benefits</p>
+<pre><code>struct RenderAllocator {
+    void* Allocator(size_t size, const char* file, int line);
+}
+void* operator new (size_t size, RenderAllocator&amp; allocator, const char* file, int line);
+#define RENDER_NEW new(gRenderAllocator, __FILE__, __LINE__);
+</code></pre>
+<p>We can track the place of allocation of each memory block and dump leaks.</p>
+</section><section><p>Smart pointers with custom deleters help too.</p>
+<pre><code>struct RenderDeleter {
+    template &lt;typename T&gt;
+    void operator()(T* pointer) {
+        destroy(gRenderAllocator, pointer);
+    }
+}
+
+template &lt;typename T&gt;
+using RenderUniquePtr = std::unique_ptr&lt;T, RenderDeleter&gt;;
+
+RenderUniquePtr texture{RENDER_NEW Texture(&quot;file.png&quot;)};
+</code></pre>
+</section><section><h1>STL Allocator</h1>
+</section><section><pre><code>template &lt;typename T&gt;
+class STLAllocator
+{
+public:
+    typedef T value_type;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+
+    typedef T* pointer;
+    typedef const T* const_pointer;
+
+    typedef T&amp; reference;
+    typedef const T&amp; const_reference;
+</code></pre>
+</section><section><pre><code>    pointer address(reference x) const
+    {
+        return &amp;x;
+    }
+
+    const_pointer address(const_reference x) const
+    {
+        return &amp;x;
+    }
+</code></pre>
+</section><section><pre><code>    STLAllocator()
+    {
+    }
+
+    STLAllocator(const STLAllocator&amp;)
+    {
+    }
+
+    template &lt;typename U&gt;
+    STLAllocator(const U&amp;)
+    {
+    }
+
+    template &lt;typename U&gt;
+    STLAllocator(const STLAllocator&lt;U&gt;&amp;)
+    {
+    }
+    
+    template &lt;typename U&gt;
+    struct rebind
+    {
+        typedef STLAllocator&lt;U&gt; other;
+    };
+</code></pre>
+</section><section><pre><code>    void construct(pointer p, const_reference value)
+    {
+        new (p) T(value);
+    }
+
+#if defined(__clang__) || (defined(__GNUC__) || defined(__GNUG__))
+    template &lt;typename U, typename... Args&gt;
+    void construct(U* p, Args&amp;&amp;... args)
+    {
+        new (const_cast&lt;typename std::remove_cv&lt;U&gt;::type*&gt;(p)) U(std::forward&lt;Args&gt;(args)...);
+    }
+#else
+    void construct(pointer p, value_type&amp;&amp; value)
+    {
+        new (p) value_type(std::forward&lt;value_type&gt;(value));
+    }
+
+    template &lt;typename Other&gt;
+    void construct(pointer p, Other&amp;&amp; value)
+    {
+        new (p) value_type(std::forward&lt;Other&gt;(value));
+    }
+#endif
+</code></pre>
+</section><section><pre><code>    void destroy(pointer p)
+    {
+        p-&gt;~T();
+    }
+
+    size_type max_size() const
+    {
+        return size_type(-1) / sizeof(T);
+    }
+</code></pre>
+</section><section><pre><code>    pointer allocate(size_type n, const void* = 0)
+    {
+        return static_cast&lt;pointer&gt;(::operator new(n * sizeof(value_type)));
+    }
+
+    void deallocate(pointer p, size_type)
+    {
+        ::operator delete(p, Coherent::MemoryManagementGT::CoherentMemoryTag);
+    }
+</code></pre>
+</section><section><pre><code>    bool equal(const STLAllocator&amp; rhs) const
+    {
+        return true;
+    }
+};
+</code></pre>
+</section><section><pre><code>template &lt;&gt;
+class STLAllocator&lt;void&gt;
+{
+public:
+    typedef void value_type;
+    typedef void* pointer;
+    typedef const void* const_pointer;
+
+    template &lt;typename T&gt;
+    struct rebind
+    {
+        typedef STLAllocator&lt;T&gt; other;
+    } ;
+} ;
+</code></pre>
+</section><section><pre><code>template &lt;typename T&gt;
+bool operator==(const STLAllocator&lt;T&gt;&amp; lhs, const STLAllocator&lt;T&gt;&amp; rhs)
+{
+    return lhs.equal(rhs);
+}
+
+template &lt;typename T&gt;
+bool operator!=(const STLAllocator&lt;T&gt;&amp; lhs, const STLAllocator&lt;T&gt;&amp; rhs)
+{
+    return !(lhs == rhs);
+}
+</code></pre>
+</section><section><p>The cons of the STL allocator model</p>
+<ul>
+<li>
+<p>Almost never <code>allocator&lt;T&gt;</code> allocates <code>T</code>s</p>
+<ul>
+<li>it is rebound with <code>rebind</code></li>
+</ul>
+</li>
+<li>
+<p>No state, no parameters</p>
+</li>
+<li>
+<p><code>std::vector&lt;int, A&gt;</code> and <code>std::vector&lt;int, B&gt;</code> are completely different types</p>
+<ul>
+<li>it is difficult to reuse functions for containers with different allocators</li>
+<li><code>shared_ptr</code>s can use different allocators without changing its type</li>
+</ul>
+</li>
+<li>
+<p>One of the key reasons for existence of https://github.com/electronicarts/EASTL</p>
+</li>
+</ul>
+</section><section><h2>Custom allocators</h2>
+<ul>
+<li><a href="https://github.com/mtrebi/memory-allocators" target="_blank" rel="external">Linear, Temp, Pool</a></li>
+<li><a href="scopestacks_public.pdf">ScopeStacks</a></li>
+<li>(Temporary)(http://coherent-labs.com/blog/temporary-allocations-in-c/)</li>
+</ul>
+</section><section><h1><a href="https://github.com/emeryberger/Heap-Layers" target="_blank" rel="external">HeapLayers</a></h1>
+<ul>
+<li>The idea is simple - layer allocators on top of each other to get the most simple and efficient implementations</li>
+<li>Each allocator allocates its memory using the parent allocator until</li>
+</ul>
+</section><section><pre><code>template &lt;typename ParentAllocator&gt;
+struct DebugAllocator : private ParentAllocator {
+    void* Allocate(size_t size) {
+        auto realSize = addPadding(size);
+        auto realMemory = ParentAllocator::Allocator(realSize);
+        setPatterns(realMemory, realSize);
+        return getUserMemory(realMemory, size);
+    }
+};
+
+typedef DebugAllocator&lt;PoolAllocator&lt;MallocAllocator&gt; MyAllocator;
+</code></pre>
+</section><section><h1>Tools and custom allocators</h1>
+</section><section><ul>
+<li><em>Address sanitizer</em> will not work with a custom allocator
+<ul>
+<li>It will not catch when you are corrupting memory</li>
+</ul>
+</li>
+<li>External (OS) level memory allocator will not show the real allocation that is leaking
+<ul>
+<li>When a pool of objects is not freed, because of a object in the middle,
+the tool will show the first object that cause the pool to be allocated.</li>
+</ul>
+</li>
+</ul>
+</section><section><ul>
+<li>Add option for disabling / switching the custom memory allocators</li>
+</ul>
+</section><section><p>?</p>
+</section></div></div><script src="/advanced-cpp/bower_components/reveal.js/lib/js/head.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/js/reveal.min.js"></script><script src="/advanced-cpp/bower_components/reveal.js/plugin/highlight/highlight.js"></script><script src="/advanced-cpp/bower_components/jquery/dist/jquery.min.js"></script><script src="/advanced-cpp/slides.js"></script></body></html>

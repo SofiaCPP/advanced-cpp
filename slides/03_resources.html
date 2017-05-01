@@ -24,7 +24,7 @@ using (Font font1 = new Font(&quot;Arial&quot;, 10.0f))
     }
     defer f.Close()  // f.Close will run when we're finished.
     
-    </code></pre></section></section><section><h2>Lifetime of an object</h2><ul><li class="fragment fade-in">starts with completion of the constructor</li><li class="fragment fade-in">ends with the completion of the destructor</li></ul></section><section><h2>Automatic variables</h2><p class="fragment fade-in">Automatic variable is is allocated and deallocated when the
+    </code></pre></section></section><section><h2>Lifetime of an object</h2><ul><li class="fragment fade-in">starts with completion of the constructor</li><li class="fragment fade-in">ends with the completion of the destructor</li></ul></section><section><h2>Automatic variables</h2><p class="fragment fade-in">Automatic variable is allocated and deallocated when the
 program flow enters and leaves the variable's context.
 </p><p class="fragment fade-in">Variable's context is the scope of its declaration</p></section><section><section><h2>Scope of a variable</h2></section><section><pre class="mstretch"><code>void function() {
     std::ifstream f(&quot;input.txt&quot;);
