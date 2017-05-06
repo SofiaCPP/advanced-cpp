@@ -164,7 +164,7 @@ section
             ####  `reserve`
 
             * `reserve(n)` Sets the capacity to **at least** *n* elements
-            * Always you it when you now the number of elements in advance
+            * Always use it when you now the number of elements in advance
     section
         :cxx
             std::ifstream input("input.txt");
@@ -619,7 +619,7 @@ section
     section
         :markdown
 
-            Associative containers *assiciate* keys with values.  Both variants
+            Associative containers *associate* keys with values.  Both variants
             have very similar usage and API, but different implementations and
             requirements for the types.
 
@@ -724,7 +724,7 @@ section
     section
         :markdown
 
-            Generally unordered_containers have better performance over ordered,
+            Generally unordered _containers have better performance over ordered,
             so if the order is not important - use `unordered_*`
 
     section
