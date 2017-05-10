@@ -1,0 +1,188 @@
+title: Sample Test
+date: 2017-04-25 00:05:46
+tags:
+---
+
+p.
+
+    Please, keep in mind that the content of the course is different, so some
+    of the questions are not and will not be covered at all.
+
+ol
+    li При кое извикване на функция/метод ще се използва Argument Dependent
+        | Lookup?
+
+        ol(type='a')
+            li ::f(a);
+            li a.f(b);
+            li Lib::f(a);
+            li f(a)
+
+    li При дадените декларации:
+        code
+            pre.
+                class Base { } ;
+                class Der : public Base { } ;
+
+                void f(const Base& o);
+                template <typename T> f(const T& o);
+
+                Der d;
+
+        Обръщението f(d) e:
+
+        ol(type='a')
+            li Обръщение към void f(const Base& o)
+            li Обръщение към void f<Derived>(const Derived& o)
+            li Компилационна грешка - неопределено
+            li Грешка по време на изпълниение
+
+    li На какво разчита RAII (Resource Acquisition Is Initialization) за да
+        | осигури придобиването и освобождаването на ресурса съответно?
+
+        ol(type='a')
+            li на явно извикване на методи
+            li на конструктора и деструктора
+            li на използването на умен указател
+
+    li Използването на shared_ptr има смисъл само при multithreaded
+        | приложения?
+
+        ol(type='a')
+            li вярно
+            li не вярно
+
+    li При използването на operator-> на умен указател, operator-> се
+        | прилага:
+
+        ol(type='a')
+            li един път
+            li докато се стигне до обикновен указател
+
+    li На какво разчита std::binary_search(begin, end) за да работи?
+        ol(type='a')
+            li.
+
+                [begin, end) да е сортирана редица и елементите и да имат
+                operator==
+
+            li.
+
+                [begin, end) да е сортирана редица и елементите и да имат
+                operator<
+
+            li.
+
+                [begin, end) да е произволна редица и елементите и да имат
+                operator<
+
+            li.
+
+                [begin, end) да е произволна редица и елементите и да имат
+                operator==
+
+    li Кой алгоритъм бихте използвали за извеждане на десетте най-добри
+        | резултата в намаляващ ред?
+
+        ol(type='a')
+            li std::sort
+            li std::nth_element
+            li std::partial_sort
+            li собствен алгоритъм
+
+    li При следните декларации:
+
+        code
+            pre.
+                template <typename T> void f(const T& x);
+                template <typename T> void f(const std::vector<T>& x);
+                void f(const std::vector<int>& x);
+
+                typedef std::vector<int> VectorInt;
+                VectorInt x;
+
+    Обръщението f(x) ще извика:
+
+    ol(type='a')
+        li f(const T& x)
+        li f(const std::vector<T>& x)
+        li f(const std::vector<int>& x)
+    
+    li Виртуалното наследяване е част от поддръжката на C++ за
+        ol(type='a')
+            li виртуални методи
+            li generic programming
+            li множествено наследяване
+            li обектно-ориентирано програмиране
+
+    li Точка на инстацииране наричаме:
+        ol(type='a')
+            li мястото на създаване на обект
+            li мястото на декларация на шаблон
+            li мястото на дефиниция на шаблон
+            li мястото на използване на шаблон
+
+    li Кои методи на шаблон се инстанциират при използването на lazy
+        | instantiation в рамките на един translation unit и видима дефиниция
+        | на шаблона?
+
+        ol(type='a')
+            li всички, които се използват
+            li всички
+            li никой - методите се генерират веднъж за цялото приложение
+            li само тези които явно укажем
+
+    li Кога се извършва name lookup за използваните функции независещи от
+        | шаблонен аргумент в даден шаблон?
+
+        ol(type='a')
+            li при декларацията на шаблона
+            li при дефиницията на шаблона
+            li при инстанциирането на шаблона
+        
+    li weak_ptr
+        ol(type='a')
+            li нормален указател
+            li.
+            
+                умен указател, правещ reference count и освобождаващ ресурса,
+                когато не е нужен
+
+            li.
+
+                умен указател, сочещ към споделен ресурс, без да се брои като
+                reference
+
+    li Ако има нещо нередно със следния код, как бихте го поправили?
+        code
+            pre.
+                struct Base
+                {
+                    void f(int);
+                }
+                struct Der : Base
+                {
+                    void f(const vector<int>&);
+                }
+
+                Der d;
+                d.f(42);
+    
+    li Къде може да ползвате „безопасно“ виртуални функции?
+        ol(type='a')
+            li само извън класа
+            li извън класа и в неговите методи
+            li навсякъде с изключение на инициализиащия списък на базовите
+                | класове
+
+    li Ако има нещо нередно със следния код, как бихте го поправили?
+        code
+            pre.
+
+                bool print(int x) { cout << x; }
+                vector<int> v(10);
+                // v = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+                vector<int> x;
+                std::copy(v.begin(), v.end(), x.begin());
+                std::for_each(x.begin(), x.end(), print);
+
