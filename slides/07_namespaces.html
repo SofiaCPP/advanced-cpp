@@ -18,7 +18,7 @@ the namespace in different files.</p>
 <code>std</code> namespaces in the the current scope - namespace,
 function, block.</p>
 </section><section><h3 id="using_namespace-1"><code>using namespace</code></h3>
-<p>It is a really practice to use <code>using namespace</code> at
+<p>It is a really bad practice to use <code>using namespace</code> at
 anything but function or block level in headers.</p>
 <p>You never know where this header is going to be included.</p>
 </section><section><h3 id="using_namespace-1"><code>using namespace</code></h3>
@@ -43,7 +43,7 @@ definitions are visible)</li>
 </section><section><h3 id="Anonymous_namespaces"><em>Anonymous</em> namespaces</h3>
 <ul>
 <li><code>namespace</code> without a name</li>
-<li>allow private definitions for translation unit<ul>
+<li>allow private definitions for a translation unit<ul>
 <li>definitions in anonymous namespaces are global for the
 translation unit</li>
 <li>they can not be accessed by any other translation unit</li>

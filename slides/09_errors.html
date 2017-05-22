@@ -4,7 +4,7 @@
 <li>POSIX - <code>errno</code>, <code>perror()</code></li>
 <li>OpenGL - <code>glGetError()</code></li>
 </ul>
-</section><section><p>Only a error code - must always be looked up</p><pre class="mstretch"><code>auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
+</section><section><p>Only an error code - must always be looked up</p><pre class="mstretch"><code>auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
         0, 0, 0);
 if (!handle) {
     auto error = ::GetLastError();
@@ -76,7 +76,7 @@ they have a separate value for each thread in the process</li>
 </ul>
 </section><section><h2 id="Issues_with_manual_error_handling">Issues with manual error handling</h2>
 <ul>
-<li>it is very easy to skip the check for error</li>
+<li>it is very easy to skip the error check</li>
 <li>needs special error values</li>
 <li>requires adding a lot of code, reducing the clarity of the
 program</li>
@@ -204,8 +204,8 @@ C++ programs.
 </ul>
 </section><section><h3 id="No-throw_guarantee"><em>No-throw</em> guarantee</h3>
 <p>Operations are guaranteed to succeed.
-All exceptions are handled internally and not visible to the
-client</p>
+All exceptions are handled internally and are not visible to the
+client.</p>
 </section><section><h3 id="Strong_exception_safety"><em>Strong exception safety</em></h3>
 <p>Operations can fail, but failed operations have no side
 effects, as if they didn&#39;t attempt to run at all.</p>
@@ -235,17 +235,17 @@ void vector::push_back(T&amp; x) {
     }
 }
 </code></pre></section><section><h3 id="Exception_specifiers">Exception specifiers</h3>
-</section><section><h2 id="Pros">Pros</h2>
+</section><section><h2 id="Pros-2">Pros</h2>
 <ul>
 <li>Separete program logic from error handling</li>
 <li>They can&#39;t be ignored.</li>
 </ul>
-</section><section><h2 id="Cons">Cons</h2>
+</section><section><h2 id="Cons-1">Cons</h2>
 <ul>
-<li>Implementations - have some overhead even when no exceptions
+<li>Implementations have some overhead even when no exceptions
 occur<ul>
-<li>Windows - there is runtime overhead per function</li>
-<li>Others - there is overhead in executable size</li>
+<li>Windows - there is a runtime overhead per function</li>
+<li>Others - there is an overhead in executable size</li>
 </ul>
 </li>
 </ul>
@@ -312,7 +312,7 @@ program.</p>
 </ul>
 </section><section><h3 id="Criteria">Criteria</h3>
 <ul>
-<li>Severities, may be even facilities</li>
+<li>Severities, maybe even facilities</li>
 <li>log rotation</li>
 <li>compile time and run-time impact</li>
 </ul>

@@ -47,7 +47,7 @@
 typedef std::unique_ptr&lt;FILE, FCloserDeleter&gt; FilePtr;
 </code></pre>
 </section><section><h3>Custom deleter</h3>
-</section><section></section><section><h3>Directly using a deleter</h3>
+</section><section><h3>Directly using a deleter</h3>
 </section><section><pre><code>template &lt;typename T&gt;
 using UniqueReleasePtr&lt;T&gt; = std::unique_ptr&lt;T, ReleaseDeleter&gt;;
 
@@ -73,7 +73,7 @@ struct default_delete&lt;ID3DDevice&gt;
 <pre><code>template &lt;class T&gt;
 using owner = T;
 </code></pre>
-<p>https://github.com/Microsoft/GSL/blob/master/include/gsl/gsl#L55</p>
+<p>(https://github.com/Microsoft/GSL/blob/master/include/gsl/gsl#L55)</p>
 </section><section><p>Static checkers:</p>
 <ul>
 <li><a href="http://clang.llvm.org/extra/clang-tidy/" target="_blank" rel="external"><code>clang-tidy</code></a></li>

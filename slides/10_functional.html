@@ -21,8 +21,8 @@
 <li>does not work for <em>non-POD</em></li>
 <li>needs a new function</li>
 <li><code>C++'98</code> does not allow defining functions inside functions</li>
-<li>the functions does not allow to store state, unless it is global</li>
-<li>the function has to always be called indirectly through pointer
+<li>the function does not allow to store state, unless it is global</li>
+<li>the function has to always be called indirectly through a pointer
 <ul>
 <li>and will get called O(N<em>log</em>N) times for sorting <em>N</em> numbers</li>
 </ul>
@@ -193,14 +193,14 @@ std::transform(v.begin(), v.end(), v.begin(),
 // &quot;x&quot; -&gt; &quot;;x&quot;
 
 std::transform(v.begin(), v.end(), v.begin(),
-    std::bind2st(std::plus&lt;std::string&gt;(), &quot;;&quot;));
+    std::bind2nd(std::plus&lt;std::string&gt;(), &quot;;&quot;));
 // &quot;x&quot; -&gt; &quot;x;&quot;
 </code></pre>
 </section><section><h3><code>C++</code>11</h3>
 </section><section><h3><code>std::mem_fn</code></h3>
 <p>Generalized version of <code>std::mem_fun</code>.</p>
 <ul>
-<li>handles arbitrary number of arguments</li>
+<li>handles an arbitrary number of arguments</li>
 <li>the object can be passed by reference, plain or smart pointer.</li>
 </ul>
 </section><section><pre><code>typedef std::vector&lt;std::shared_ptr&lt;Players&gt;&gt; Players;
@@ -284,7 +284,7 @@ functor(<span class="hljs-number">42</span>);</code></pre></div></section><secti
 
     <span class="hljs-keyword">static</span> <span class="hljs-type">void</span> static_method(<span class="hljs-type">int</span> x)
     {
-        std::cout &lt;&lt; <span class="hljs-string">"some as free, but with access to internals"</span> &lt;&lt; std::endl;
+        std::cout &lt;&lt; <span class="hljs-string">"same as free but with access to internals"</span> &lt;&lt; std::endl;
     }
 };
 // ...

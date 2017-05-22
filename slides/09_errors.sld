@@ -28,7 +28,7 @@ section
             * OpenGL - ```glGetError()```
 
     section
-        p Only a error code - must always be looked up
+        p Only an error code - must always be looked up
         :cxx
             auto handle = ::CreateFileMapping(file, NULL, PAGE_READWRITE,
                     0, 0, 0);
@@ -130,7 +130,7 @@ section
         :markdown
             ## Issues with manual error handling
 
-            * it is very easy to skip the check for error
+            * it is very easy to skip the error check
             * needs special error values
             * requires adding a lot of code, reducing the clarity of the
               program
@@ -408,8 +408,8 @@ section
             ### *No-throw* guarantee
 
             Operations are guaranteed to succeed.
-            All exceptions are handled internally and not visible to the
-            client
+            All exceptions are handled internally and are not visible to the
+            client.
 
     section
         :markdown
@@ -471,10 +471,10 @@ section
         :markdown
             ## Cons
 
-            * Implementations - have some overhead even when no exceptions
+            * Implementations have some overhead even when no exceptions
               occur
-                * Windows - there is runtime overhead per function
-                * Others - there is overhead in executable size
+                * Windows - there is a runtime overhead per function
+                * Others - there is an overhead in executable size
 
 section
     section
@@ -589,7 +589,7 @@ section
         :markdown
             ### Criteria
 
-            * Severities, may be even facilities
+            * Severities, maybe even facilities
             * log rotation
             * compile time and run-time impact
 

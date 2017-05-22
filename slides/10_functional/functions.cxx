@@ -25,7 +25,7 @@ struct UserDefined
 
     static void static_method(int x)
     {
-        std::cout << "some as free, but with access to internals" << std::endl;
+        std::cout << "same as free but with access to internals" << std::endl;
     }
 };
 //@} method

@@ -49,14 +49,14 @@ program flow enters and leaves the variable's context.
 </code></pre></section><section><pre class="mstretch"><code>class Logger
 {
     private:
-        std::ifstream _input;
+        std::ifstream input;
 };
 // input gets created when a Logger instance gets created
 // input gets destroyed when the instance is destroyed
 </code></pre></section><section><pre class="mstretch"><code>class Logger
 {
     private:
-        static std::ifstream _input;
+        static std::ifstream input;
 };
 // input gets created sometime before executing main
 // input gets destroyed sometime after main has finished

@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="description" content="A course about C++"><meta name="author" content="SofiaCPP"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/advanced-cpp/bower_components/reveal.js/css/reveal.min.css"/><link rel="stylesheet" href="/advanced-cpp/css/advanced_cxx.css"><link rel="stylesheet" href="/advanced-cpp/css/tomorrow.css"><title>Containers in STL</title></head><body><div class="reveal"><div class="slides"><section><h1 id="STL_Containers">STL Containers</h1>
-</section><section><section><h1 id="Contents-1">Contents</h1>
+</section><section><section><h1 id="Contents">Contents</h1>
 <ol>
 <li>Sequence containers</li>
 <li>Container adaptors</li>
@@ -118,7 +118,7 @@ renderer.Draw(myTexture); // oops
 </code></pre></section><section><h4 id="reserve"><code>reserve</code></h4>
 <ul>
 <li><code>reserve(n)</code> Sets the capacity to <strong>at least</strong> <em>n</em> elements</li>
-<li>Always you it when you now the number of elements in advance</li>
+<li>Always use it when you now the number of elements in advance</li>
 </ul>
 </section><section><pre class="mstretch"><code>std::ifstream input(&quot;input.txt&quot;);
 
@@ -417,7 +417,7 @@ class priority_queue;
 <li><code>unordered_multiset</code></li>
 <li><code>unordered_multimap</code></li>
 </ol>
-</section><section><p>Associative containers <em>assiciate</em> keys with values.  Both variants
+</section><section><p>Associative containers <em>associate</em> keys with values.  Both variants
 have very similar usage and API, but different implementations and
 requirements for the types.</p>
 </section><section><pre class="mstretch"><code>template &lt;typename T,
@@ -479,7 +479,7 @@ class unordered_set;
           &gt;
 class unordered_map;
 
-</code></pre></section><section><p>Generally unordered<em>containers have better performance over ordered,
+</code></pre></section><section><p>Generally unordered <em>containers have better performance over ordered,
 so if the order is not important - use `unordered</em>*`</p>
 </section><section><p><em>sorted vector</em> is also an associative container that can provide
 both - inordered traversal and better performance over <code>map</code> and

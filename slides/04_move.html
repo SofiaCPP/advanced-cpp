@@ -59,7 +59,10 @@ auto numbers = get_random_ints(1000);
 std::vector&lt;int&gt; numbers;
 get_random_ints(1000, numbers);
 </code></pre><ul class="fragment fade-in"><li>more code</li></ul></section><section><h2>Optimizations</h2><p>Compilers are allowed to make any optimization as long as the
-program behaves in the same way as if there are no optimizations</p></section><section><h2>RVO</h2><p>C++ allows compilers to implement RVO even breaking this rule</p></section><section><h2>How is RVO implemented by compilers :cxx std::vector<int> get_random_ints(int count);<!-- ...--><auto>numbers = get_random_ints(1000);</auto></int></h2><p>Gets compiled as<pre class="mstretch"><code>void get_random_ints(int count, std::vector&lt;int&gt;&amp; numbers);
+program behaves in the same way as if there are no optimizations</p></section><section><h2>RVO</h2><p>C++ allows compilers to implement RVO even breaking this rule</p></section><section><h2>How is RVO implemented by compilers<pre class="mstretch"><code>std::vector&lt;int&gt; get_random_ints(int count);
+// ...
+auto numbers = get_random_ints(1000);
+</code></pre></h2><p>Gets compiled as<pre class="mstretch"><code>void get_random_ints(int count, std::vector&lt;int&gt;&amp; numbers);
 // ...
 std::vector&lt;int&gt; numbers;
 get_random_ints(1000, numbers);
@@ -81,7 +84,7 @@ which is then copied into <em><code>m</code></em></p>
 <p><em>assuming that the compiler will not optimize the code</em></p>
 <p></p></section><section><h2 id="lvalues_and_rvalues"><em>lvalues</em> and <em>rvalues</em></h2>
 <ul>
-<li>comes from C</li>
+<li>come from C</li>
 <li><em>lvalues</em> are on the left side of <code>operator =</code></li>
 <li><em>rvalues</em> are on the right side of <code>operator =</code></li>
 </ul>
@@ -95,7 +98,7 @@ which is then copied into <em><code>m</code></em></p>
 </section><section><h2 id="Rule_of_thumb">Rule of thumb</h2>
 <ul>
 <li><code>T&amp;&amp;</code> can be both - lvalue and rvalue</li>
-<li>If it has has a <em>name</em> it is a <em>lvalue</em></li>
+<li>If it has has a <em>name</em> it is an <em>lvalue</em></li>
 </ul>
 </section><section><pre class="mstretch"><code>Derived(Derived&amp;&amp; other) 
   : Base(other) // wrong: other is an lvalue --&gt; copies the Base part
@@ -113,11 +116,11 @@ values of expressions.</p>
 <p>Can reference only result values of expressions</p>
 </section><section><pre class="mstretch"><code>void function(const std::string&amp; lvalue);  // lvalue overload
 void function(const std::string&amp;&amp; rvalue); // rvalue overload
-</code></pre><given>both declarations the compiler choose which overload to call,</given><based>on the type of the string value function is called.</based></section><section><pre class="mstretch"><code>std::string s = &quot;Hello World&quot;;
+</code></pre><given>both declarations, the compiler chooses which overload to call<based>on the type of the string value.</based></given></section><section><pre class="mstretch"><code>std::string s = &quot;Hello World&quot;;
 function(s); // lvalue overload
 
 function(&quot;Hello World&quot;); // rvalue overload
-// the const char* is converted in temporary string, which can be
+// the const char* is converted to a temporary string which can be
 // rvalue
 </code></pre></section><section><pre class="mstretch"><code>class String {
 public:
@@ -143,7 +146,7 @@ private:
 }</code></pre><p>Create a copy of the other string</p></section><section><h3>Copy construction</h3><img width="100%" src="04_move/copy.svg"></section><section><h3>Move constructor</h3><pre class="mstretch"><code>class String {
     // ...
     String(String&amp;&amp; o)
-        : m_Buffer(o.m_Buffer);
+        : m_Buffer(o.m_Buffer)
         , m_Length(o.m_Length)
     {
         o.m_Buffer = nullptr;
@@ -156,7 +159,7 @@ String t(&quot;World&quot;);
 String s2 = s; // copy
 String t2 = s + t; // move
 </code></pre></section><section><h2 id="std::move"><code>std::move</code></h2>
-<p>Tells the compiler to create an rvalue reference for a lvalue.
+<p>Tells the compiler to create an rvalue reference for an lvalue.
 Allows us to move ordinary values stored in variables.</p>
 </section><section><pre class="mstretch"><code>template &lt;typename T&gt;
 T&amp;&amp; std::move(T&amp; lvalue);</code></pre></section><section><pre class="mstretch"><code>String s(&quot;Hello&quot;);
@@ -165,38 +168,40 @@ String t = std::move(s); // move s into t
 // !!! Undefined behavior !!!
 std::cout &lt;&lt; s &lt;&lt; std::endl;
 // We have moved s into t, it's value is unknown
-</code></pre></section><section><h2>Asignment operator</h2><pre class="mstretch"><code>class String {
+</code></pre></section><section><h2>Assignment operator</h2><pre class="mstretch"><code>class String {
     // ..
     
     String&amp; operator= (const String&amp; rhs) {
         if (this != &amp;rhs) {
             delete [] m_Buffer;
-            m_Length = o.m_Length;
+            m_Length = rhs.m_Length;
             m_Buffer = new char[rhs.m_Length];
             std::memcpy(m_Buffer, rhs.m_Buffer, m_Length);
         }
         return *this;
-    }</code></pre></section><section><h2>Asignment operator</h2><p>before</p><img width="100%" src="04_move/assign.svg"></section><section><h2>Asignment operator</h2><p>after</p><img width="100%" src="04_move/copy_assign.svg"></section><section><h2>Move asignment</h2><pre class="mstretch"><code>class String {
+    }</code></pre></section><section><h2>Assignment operator</h2><p>before</p><img width="100%" src="04_move/assign.svg"></section><section><h2>Assignment operator</h2><p>after</p><img width="100%" src="04_move/copy_assign.svg"></section><section><h2>Move assignment</h2><pre class="mstretch"><code>class String {
     // ..
     // move assignment
     String&amp; operator= (String&amp;&amp; rhs) {
         if (this != &amp;rhs) {
             delete [] m_Buffer;
-            m_Length = o.m_Length;
+            m_Length = rhs.m_Length;
             m_Buffer = rhs.m_Buffer;
+            rhs.m_Length = 0;
             rhs.m_Buffer = nullptr;
+            rhs.m_Length = 0;
         }
         return *this;
     }
 };
-</code></pre></section><section><h2>Move Assignment</h2><p>before</p><img width="100%" src="04_move/assign.svg"></section><section><h2>Move Asignment</h2><p>after</p><img width="100%" src="04_move/move_assign_1.svg"></section><section><h2>Copy or Move?</h2><pre class="mstretch"><code>String s = &quot;Hello&quot;;
+</code></pre></section><section><h2>Move Assignment</h2><p>before</p><img width="100%" src="04_move/assign.svg"></section><section><h2>Move Assignment</h2><p>after</p><img width="100%" src="04_move/move_assign_1.svg"></section><section><h2>Copy or Move?</h2><pre class="mstretch"><code>String s = &quot;Hello&quot;;
 String t = &quot;World&quot;;
 
 String m = s + t; // 1
 m = t + s; // 2
 
 m = t; // 3
-m = std::move(s); // 4</code></pre><ol><li class="fragment fade-in">move</li><li class="fragment fade-in">move</li><li class="fragment fade-in">copy</li><li class="fragment fade-in">move</li></ol></section><section><h2>Move asignment - alternative implementation</h2><pre class="mstretch"><code>class String {
+m = std::move(s); // 4</code></pre><ol><li class="fragment fade-in">move</li><li class="fragment fade-in">move</li><li class="fragment fade-in">copy</li><li class="fragment fade-in">move</li></ol></section><section><h2>Move assignment - alternative implementation</h2><pre class="mstretch"><code>class String {
     // ..
     // move assignment
     String&amp; operator= (String&amp;&amp; rhs) {
@@ -205,7 +210,7 @@ m = std::move(s); // 4</code></pre><ol><li class="fragment fade-in">move</li><li
         return *this;
     }
 };
-</code></pre></section><section><h2>Move Assignment - alternative implementation</h2><p>before</p><img width="100%" src="04_move/assign.svg"></section><section><h2>Move Asignment - alternative implementation</h2><p>after</p><img width="100%" src="04_move/move_assign_2_1.svg"></section><section><h2>Move Asignment - alternative implementation</h2><p>in the end</p><img width="100%" src="04_move/move_assign_2.svg"></section><section><strong>Although the value of an object may be moved, the object still is
+</code></pre></section><section><h2>Move Assignment - alternative implementation</h2><p>before</p><img width="100%" src="04_move/assign.svg"></section><section><h2>Move Assignment - alternative implementation</h2><p>after</p><img width="100%" src="04_move/move_assign_2_1.svg"></section><section><h2>Move Assignment - alternative implementation</h2><p>in the end</p><img width="100%" src="04_move/move_assign_2.svg"></section><section><strong>Although the value of an object may be moved, the object is still
 going to be destoyed (its constructor has been run)
 </strong></section><section><h2>Always leave moved object in a consistent state</h2><p>So that their destructor will run correctly.</p></section><section><section><h2>Perfect forwarding</h2></section><section><pre class="mstretch"><code>template &lt;typename T, typename Arg1&gt;
 T factory(/*const*/ Arg1 /*&amp;*/ arg1)
