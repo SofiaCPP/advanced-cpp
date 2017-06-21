@@ -75,8 +75,8 @@ https://en.wikipedia.org/wiki/Data_structure_alignment
 
 +++ slide
 
-In short - the CPU is most effective to load data at addresses that are multiple
-of a 4, 8, 16, 64, etc. Therefore the compiler generates the code so that the
+In short - the CPU is most efficient when loading data at addresses that are multiple
+of a 4, 8, 16, 64, etc. Therefore the compiler generates the code in such a way that the
 address of every variable is a multiple of its alignment.
 
 +++
@@ -253,7 +253,7 @@ class.
 
 Virtual functions in C++ are implemented with the so called *virtual table*. The
 *virtual table* is an array of pointers to methods. Whenever a virtual method is
-called, the code lookups the pointer to the method in the *virtual table* and
+called, the code looks up the pointer to the method in the *virtual table* and
 executes it.
 
 +++
@@ -323,7 +323,7 @@ executes it.
 +++
 
 +++ slide
-`clang++`'s `-fdump-vtable-laouts` did not output anything.
+`clang++`'s `-fdump-vtable-layouts` did not output anything.
 
 The virtual tables are dumped with:
 
@@ -460,7 +460,7 @@ corresponding base class.
     };
 +++
 +++ slide
-# virtual functions are not virtual inside constructors and destructors
+Virtual functions are not virtual inside constructors and destructors
 +++
 +++ slide
 
