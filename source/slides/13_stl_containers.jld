@@ -164,7 +164,7 @@ section
             ####  `reserve`
 
             * `reserve(n)` Sets the capacity to **at least** *n* elements
-            * Always use it when you now the number of elements in advance
+            * Always use it when you know the number of elements in advance
     section
         :cxx
             std::ifstream input("input.txt");
@@ -368,7 +368,7 @@ section
         :markdown
             #### `vector.erase`
 
-            If the order of elements is not important, you can make:
+            If the order of elements is not important, you can do:
         :cxx
             std::vector<A> v;
             std::vector<A>::iterator x;
@@ -406,7 +406,7 @@ section
 
             * `vector` is not polymorphic friendly
             * `vector` doesn't take ownership of your pointers
-                * std::vector<std::unique_ptr<A>> might do
+                * std::vector<std::unique_ptr<A> > might do
 
     section
         :markdown
@@ -455,7 +455,7 @@ section
             #### Stack allocation
 
             The idea is that if the `dynarray` size is small enough,
-            it storage to be allocated on the stack, instead of on the
+            allocate its storage on the stack, instead of on the
             heap. This will be much more efficient.
 
     section
@@ -490,7 +490,7 @@ section
         :markdown
 
             The cost of *growing* a `deque` is lower than *growing* a
-            `vector`, because only the collection with pointers to
+            `vector`, because only the collection of pointers to
             segments is copied.
 
 section
@@ -498,7 +498,7 @@ section
         :markdown
             ### `list`
 
-            * C++ `list` is double-linked list
+            * C++ `list` is a doubly linked list
             * Most implementations are circular, but that is not required
               by the standard
     section
@@ -526,21 +526,21 @@ section
             #### `list.splice`
 
             * The most important operation of `list`
-            * Allows to take a piece of one list and insert it in another
+            * Allows taking a piece of one list and inserting it in another
             * *O(1)*
                 * moving elements in a single list
                 * moving an entire list in another list
                 * moving a single element from one list to another
             * *O(N)* - moving [start, end) of one list to another
                 * it has to count the elements in [start, end) so that
-                  `size()`` can be a *O(1)*
+                  ``size()`` can be a *O(1)*
     section
         :markdown
             #### Invalidation
 
-            * elements are never moved around the memory
+            * elements are never moved around in memory
             * iterators and pointer/references to elements always remain
-              valid, unless the element is erased from the list
+              valid, unless the pointed/referenced element is erased from the list
 
     section
         :markdown
@@ -558,7 +558,7 @@ section
         :markdown
             ### `forward_list` - C++11
 
-            * Single linked list
+            * Singly linked list
             * some STL libraries have a non-standard `slist` container
             
 
@@ -655,7 +655,7 @@ section
     section
         :markdown
 
-            `multiset` and `multimap` allow duplicating of keys.
+            `multiset` and `multimap` allow duplication of keys.
 
     section
         :markdown
@@ -667,8 +667,7 @@ section
     section
         :markdown
 
-            ### The order of traversing duplicated keys in a `multiset` or
-              `multimap` is ***undefined***
+            ### The order of traversing duplicated keys in a `multiset` or `multimap` is ***undefined***
 
     section
         :markdown
@@ -724,12 +723,12 @@ section
     section
         :markdown
 
-            Generally unordered _containers have better performance over ordered,
-            so if the order is not important - use `unordered_*`
+            Generally, unordered containers _have better performance over ordered_,
+            so if the order is not important - use `unordered`
 
     section
         :markdown
 
             *sorted vector* is also an associative container that can provide
-            both - inordered traversal and better performance over `map` and
+            both unordered traversal and better performance over `map` and
             `set`.
