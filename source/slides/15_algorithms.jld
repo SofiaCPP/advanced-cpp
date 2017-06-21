@@ -4,12 +4,9 @@ section
       li STL предлага много алгоритми
       li ще разгледаме само част от тях
 section
-    h2
-
-section
     h2 Видове алгоритми
     ul.simple
-      li не-променящи последователни
+      li непроменящи последователни
       li променящи последователни
       li сортиращи и търсещи
       li множествени
@@ -17,7 +14,7 @@ section
       li числени
       li общи
 section
-    h2 Не-променящи последователни
+    h2 Непроменящи последователни
     ul.simple
       li
         tt.docutils.literal
@@ -151,7 +148,7 @@ section
         tt.docutils.literal
           span.pre sort_heap()
 section
-    h2 numeric алгоритми
+    h2 Числови алгоритми
     ul.simple
       li
         tt.docutils.literal
@@ -194,29 +191,27 @@ section
     ul.simple
       li
         tt.docutils.literal
-          span.pre for_each(c.begin(),
-          span.pre c.end(),
-          span.pre g);
+          span.pre `for_each(c.begin(), c.end(), g);`
       li
-        | Стандартът казва, че
+        | Стандартът казва, че 
         tt.docutils.literal
-          span.pre for_each
-        | е алгоритъм, който не променя редицата,
+          span.pre `for_each`
+        |  е алгоритъм, който не променя редицата,
         | върху която се изпълнява.
       li
-        | Функцията, която подадете на
+        | Функцията, която подадете на 
         tt.docutils.literal
-          span.pre for_each
-        | може да промени стойността на
+          span.pre `for_each`
+        |  може да промени стойността на
         | аргумента си.
       li
-        | Но това е лош стил - ако искате да променяте редицата използвайте
+        | Но това е лош стил - ако искате да променяте редицата използвайте 
         tt.docutils.literal
-          span.pre transform
+          span.pre `transform`
       li
         tt.docutils.literal
-          span.pre for_each
-        | връща функцията, с която е била извикана
+          span.pre `for_each`
+        |  връща функцията, с която е била извикана
 section
     h2 Пример за for_each
     :cxx
@@ -259,8 +254,8 @@ section
     ul.simple
       li Много задачи изискват сортиране
       li
-        | Не по-малко задачи изискват
-        em почти
+        | Не по-малко задачи изискват 
+        em почти 
         | сортиране
       li STL предлага алгоритми за всички основни типове задачи
 section
@@ -332,7 +327,8 @@ section
     p
       em lower_bound прави O(logN) сравнения
     p
-      em lower_bound прави O(logN) стъпки за random access iterator и O(N) за forward
+      em lower_bound прави O(logN) стъпки за random access iterator и O(N) - за forward
+section
     :cxx
       vector<int> v;
       // ...
@@ -350,25 +346,25 @@ section
     p
       | Връща итератор към последната позиция, в която можем да вмъкнем елемента без
       | да нарушим подредеността на редицата. Ако съществува еквивалентен на дадения
-      | елемент в редицата,
+      | елемент в редицата, 
       tt.docutils.literal
-        span.pre upper_bound
-      | сочи точно след последния такъв.
+        span.pre `upper_bound`
+      |  сочи точно след последния такъв.
     p
       em
         | upper_bound има същото поведение както lower_bound относно редицата и итераторите
 section
     h2 equal_range
     p
-      | Връща std::pair от
+      | Връща `std::pair` от 
       tt.docutils.literal
-        span.pre lower_bound
-      | и
+        span.pre `lower_bound`
+      |  и 
       tt.docutils.literal
-        span.pre upper_bound
+        span.pre `upper_bound`
     :cxx
       typedef vector<int> Vector;
-      typedef vector<int> VectorIt;
+      typedef vector<int>::iterator VectorIt;
       Vector v;
       // ...
       sort(v.begin(), v.end());
@@ -383,15 +379,15 @@ section
 section
     h2 binary_search
     p
-      | Връща
+      | Връща 
       tt.docutils.literal
-        span.pre true
+        span.pre `true`
       | /
       tt.docutils.literal
-        span.pre false
-      | резултат дали даден елемент се среща в
+        span.pre `false`
+      |  резултат дали даден елемент се среща в 
       strong СОРТИРАНА
-      | редица.
+      |  редица.
     :cxx
       vector<int> v;
       // ...
@@ -424,54 +420,50 @@ section
     h2 Бележки за алгоритмите за сортиране и търсене
     ul.simple
       li
-        | всички алгоритми могат да използват частична наредба определена от
-        | потребителя вместо
+        | всички алгоритми могат да използват частична наредба, определена от
+        | потребителя, вместо 
         tt.docutils.literal
-          span.pre operator
-          span.pre <
+          span.pre `operator<`
         | .
       li
-        | ако използвате Ваша наредба трябва да се изключително внимателни да
+        | ако използвате Ваша наредба, трябва да сте изключително внимателни да
         | използвате навсякъде една и съща наредба
       li
-        | Алгоритмите за търсене работят върху вече
+        | Алгоритмите за търсене работят върху вече 
         strong ПОДРЕДЕНИ
-        | редици
+        |  редици
       li
         | Правете разлика между равенство (
         tt.docutils.literal
-          span.pre operator
-          span.pre \==
+          span.pre `operator==`
         | ) и еквивалентност.
-        | Използвайте или само едното или само другото!
+        | Използвайте или само едното, или само другото!
       li
-        | асоциативните контейнери имат методи
+        | асоциативните контейнери имат методи 
         tt.docutils.literal
-          span.pre find
-        | ,
+          span.pre `find`
+        | , 
         tt.docutils.literal
-          span.pre lower_bound
-        | ,
+          span.pre `lower_bound`
+        | , 
         tt.docutils.literal
-          span.pre upper_bound
-        | ,
+          span.pre `upper_bound`
+        | , 
         tt.docutils.literal
-          span.pre equal_range
+          span.pre `equal_range`
       li
         tt.docutils.literal
-          span.pre list::sort
-        | е
-        em стабилно
+          span.pre `list::sort`
+        |  е 
+        em стабилно 
         | сортиране O(NlogN)
 section
     h2 Числови алгоритми
     ul.simple
       li
-        | намират се в
-        tt.docutils.literal
-          span.pre <numeric>
+        | намират се в `<numeric>`
       li
-        | TR1 добава много повече функции, включително и генериране на произволни
+        | TR1 добавя много повече функции, включително и генериране на произволни
         | числа
 section
     h2 accumulate
