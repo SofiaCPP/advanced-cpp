@@ -40,8 +40,8 @@ public:
 
     //@{ move
     SharedPtr(SharedPtr&& o)
-        : m_RC(pointer.m_RC)
-        , m_Pointer(pointer.m_Pointer)
+        : m_RC(o.m_RC)
+        , m_Pointer(o.m_Pointer)
     {
         o.m_RC = nullptr;
         o.m_Pointer = nullptr;

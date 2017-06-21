@@ -185,8 +185,7 @@ C++ 11 introduces `std::unique_ptr`
 
 +++
 +++ slide
-
-* `explicit operator bool()` allows usage such as
+`explicit operator bool()` allows usage such as
 
     std::unique_ptr<T> p;
     if (p) {
@@ -474,7 +473,7 @@ The reference count is stored in the resource (object) itself.
         ++r->refs;
     }
 
-    void intrusice_ptr_release(Renderer* r) {
+    void intrusive_ptr_release(Renderer* r) {
         if (--r->refs == 0) {
             delete r;
         }

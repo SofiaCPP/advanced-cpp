@@ -49,7 +49,7 @@ section
 +++
 +++ slide
 
-::: snippet  10_functional/sort98.cxx  comparator sort
+::: snippet 10_functional/sort98.cxx comparator sort
 :::
 
 
