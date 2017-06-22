@@ -53,7 +53,7 @@ Same goes for `malloc`, `calloc`, `realloc` and `free`
 
 It is easy, but it works at global level.
 
-* There is no any context about the allocation itself
+* There is no context about the allocation itself
   * not possible to have a more efficient implementation for a type
   * not possible to have a more efficient implementation for a usage pattern
   * not easy to have a different allocator in different subsystems
@@ -125,9 +125,9 @@ From which allocator to free the memory?
     * Allignment
 * Partition the address space and derive from the address the adress of the allocator
     * 0x0000 - 0x00FF - Allocator 0
-    * 0x00FF - 0x01FF - Allocator 1
+    * 0x0100 - 0x01FF - Allocator 1
 * Just keep the allocator pointer available and be careful
-    * In practice it is rare to have large count of allocators, so that is OK
+    * In practice it is rare to have a large number of allocators, so that is OK
 
 +++
 +++ slide
@@ -175,7 +175,7 @@ Arrays?
 +++
 +++ slide
 
-Macros has additional benefits
+Macros have additional benefits
 
     struct RenderAllocator {
         void* Allocator(size_t size, const char* file, int line);
@@ -361,7 +361,7 @@ The cons of the STL allocator model
     * it is difficult to reuse functions for containers with different allocators
     * `shared_ptr`s can use different allocators without changing its type
 
-* One of the key reasons for existence of https://github.com/electronicarts/EASTL
+* One of the key reasons for existence of [EASTL](https://github.com/electronicarts/EASTL)
 
 +++
 +++ slide
@@ -369,7 +369,7 @@ The cons of the STL allocator model
 
 * [Linear, Temp, Pool](https://github.com/mtrebi/memory-allocators)
 * [ScopeStacks](scopestacks_public.pdf)
-* (Temporary)(http://coherent-labs.com/blog/temporary-allocations-in-c/)
+* [Temporary](http://coherent-labs.com/blog/temporary-allocations-in-c/)
 
 +++
 +++ slide
@@ -403,7 +403,7 @@ The cons of the STL allocator model
   * It will not catch when you are corrupting memory
 * External (OS) level memory allocator will not show the real allocation that is leaking
   * When a pool of objects is not freed, because of a object in the middle,
-    the tool will show the first object that cause the pool to be allocated.
+    the tool will show the first object that caused the pool to be allocated.
 
 +++
 +++ slide
