@@ -23,10 +23,10 @@ section
       li
         tt.docutils.literal
           span.pre istream_iterator
-        | ,
+        | , 
         tt.docutils.literal
           span.pre istreambuf_iterator
-        | - позволяват да разглеждаме
+        |  - позволяват да разглеждаме
         | файловете като контейнери
       li поддържат само one-pass алгоритми
 section
@@ -52,7 +52,7 @@ section
           span.pre x++
         | предизвиква прочитане на следващата стойност от файла
       li
-        | ако имате повече от един
+        | ако имате повече от един 
         tt.docutils.literal
           span.pre istream_iterator
         | (
@@ -68,14 +68,14 @@ section
       li
         tt.docutils.literal
           span.pre ostream_iterator
-        | ,
+        | , 
         tt.docutils.literal
           span.pre ostreambuf_iterator
       li отново поддържат само one-pass алгоритми
 section
     h2 output iterator
     :cxx
-      input_iterator x, y;
+      output_iterator x, y;
       *x = value; // дереференциране и записване на стойност
       value = *x; // ERROR, write-only values
       ++x;
@@ -90,13 +90,13 @@ section
       li
         tt.docutils.literal
           span.pre *x
-          span.pre \=
+          span.pre =
           span.pre v;
-        | записва стойността във файла и
+        |  записва стойността във файла и 
         strong премества
-        | итератора
+        |  итератора
       li
-        | ако имате повече от един
+        | ако имате повече от един 
         tt.docutils.literal
           span.pre ostream_iterator
         | (
@@ -112,30 +112,30 @@ section
       li
         tt.docutils.literal
           span.pre istream_iterator
-        | и
+        |  и 
         tt.docutils.literal
           span.pre ostream_iterator
-        | използват форматираните
-        | входно-изходни операции, т.е.
+        |  използват форматираните
+        | входно-изходни операции, т.е. 
         tt.docutils.literal
           span.pre operator
           span.pre <<
       li
         tt.docutils.literal
           span.pre istreambuf_iterator
-        | и
+        |  и 
         tt.docutils.literal
           span.pre ostreambuf_iterator
-        | използват неформатирани
+        |  използват неформатирани
         | входно-изходни операции и четат/пишат директно буфера на потока
       li
-        | Ако не се нуждаете от форматирани входно-изходни операции използвайте
+        | Ако не се нуждаете от форматирани входно-изходни операции използвайте 
         tt.docutils.literal
           span.pre istreambuf_iterator
-        | и
+        |  и 
         tt.docutils.literal
           span.pre ostreambuf_iterator
-        | - те са по - ефективни
+        |  - те са по-ефективни
 section
     h2 forward iterator
     ul.simple
@@ -145,7 +145,7 @@ section
       li
         tt.docutils.literal
           span.pre slist::iterator
-        | е forward iterator
+        |  е forward iterator
       li
         | категорията съществува за да представи изискванията на голяма част от
         | алгоритмите към итераторите, върху които се прилагат
@@ -157,19 +157,19 @@ section
       li
         tt.docutils.literal
           span.pre list
-        | ,
+        | , 
         tt.docutils.literal
           span.pre set
-        | ,
+        | , 
         tt.docutils.literal
           span.pre map
-        | ,
+        | , 
         tt.docutils.literal
           span.pre multiset
-        | ,
+        | , 
         tt.docutils.literal
           span.pre multimap
-        | предоставят
+        |  предоставят
         | bidirectional iterators
 section
     h2 random access iterator
@@ -179,10 +179,10 @@ section
       li
         tt.docutils.literal
           span.pre vector
-        | и
+        | и 
         tt.docutils.literal
           span.pre deque
-        | предоставят random access iterators
+        |  предоставят random access iterators
 section
     h2 random access iterator
     :cxx
@@ -194,11 +194,11 @@ section
     h2 iterator tags
     p
       | За всеки тип итератори има съответстващ C++ тип, който се нарича таг.
-      | (Всеки итератор, например
+      | (Всеки итератор, например 
       tt.docutils.literal
         span.pre vector::iterator
       | , е таг-нат със своя семантичен
-      | тип итератор, в случая с
+      | тип итератор, в случая с 
       tt.docutils.literal
         span.pre random_access_iterator
       | )
@@ -227,7 +227,7 @@ section
         li типа на указател към стойността, към която итераторът сочи
         li типа на псевдоним към стойността, към която итераторът сочи
         li
-          | типа на разликата на два итератори (
+          | типа на разликата на два итератора (
           tt.docutils.literal
             span.pre x
             span.pre -
@@ -248,13 +248,13 @@ section
 section
     h2 ?
     p
-      | Защо има
+      | Защо има 
       tt.docutils.literal
         span.pre iterator_traits
-      | когато явно итераторите сами имат
+      |  когато явно итераторите сами имат 
       tt.docutils.literal
         span.pre typedef
-      | със
+      |  със
       | всичко необходимо?
 section
     h2 Отговор
@@ -262,10 +262,10 @@ section
       tt.docutils.literal
         span.pre T
         span.pre *
-      | също е итератор, но няма никакъв
+      |  също е итератор, но няма никакъв 
       tt.docutils.literal
         span.pre typedef
-      | в себе си
+      |  в себе си
 section
     h2 iterator_traits<T*>
     :cxx
@@ -336,19 +336,19 @@ section
       li back_inserter
       li insert_iterator
     p
-      | Дефинирание са в
+      | Дефинирани са в 
       tt.docutils.literal
-        span.pre <iterator>
+        span.pre &ltiterator&gt
 section
     h2 front_inserter
     ul.simple
       li
-        | писането в този итератор извиква
+        | писането в този итератор извиква 
         tt.docutils.literal
           span.pre push_front
-        | на контейнера
+        |  на контейнера
       li
-        | Истинския тип е
+        | Истинският тип е 
         tt.docutils.literal
           span.pre std::front_insert_iterator
         | , но много рядко се налага да
@@ -356,7 +356,7 @@ section
       li
         tt.docutils.literal
           span.pre std::front_inserter
-        | е функция, която връща такъв итератор
+        |  е функция, която връща такъв итератор
 section
     h2 Пример за front_inserter
     :cxx
@@ -370,35 +370,35 @@ section
     h2 back_inserter
     ul.simple
       li
-        | писането в този итератор извиква
+        | писането в този итератор извиква 
         tt.docutils.literal
           span.pre push_back
-        | на контейнера
+        |  на контейнера
       li
-        | типът на итератора е
+        | типът на итератора е 
         tt.docutils.literal
           span.pre std::back_insert_iterator
       li
         tt.docutils.literal
           span.pre std::back_inserter
-        | е функция, която връща такъв итератор
+        |  е функция, която връща такъв итератор
 section
     h2 insert_iterator
     ul.simple
       li
-        | писането в този итератор прави
+        | писането в този итератор прави 
         tt.docutils.literal
           span.pre insert
-        | във контейнера. Първия
+        |  във контейнера. Първия 
         tt.docutils.literal
           span.pre insert
-        | се прави в позицията определена при създаването на итератора, а всеки
+        |  се прави в позицията определена при създаването на итератора, а всеки
         | следващ - в позицията след предходно вмъкнатия елемент
       li
         tt.docutils.literal
           span.pre std::inserter(container,
           span.pre it)
-        | създава такъв итератор
+        |  създава такъв итератор
 section
     h2 Пример за insert_iterator
     :cxx
@@ -417,23 +417,23 @@ section
     ul
       li
         p.first
-          | всички контейнери предоставят
+          | всички контейнери предоставят 
           tt.docutils.literal
             span.pre const_iterator
       li
         p.first
-          | повечето методи на контейнерите изискват
+          | повечето методи на контейнерите изискват 
           tt.docutils.literal
             span.pre iterator
       li
         p.first
-          | за да превърнете
+          | за да превърнете 
           tt.docutils.literal
             span.pre const_iterator
-          | в
+          |  в 
           tt.docutils.literal
             span.pre iterator
-          | използвайте:
+          |  използвайте:
         :cxx
           Vector v;
           Vector::const_iterator c;
@@ -447,14 +447,14 @@ section
     ul.simple
       li позволяват обхождането на елементите в контейнерите да става в обратен ред
       li
-        | за да се запазят изискванията за валидност на указателите
+        | за да се запазят изискванията за валидност на указателите 
         tt.docutils.literal
           span.pre reverse_iterator
-        | сочи към елемента след (при нормално обхождане) текущия
+        |  сочи към елемента след (при нормално обхождане) текущия
       li
         tt.docutils.literal
           span.pre reverse_iterator
-        | има метод base(), който връща нормален итератор към
+        |  има метод base(), който връща нормален итератор към
         | сочещ към елемента след (при нормално обхождане) след текущия
     :cxx
       vector<int> v;
@@ -472,30 +472,30 @@ section
         tt.docutils.literal
           span.pre c.insert(i,
           span.pre v)
-        | - вмъква
+        |  - вмъква 
         tt.docutils.literal
           span.pre v
-        | преди
+        |  преди 
         tt.docutils.literal
           span.pre i
       li
         tt.docutils.literal
           span.pre c.insert(ri.base(),
           span.pre v)
-        | - вмъква
+        |  - вмъква 
         tt.docutils.literal
           span.pre v
-        | преди
+        |  преди 
         tt.docutils.literal
           span.pre reverse_iterator
-        | -a
+        | -a 
         tt.docutils.literal
           span.pre ri
-        | погледнато отзад напред
+        |  погледнато отзад напред
       li
         tt.docutils.literal
           span.pre c.erase((++ri).base())
-        | ще изтрие елемента сочен от
+        |  ще изтрие елемента сочен от 
         tt.docutils.literal
           span.pre ri
 
@@ -564,4 +564,3 @@ section
             * basically it is the pair [*begin*, *end*)
             * doesn't have to be pointer-like
             * easily composable
-
