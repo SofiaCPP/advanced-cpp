@@ -164,7 +164,7 @@ section
             ####  `reserve`
 
             * `reserve(n)` Sets the capacity to **at least** *n* elements
-            * Always use it when you now the number of elements in advance
+            * Always use it when you know the number of elements in advance
     section
         :cxx
             std::ifstream input("input.txt");
