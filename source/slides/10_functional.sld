@@ -248,7 +248,7 @@ Most compilers generate a `struct` with a special name and `operator()`
     }
 
     std::transform(strings.begin(), strings.end(), lengths.begin(),
-        get_length;
+        get_length
     );
 
 +++
@@ -257,7 +257,7 @@ Most compilers generate a `struct` with a special name and `operator()`
 ### `C++`98
 
     std::transform(strings.begin(), strings.end(), lengths.begin(),
-        std::mem_fun_ref(&std::string::length);
+        std::mem_fun_ref(&std::string::length)
     );
 
 +++
@@ -546,7 +546,7 @@ Let me count the ways ...
 +++
 +++ slide
 
-* all returns must have the same type
+* all arguments must have the same type
   * single return
 
 
