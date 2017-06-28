@@ -546,7 +546,7 @@ Let me count the ways ...
 +++
 +++ slide
 
-* all returns must have the same type
+* all arguments must have the same type
   * single return
 
 
