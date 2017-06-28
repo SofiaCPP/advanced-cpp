@@ -33,7 +33,7 @@ section
           span.pre find_first_of()
       li
         tt.docutils.literal
-          span.pre adjascent_find()
+          span.pre adjacent_find()
       li
         tt.docutils.literal
           span.pre count()
@@ -164,7 +164,7 @@ section
           span.pre partial_sum()
       li
         tt.docutils.literal
-          span.pre adjascent_difference()
+          span.pre adjacent_difference()
 section
     h2 Общи алгоритми
     ul.simple
@@ -237,7 +237,7 @@ section
     h2 transform
     p
       | прилага функцията, подадена му като аргумент, върху всички елементи на една
-      | редица и запазва резултата в друга редици
+      | редица и запазва резултата в друга редица
 section
     h2 Използване на transform
     :cxx
