@@ -75,7 +75,7 @@ section
 section
     h2 output iterator
     :cxx
-      input_iterator x, y;
+      output_iterator x, y;
       *x = value; // дереференциране и записване на стойност
       value = *x; // ERROR, write-only values
       ++x;
