@@ -33,7 +33,7 @@ section
             ### `using namespace`
 
             `using namespace std` brings all the names from the
-            `std` namespaces in the the current scope - namespace,
+            `std` namespaces in the current scope - namespace,
             function, block.
 
     section
