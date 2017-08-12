@@ -15,7 +15,7 @@
 
 ### Creating new slides
 
-To create new slides, create a [Jade][http://jade-lang.com] file in
+To create new slides, create a [Jade](http://jade-lang.com) file in
 *source/slides* using the following front-matter:
 
 ```yaml
