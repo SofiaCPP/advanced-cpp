@@ -152,10 +152,11 @@ section
 
 section
     h2 How is RVO implemented by compilers
-        :cxx
-            std::vector<int> get_random_ints(int count);
-            // ...
-            auto numbers = get_random_ints(1000);
+
+    :cxx
+        std::vector<int> get_random_ints(int count);
+        // ...
+        auto numbers = get_random_ints(1000);
 
     p Gets compiled as
         :cxx
@@ -222,7 +223,7 @@ section
         ## Rule of thumb
 
         * `T&&` can be both - lvalue and rvalue
-        * If it has has a *name* it is an *lvalue*
+        * If it has a *name* it is an *lvalue*
 section
     :cxx
         Derived(Derived&& other) 
@@ -264,7 +265,7 @@ section
         void function(const std::string& lvalue);  // lvalue overload
         void function(const std::string&& rvalue); // rvalue overload
 
-     Given both declarations, the compiler chooses which overload to call
+     p Given both declarations, the compiler chooses which overload to call
      based on the type of the string value.
 
 section
@@ -402,19 +403,18 @@ section
                     m_Buffer = rhs.m_Buffer;
                     rhs.m_Length = 0;
                     rhs.m_Buffer = nullptr;
-                    rhs.m_Length = 0;
                 }
                 return *this;
             }
         };
 
 section
-    h2 Move Assignment
+    h2 Move assignment
     p before
     img(width = '100%' src='04_move/assign.svg')
 
 section
-    h2 Move Assignment
+    h2 Move assignment
     p after
     img(width = '100%' src='04_move/move_assign_1.svg')
 
@@ -450,17 +450,17 @@ section
         };
 
 section
-    h2 Move Assignment - alternative implementation
+    h2 Move assignment - alternative implementation
     p before
     img(width = '100%' src='04_move/assign.svg')
 
 section
-    h2 Move Assignment - alternative implementation
+    h2 Move assignment - alternative implementation
     p after
     img(width = '100%' src='04_move/move_assign_2_1.svg')
 
 section
-    h2 Move Assignment - alternative implementation
+    h2 Move assignment - alternative implementation
     p in the end
     img(width = '100%' src='04_move/move_assign_2.svg')
 
