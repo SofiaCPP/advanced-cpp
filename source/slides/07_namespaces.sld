@@ -131,7 +131,7 @@ section
                     // ...
                 }
 
-                void swap(Polynom& l, Polynom& r);
+                friend void swap(Polynom& l, Polynom& r);
             }
 
             int main() {
