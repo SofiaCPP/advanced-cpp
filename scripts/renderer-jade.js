@@ -1,4 +1,4 @@
-var jade = require('jade'),
+var pug = require('pug'),
     mdit = require('markdown-it'),
     mdit_container = require('markdown-it-container'),
     fs = require('fs'),
@@ -99,15 +99,15 @@ function renderSlides(block) {
     return r;
 }
 
-jade.filters.cxx = cxx;
-jade.filters.code = cxx;
-jade.filters.slides = renderSlides;
+pug.filters.cxx = cxx;
+pug.filters.code = cxx;
+pug.filters.slides = renderSlides;
 
 var front = /(?:.*?)---(.*)/m;
 
 function render(data, locals) {
     var m = front.exec(data.text);
-    return jade.compile(m? m[1] : data.text, {filename: data.path})(locals);
+    return pug.compile(m? m[1] : data.text, {filename: data.path})(locals);
 }
 
 hexo.extend.renderer.register('jade', 'html', render, true);

@@ -1,15 +1,30 @@
 {
-  "name": "advanced_cxx_fmi",
-  "version": "2.8.3",
-  "repository": "https://github.com/SofiaCPP/advanced-cpp",
-  "devDependencies": {
-    "hexo": "^2.8.3",
-    "hexo-renderer-less": "0.1.2",
-    "hexo-renderer-marked": "0.1.0",
-    "highlight.js": "^8.5.0",
-    "jade": "~1.0.2",
-    "markdown-it": "^4.0.1",
-    "markdown-it-container": "^1.0.0",
-    "marked": "^0.3.3"
+  "name": "hexo-site",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "hexo generate",
+    "clean": "hexo clean",
+    "deploy": "hexo deploy",
+    "server": "hexo server"
+  },
+  "hexo": {
+    "version": "6.0.0"
+  },
+  "dependencies": {
+    "hexo": "^6.0.0",
+    "hexo-generator-archive": "^1.0.0",
+    "hexo-generator-category": "^1.0.0",
+    "hexo-generator-index": "^2.0.0",
+    "hexo-generator-tag": "^1.0.0",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^4.0.0",
+    "hexo-renderer-stylus": "^2.0.0",
+    "hexo-server": "^3.0.0",
+    "hexo-theme-landscape": "^0.0.3",
+    "jstransformer-markdown-it": "^2.1.0",
+    "markdown-it": "^12.3.2",
+    "markdown-it-container": "^3.0.0",
+    "pug": "^3.0.2"
   }
 }

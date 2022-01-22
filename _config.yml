@@ -5,7 +5,8 @@
 # Site
 title: Advanced C++
 subtitle: Site for the Advanced C++ course at FMI
-description:
+description: ''
+keywords:
 author: SofiaC++
 email: trendafilov.dn+sofiacpp@gmail.com
 language: English
@@ -19,29 +20,52 @@ menu:
 url: http://sofiacpp.github.io/advanced-cpp
 root: /advanced-cpp
 permalink: :year/:month/:day/:title/
-tag_dir: tags
-archive_dir: archives
-category_dir: categories
-code_dir: downloads/code
 permalink_defaults:
 
 # Directory
 source_dir: source
 public_dir: public
+tag_dir: tags
+archive_dir: archives
+category_dir: categories
+code_dir: downloads/code
+i18n_dir: :lang
+skip_render:
 
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
 titlecase: false # Transform title into titlecase
-external_link: true # Open external links in new tab
+external_link:
+  enable: true # Open external links in new tab
+  field: site # Apply to the whole site
+  exclude: ''
 filename_case: 1
 render_drafts: true
 post_asset_folder: false
 relative_link: false
+future: true
 highlight:
-    enable: true
-    line_number: true
-    tab_replace: true
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace: ''
+  wrap: true
+  hljs: false
+prismjs:
+  enable: false
+  preprocess: true
+  line_number: true
+  tab_replace: ''
+
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
 
 # Category & Tag
 default_category: uncategorized
@@ -73,6 +97,8 @@ logger_format: dev
 ## http://momentjs.com/docs/#/displaying/format/
 date_format: DD MMM YYYY
 time_format: HH:mm:ss
+## updated_option supports 'mtime', 'date', 'empty'
+updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -81,6 +107,12 @@ pagination_dir: page
 
 # Disqus
 disqus_shortname:
+
+# Include / Exclude file(s)
+## include:/exclude: options only apply to the 'source/' folder
+include:
+exclude:
+ignore:
 
 # Extensions
 ## Plugins: https://github.com/hexojs/hexo/wiki/Plugins

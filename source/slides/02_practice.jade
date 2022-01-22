@@ -6,11 +6,11 @@ tags: slides
 categories: slides
 ---
 section
-    :markdown
+    :markdown-it
         # The practice of `C++`
 
 section
-    :markdown
+    :markdown-it
         ## Contents
 
         1. Source code
@@ -21,11 +21,11 @@ section
 
 section
     section
-        :markdown
+        :markdown-it
             ## Source Code
 
     section
-        :markdown
+        :markdown-it
             ## Coding Style
 
             * [Google](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html)
@@ -33,19 +33,19 @@ section
             * http://meetingcpp.com/index.php/talkview/items/24.html
 
     section
-        :markdown
+        :markdown-it
 
             * Choose one coding style and stick to it
             * Whenever necessary change it.
 
     section
-        :markdown
+        :markdown-it
             ## IDEs or text editors
 
             
 
     section
-        :markdown
+        :markdown-it
             ### Platform specific
 
             * Visual Studio
@@ -53,23 +53,23 @@ section
             * kdevelop
 
     section
-        :markdown
+        :markdown-it
             ### Cross-platform
 
             * qtcreator
             * Eclipse with CDT
     section
-        :markdown
+        :markdown-it
             ### New players
 
             * [CLion](https://www.jetbrains.com/clion/)
 
     section
-        :markdown
+        :markdown-it
             ## Basic Text settings
 
     section
-        :markdown
+        :markdown-it
             # CONSISTENCY
 
     section
@@ -81,14 +81,14 @@ section
             li [Editor Config](http://editorconfig.org/)
             
     section
-        :markdown
+        :markdown-it
             ### CodeMaid
 
             [CodeMaid](http://codemaid.net) is an open-source extension
             that allows code cleanup and reorganizing.
 
     section
-        :markdown
+        :markdown-it
             ### clang-format
 
             * portable, stand-alone tool
@@ -98,15 +98,15 @@ section
 
 section
     section
-        :markdown
+        :markdown-it
             ## Building
 
     section
-        :markdown
+        :markdown-it
             * C++ doesn't have build system
 
     section
-        :markdown
+        :markdown-it
             ### built-in in the IDE
 
             * Visual Studio project files
@@ -114,14 +114,14 @@ section
             * qtcreator - qmake
 
     section
-        :markdown
+        :markdown-it
             ### standalone - low level
 
             * make - in all the ports and flavours
             * [ninja](https://ninja-build.org/)
 
     section
-        :markdown
+        :markdown-it
             ### stanalone - high level
 
             * cmake - can generate everything
@@ -130,7 +130,7 @@ section
             * [genie](https://github.com/bkaradzic/genie)
            
     section
-        :markdown
+        :markdown-it
             ### Distributed
 
             * [fips](http://floooh.github.io/fips/index.html)
@@ -139,12 +139,12 @@ section
 
 section
     section
-        :markdown
+        :markdown-it
 
             ## Libraries
 
     section
-        :markdown
+        :markdown-it
             ### Program configuration
 
             * boost::program_options
@@ -154,21 +154,21 @@ section
             * [docopt](https://github.com/docopt/docopt.cpp)
 
     section
-        :markdown
+        :markdown-it
             ### Logging
 
             * [`boost::log`](https://github.com/boostorg/log)
             * google log
 
     section
-        :markdown
+        :markdown-it
             ### Data Persistance
 
             * dropbox json11
             * `boost::serialization`
 
     section
-        :markdown
+        :markdown-it
             ### Testing
 
             * googletest and googlemock
@@ -177,14 +177,14 @@ section
             * [liblittletest](https://github.com/etr/liblittletest)
 
     section
-        :markdown
+        :markdown-it
             ### Microbenchmarking
 
             * [benchmark](https://github.com/google/benchmark)
             * [Celero](https://github.com/DigitalInBlue/Celero)
 
     section
-        :markdown
+        :markdown-it
             ### Graphics
 
             * DirectX / OpenGL 
@@ -193,7 +193,7 @@ section
             * cairo / Skia
 
     section
-        :markdown
+        :markdown-it
             ### GUI
 
             * Qt
@@ -204,7 +204,7 @@ section
             * fltk
  
     section
-        :markdown
+        :markdown-it
             ### Text
 
             * `boost::spirit`
@@ -212,13 +212,13 @@ section
             * ctemplate
 
     section
-        :markdown
+        :markdown-it
             ### Image processing
 
             * lodepng
 
     section
-        :markdown
+        :markdown-it
             ### Scripting
 
             * Lua, luajit
@@ -226,7 +226,7 @@ section
             * python - `boost::python`, cython
 
     section
-        :markdown
+        :markdown-it
             ### Networking
 
             * `boost::asio` - tcp and udp
@@ -237,14 +237,14 @@ section
 
 section
     section
-        :markdown
+        :markdown-it
             ## Static code analysis
 
             Tries to run *all* possible code paths in the program in order
             to locate errors.
 
     section
-        :markdown
+        :markdown-it
             ### False positives
 
             It may find so many "errors" that is impossible to check all of
@@ -260,13 +260,13 @@ section
             std::cout << p[24]; // reading uninitialized memory
 
     section
-        :markdown
+        :markdown-it
             ### Visual Studio
 
             * Starting *VS2013* in all versions
 
     section
-        :markdown
+        :markdown-it
             ### PVS-Studio
 
             * commercial tool
@@ -274,7 +274,7 @@ section
               analysis of C++ projects
 
     section
-        :markdown
+        :markdown-it
             ### clang++ --analyze
 
             Runs *clang* in static analyzer mode
@@ -282,14 +282,14 @@ section
             * scan-build
 
     section
-        :markdown
+        :markdown-it
             ### Runtime analysis
 
             * valgrind
             * address sanitizer
     
     section
-        :markdown
+        :markdown-it
 
             ### Debuggers
 
