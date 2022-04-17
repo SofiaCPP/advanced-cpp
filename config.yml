@@ -1,0 +1,35 @@
+baseURL: https://sofiacpp.github.io/advanced-cpp/
+languageCode: en-us
+title: Advanced C++ Course
+
+theme:
+  - PaperMod
+  - reveal-hugo
+
+paginate: 10
+
+params:
+  ShowReadingTime: true
+  ShowAllPagesInArchive: true
+  homeInfoParams:
+    Title: Welcome to the Advanced C++ course
+    Content: Some info for the couse goes here
+
+menu:
+  main:
+    - name: Archive
+      url: /archive
+    - name: Search
+      url: /search
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+outputFormats:
+  Reveal:
+    baseName: index
+    mediaType: text/html
+    isHTML: true

@@ -1,0 +1,10 @@
+{{$file := .Get "file"}}
+{{$content := $file | readFile | replaceRE "^---[[:graph:][:space:]]*?---" "" }}
+
+{{- if eq (.Get "markdown") "true" -}}
+    {{- $content | markdownify -}}
+{{- else if  (.Get "highlight") -}}
+    {{-  highlight ($content) (.Get "highlight") "" -}}
+{{- else -}}
+    {{ $content | safeHTML }}
+{{- end -}}
