@@ -10,10 +10,15 @@ paginate: 10
 
 params:
   ShowReadingTime: true
+  ShowBreadCrumps: true
   ShowAllPagesInArchive: true
   homeInfoParams:
     Title: Welcome to the Advanced C++ course
     Content: Some info for the couse goes here
+  editPost:
+    URL: "https://github.com/SofiaCPP/advanced-cpp/blob/main/content"
+    Text: Suggest Changes
+    appendFilePath: true
 
 menu:
   main:
