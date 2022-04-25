@@ -1,5 +1,7 @@
 {{$file := .Get "file"}}
 {{$content := $file | readFile | replaceRE "^---[[:graph:][:space:]]*?---" "" }}
+{{$content := $content | replaceRE "{{% note %}}" "---" }}
+{{$content := $content | replaceRE "{{% /note %}}" "" }}
 
 {{- if eq (.Get "markdown") "true" -}}
     {{- $content | markdownify -}}
