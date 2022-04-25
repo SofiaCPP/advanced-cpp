@@ -14,4 +14,15 @@ Introduction to the Advanced C++ course
 
 ---
 
+```cpp {linenos=table}
+int main() {
+    std::printf("The answer is %d\n", 42);
+    return 0;
+}
+```
+
+---
+
 {{% readpost file="/slides/00_intro/_index.md" markdown=true %}}
+
+---
